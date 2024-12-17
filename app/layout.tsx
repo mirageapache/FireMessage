@@ -1,9 +1,9 @@
-/* eslint-disable camelcase */
 import type { Metadata } from 'next';
 import React from 'react';
-import './globals.css';
+// eslint-disable-next-line camelcase
 import { Inter, Noto_Sans_TC } from 'next/font/google';
-import { AuthProvider } from '@/context/AuthContext';
+import { Providers } from './providers';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const notoSansTC = Noto_Sans_TC({
@@ -20,14 +20,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <AuthProvider>
-        <body className={`${inter.className} ${notoSansTC.className}`}>
-          {children}
-        </body>
-      </AuthProvider>
+    <html lang='en'>
+      <body className={`${inter.className} ${notoSansTC.className}`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
