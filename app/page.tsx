@@ -4,7 +4,7 @@ import HomeTechSection from '@/components/HomeTechSection';
 
 export default function Home() {
   return (
-    <main className="">
+    <main>
       <HomeAuthSection />
       <HomeDisplaySection />
       <HomeTechSection />

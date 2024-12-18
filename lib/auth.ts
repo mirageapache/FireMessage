@@ -5,7 +5,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { store } from '@/store';
-import { setUser } from '@/store/authSlice';
+import { clearUser, setUser } from '@/store/authSlice';
 import { auth, db } from '../firebase';
 
 /**
@@ -29,10 +29,8 @@ export const registerWithEmailAndPassword = async (
       username,
       createdAt: new Date(),
     });
-    store.dispatch(setUser(user));
-    return user;
+    return { code: 'SUCCESS', message: '註冊成功' };
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -52,9 +50,8 @@ export const loginWithEmailAndPassword = async (
     );
     const { user } = userCredential;
     store.dispatch(setUser(user));
-    return user;
+    return { code: 'SUCCESS', data: user };
   } catch (error) {
-    console.error('Login Error:', error);
     return error;
   }
 };
@@ -63,8 +60,9 @@ export const loginWithEmailAndPassword = async (
 export const logout = async () => {
   try {
     await signOut(auth);
+    store.dispatch(clearUser());
+    return { code: 'SUCCESS', message: '登出成功' };
   } catch (error) {
-    console.error('Logout Error:', error);
-    throw error;
+    return error;
   }
 };
