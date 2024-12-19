@@ -1,6 +1,6 @@
+/* eslint-disable camelcase */
 import type { Metadata } from 'next';
 import React from 'react';
-// eslint-disable-next-line camelcase
 import { Inter, Noto_Sans_TC } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';

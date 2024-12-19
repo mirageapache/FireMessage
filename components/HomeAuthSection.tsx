@@ -19,11 +19,11 @@ function HomeAuthSection() {
           </p>
         </div>
         <div className='flex flex-col justify-center items-center w-full sm:w-1/2 h-full'>
-          <Button className='w-28 m-5' onClick={() => router.push('/register')}>註冊</Button>
-          <Button className='w-28 m-5' onClick={() => router.push('/login')}>登入</Button>
+          <Button className='btn' onClick={() => router.push('/register')}>註冊</Button>
+          <Button className='btn' onClick={() => router.push('/login')}>登入</Button>
         </div>
       </div>
-      <div className="fixed w-full h-screen bg-[url('/images/bg_image.png')] bg-cover bg-center opacity-50" />
+      {/* <div className="fixed w-full h-screen bg-[url('/images/bg_image.png')] bg-cover bg-center opacity-50" /> */}
     </section>
   );
 }

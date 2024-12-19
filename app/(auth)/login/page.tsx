@@ -9,6 +9,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -58,6 +59,7 @@ function LoginPage() {
               </FormItem>
             )}
           />
+          <Button type='submit' className='btn'>登入</Button>
         </form>
       </Form>
     </div>

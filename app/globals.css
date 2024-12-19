@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.brand-color {
+  color: orange;
 }
 
 @layer base {
@@ -76,3 +76,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Common Styles */
+  .btn {
+    @apply w-80 m-5;
+  }
+}
+
