@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 function Header() {
   return (
@@ -19,10 +21,16 @@ function Header() {
           <h3>FireMessage</h3>
         </Link>
         <div>
-          <button type='button' className='hidden sm:inline-block'>Dark Mode</button>
-          <button type='button' className='hidden sm:inline-block'>Notification</button>
+          <button type='button' className='hidden sm:inline-block'>
+            <FontAwesomeIcon icon={icon({ name: 'moon', style: 'solid' })} />
+          </button>
+          <button type='button' className='hidden sm:inline-block'>
+            <FontAwesomeIcon icon={icon({ name: 'bell', style: 'solid' })} />
+          </button>
           <Link href='/userProfile'>User Profile</Link>
-          <button type='button' className='inline-block sm:hidden'>Menu</button>
+          <button type='button' className='inline-block sm:hidden'>
+            <FontAwesomeIcon icon={icon({ name: 'hamburger', style: 'solid' })} />
+          </button>
         </div>
       </nav>
     </header>
