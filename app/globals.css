@@ -14,7 +14,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -38,10 +38,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 0.5rem; */
+    --brand-color: #ffa617;
+    --brand-secondary-color: #ff7700;
+    --brand-third-color: #ffc300;
   }
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -64,7 +67,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-5: 340 75% 55%; */
   }
 }
 
@@ -75,12 +78,14 @@
   body {
     @apply bg-background text-foreground;
   }
+  h1 {
+    @apply text-4xl block;
+  }
 }
 
 @layer utilities {
   /* Common Styles */
   .btn {
-    @apply w-80 m-5;
+    @apply w-80 h-[60px] text-2xl rounded-full m-5 bg-[var(--brand-secondary-color)];
   }
 }
-
