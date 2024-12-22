@@ -14,6 +14,11 @@
 
 @layer base {
   :root {
+    --brand-color: #ffa617;
+    --brand-secondary-color: #ff7700;
+    --brand-third-color: #ffc300;
+    --bg-color: #213152;
+    --white: #ffffff;
     /* --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -39,9 +44,6 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem; */
-    --brand-color: #ffa617;
-    --brand-secondary-color: #ff7700;
-    --brand-third-color: #ffc300;
   }
   .dark {
     /* --background: 222.2 84% 4.9%;
@@ -79,13 +81,28 @@
     @apply bg-background text-foreground;
   }
   h1 {
-    @apply text-4xl block;
+    @apply text-5xl block text-center font-bold;
+  }
+  h2 {
+    @apply text-4xl block text-center font-bold;
+  }
+  h3 {
+    @apply text-3xl block text-center font-semibold;
+  }
+  h4 {
+    @apply text-2xl block text-center;
+  }
+  h5 {
+    @apply text-xl block text-center;
   }
 }
 
 @layer utilities {
   /* Common Styles */
+  .bg-color {
+    @apply bg-[#213152];
+  }
   .btn {
-    @apply w-80 h-[60px] text-2xl rounded-full m-5 bg-[var(--brand-secondary-color)];
+    @apply w-80 h-[60px] text-2xl rounded-full m-3 hover:drop-shadow-lg;
   }
 }

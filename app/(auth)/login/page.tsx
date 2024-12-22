@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { loginFormSchema } from '@/lib/validations/authForm';
-import { loginWithEmailAndPassword } from '@/lib/auth';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { loginFormSchema } from "@/lib/validations/authForm";
+import { loginWithEmailAndPassword } from "@/lib/auth";
 
 function LoginPage() {
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -31,35 +31,37 @@ function LoginPage() {
   }
 
   return (
-    <div className='p-5 sm:p-10'>
+    <div className="p-5 sm:p-10">
       <h2>歡迎回來</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>E-mail</FormLabel>
                 <FormControl>
-                  <Input type='email' placeholder='請輸入E-mail' {...field} />
+                  <Input type="email" placeholder="請輸入E-mail" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name='password'
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>密碼</FormLabel>
                 <FormControl>
-                  <Input type='password' placeholder='請輸入密碼' {...field} />
+                  <Input type="password" placeholder="請輸入密碼" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
-          <Button type='submit' className='btn'>登入</Button>
+          <Button type="submit" className="btn">
+            登入
+          </Button>
         </form>
       </Form>
     </div>

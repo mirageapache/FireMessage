@@ -31,7 +31,7 @@ function RegisterPage() {
     const result = registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username
+      values.username,
     );
     console.log(result);
   }

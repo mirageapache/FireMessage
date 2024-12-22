@@ -1,13 +1,11 @@
+import Header from "@/components/Header";
 import HomeAuthSection from "@/components/HomeAuthSection";
-import HomeDisplaySection from "@/components/HomeDisplaySection";
-import HomeTechSection from "@/components/HomeTechSection";
 
 export default function Home() {
   return (
-    <main>
+    <main className="bg-color">
+      <Header />
       <HomeAuthSection />
-      <HomeDisplaySection />
-      <HomeTechSection />
       {/* footer */}
     </main>
   );

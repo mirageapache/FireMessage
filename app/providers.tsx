@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from '@/store';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/firebase';
-import { useAppDispatch } from '@/store/hooks';
-import { setUser, setLoading } from '@/store/authSlice';
+import React, { useEffect } from "react";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "@/store";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser, setLoading } from "@/store/authSlice";
 
 // 客戶端元件：監聽 Firebase 認證狀態
 function AuthStateListener({ children }: { children: React.ReactNode }) {
