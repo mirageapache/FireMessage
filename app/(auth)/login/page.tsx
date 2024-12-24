@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,7 @@ function LoginPage() {
   }
 
   return (
-    <div className="p-5 sm:p-10">
+    <div className="p-5 sm:p-10 max-w-[400px]">
       <h2>歡迎回來</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -40,7 +39,6 @@ function LoginPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-mail</FormLabel>
                 <FormControl>
                   <Input type="email" placeholder="請輸入E-mail" {...field} />
                 </FormControl>
@@ -52,7 +50,6 @@ function LoginPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>密碼</FormLabel>
                 <FormControl>
                   <Input type="password" placeholder="請輸入密碼" {...field} />
                 </FormControl>

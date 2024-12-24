@@ -3,7 +3,7 @@ import HomeAuthSection from "@/components/HomeAuthSection";
 
 export default function Home() {
   return (
-    <main className="bg-color">
+    <main>
       <Header />
       <HomeAuthSection />
       {/* footer */}

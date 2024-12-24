@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 
 function RegisterPage() {
+  const inputStyle = "w-80";
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -37,7 +37,7 @@ function RegisterPage() {
   }
 
   return (
-    <div className="p-5 sm:p-10">
+    <div className="p-5 sm:p-10 max-w-[400px]">
       <h2>註冊</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -46,9 +46,8 @@ function RegisterPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-mail</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="請輸入E-mail" {...field} />
+                  <Input type="email" className={`${inputStyle}`} placeholder="請輸入E-mail" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -58,9 +57,8 @@ function RegisterPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>密碼</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="請輸入密碼" {...field} />
+                  <Input type="password" className={`${inputStyle}`} placeholder="請輸入密碼" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -70,10 +68,10 @@ function RegisterPage() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>確認密碼</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
+                    className={`${inputStyle}`}
                     placeholder="請輸入確認密碼"
                     {...field}
                   />
@@ -86,9 +84,8 @@ function RegisterPage() {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>名稱</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="請輸入名稱" {...field} />
+                  <Input type="text" className={`${inputStyle}`} placeholder="請輸入名稱" {...field} />
                 </FormControl>
               </FormItem>
             )}
