@@ -19,6 +19,8 @@
     --brand-third-color: #ffc300;
     --background: #213152;
     --white: #ffffff;
+    --input-bg-color: #e2e2ea;
+    --input-text-color: #6c757d;
   }
   .dark {
     --background: #213152;
@@ -30,7 +32,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-white;
+    @apply bg-[var(--background)] text-white;
   }
   h1 {
     @apply text-5xl block text-center font-bold;
@@ -52,6 +54,6 @@
 @layer utilities {
   /* Common Styles */
   .btn {
-    @apply w-80 h-[60px] text-2xl rounded-full m-3 hover:drop-shadow-lg;
+    @apply w-80 h-[60px] sm:h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
   }
 }
