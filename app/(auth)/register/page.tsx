@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form, FormControl, FormField, FormItem,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,8 +13,6 @@ import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 
 function RegisterPage() {
-  const inputStyle =
-    "w-80 h-[50px] sm:h-10 text-xl sm:text-lg md:text-lg mb-[30px] rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)]";
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -27,7 +27,7 @@ function RegisterPage() {
     const result = registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username
+      values.username,
     );
     console.log(result);
   }
@@ -45,7 +45,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    className={`${inputStyle}`}
+                    className="authInput"
                     placeholder="請輸入E-mail"
                     {...field}
                   />
@@ -61,7 +61,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className={`${inputStyle}`}
+                    className="authInput"
                     placeholder="請輸入密碼"
                     {...field}
                   />
@@ -77,7 +77,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className={`${inputStyle}`}
+                    className="authInput"
                     placeholder="請輸入確認密碼"
                     {...field}
                   />
@@ -93,7 +93,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="text"
-                    className={`${inputStyle}`}
+                    className="authInput"
                     placeholder="請輸入名稱"
                     {...field}
                   />
