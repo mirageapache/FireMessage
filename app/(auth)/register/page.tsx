@@ -12,8 +12,11 @@ import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
+import { useRouter } from "next/navigation";
 
 function RegisterPage() {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -35,9 +38,9 @@ function RegisterPage() {
 
   return (
     <div className="p-5 sm:p-10 max-w-[400px]">
-      <h2 className="mb-[30px]">註冊成為會員</h2>
+      <h2 className="mb-[15px]">註冊成為會員</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="flex flex-col items-center" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="email"
@@ -107,6 +110,13 @@ function RegisterPage() {
             className="btn bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
             註冊
+          </Button>
+          <Button
+            type="button"
+            onClick={() => router.push("/")}
+            className="btn mt-[20px] bg-white hover:bg-white text-gray-500"
+          >
+            返回
           </Button>
         </form>
       </Form>

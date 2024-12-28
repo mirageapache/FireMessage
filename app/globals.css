@@ -54,10 +54,10 @@
 @layer utilities {
   /* Common Styles */
   .btn {
-    @apply w-80 h-[60px] sm:h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
+    @apply w-80 h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
   }
 
   .authInput {
-    @apply w-80 h-[50px] sm:h-10 text-xl sm:text-lg md:text-lg mb-[30px] rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)]
+    @apply w-80 h-[40px] sm:h-10 text-xl sm:text-lg md:text-lg mb-[20px] rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)];
   }
 }
