@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { loginFormSchema } from "@/lib/validations/authForm";
 import { loginWithEmailAndPassword } from "@/lib/auth";
+import OAuthSection from "@/components/OAuthSection";
 
 function LoginPage() {
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -71,6 +72,7 @@ function LoginPage() {
           </Button>
         </form>
       </Form>
+      <OAuthSection />
     </div>
   );
 }

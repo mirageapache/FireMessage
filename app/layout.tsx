@@ -2,8 +2,13 @@
 import type { Metadata } from "next";
 import React from "react";
 import { Inter, Noto_Sans_TC } from "next/font/google";
-import { Providers } from "./providers";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+
 import "./globals.css";
+import { Providers } from "./providers";
+
+config.autoAddCss = false; // fontawesome setting
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoSansTC = Noto_Sans_TC({
@@ -26,9 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${notoSansTC.className}`}>
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

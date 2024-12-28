@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
+import OAuthSection from "@/components/OAuthSection";
 
 function RegisterPage() {
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -109,6 +110,7 @@ function RegisterPage() {
           </Button>
         </form>
       </Form>
+      <OAuthSection />
     </div>
   );
 }
