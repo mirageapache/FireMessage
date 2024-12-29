@@ -7,11 +7,11 @@ import {
   signInWithPopup,
   signOut,
   UserCredential,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { store } from '@/store';
-import { clearUser, setUser } from '@/store/authSlice';
-import { auth, db } from '../firebase';
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { store } from "@/store";
+import { clearUser, setUser } from "@/store/authSlice";
+import { auth, db } from "../firebase";
 
 /** 一般註冊 (Email+Password) */
 export const registerWithEmailAndPassword = async (
@@ -26,16 +26,17 @@ export const registerWithEmailAndPassword = async (
       password,
     );
     const { user } = userCredential;
-    await setDoc(doc(db, 'users', user.uid), {
+    await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       email: user.email,
       username,
       createdAt: new Date(),
-      loginType: 'email',
+      loginType: "email",
     });
-    return { code: 'SUCCESS', message: '註冊成功' };
+    console.log(user);
+    return { code: "SUCCESS", message: "註冊成功" };
   } catch (error) {
-    return error;
+    return { code: "ERROR", error };
   }
 };
 
@@ -52,7 +53,7 @@ export const loginWithEmailAndPassword = async (
     );
     const { user } = userCredential;
     store.dispatch(setUser(user));
-    return { code: 'SUCCESS', data: user };
+    return { code: "SUCCESS", data: user };
   } catch (error) {
     return error;
   }
@@ -62,13 +63,13 @@ export const loginWithEmailAndPassword = async (
 export const loginWithGoogle = async (source: string) => {
   let provider;
   switch (source) {
-    case 'google':
+    case "google":
       provider = new GoogleAuthProvider();
       break;
-    case 'facebook':
+    case "facebook":
       provider = new FacebookAuthProvider();
       break;
-    case 'github':
+    case "github":
       provider = new GithubAuthProvider();
       break;
     default:
@@ -79,13 +80,17 @@ export const loginWithGoogle = async (source: string) => {
     const { user } = result;
 
     // 將使用者資訊存入 Firestore
-    await setDoc(doc(db, 'users', user.uid), {
-      uid: user.uid,
-      email: user.email,
-      username: user.displayName,
-      createdAt: new Date(),
-      loginType: source,
-    }, { merge: true });
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        uid: user.uid,
+        email: user.email,
+        username: user.displayName,
+        createdAt: new Date(),
+        loginType: source,
+      },
+      { merge: true },
+    );
 
     return user;
   } catch (error) {
@@ -98,7 +103,7 @@ export const logout = async () => {
   try {
     await signOut(auth);
     store.dispatch(clearUser());
-    return { code: 'SUCCESS', message: '登出成功' };
+    return { code: "SUCCESS", message: "登出成功" };
   } catch (error) {
     return error;
   }

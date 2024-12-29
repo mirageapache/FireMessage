@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Form, FormControl, FormField, FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,8 +9,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
-import OAuthSection from "@/components/OAuthSection";
+import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import OAuthSection from "@/components/OAuthSection";
 
 function RegisterPage() {
   const router = useRouter();
@@ -27,20 +26,51 @@ function RegisterPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof registerFormSchema>) {
-    const result = registerWithEmailAndPassword(
+  type RegisterResult =
+    | { code: "SUCCESS"; message: string }
+    | { code: "ERROR"; error: { code: string; message: string } };
+
+  const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+    const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username,
-    );
+      values.username
+    )) as RegisterResult;
+
     console.log(result);
-  }
+
+    if (result.code === "SUCCESS") {
+      Swal.fire({
+        title: "註冊成功",
+        icon: "success",
+        confirmButtonText: "確定",
+      }).then(() => {
+        router.push("/login");
+      });
+    } else {
+      let msg = "";
+      switch (result.error.code) {
+        case "auth/email-already-in-use":
+          msg = "Email已存在";
+          break;
+      }
+
+      Swal.fire({
+        title: msg,
+        icon: "error",
+        confirmButtonText: "確定",
+      });
+    }
+  };
 
   return (
     <div className="p-5 sm:p-10 max-w-[400px]">
       <h2 className="mb-[15px]">註冊成為會員</h2>
       <Form {...form}>
-        <form className="flex flex-col items-center" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          className="flex flex-col items-center"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="email"
