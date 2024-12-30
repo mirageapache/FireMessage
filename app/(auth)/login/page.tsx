@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,10 +26,38 @@ function LoginPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    const result = loginWithEmailAndPassword(values.email, values.password);
-    console.log(result);
-  }
+  type LoginResult =
+    | { code: "SUCCESS"; message: string }
+    | { code: "ERROR"; error: { code: string; message: string } };
+
+  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    const result = await loginWithEmailAndPassword(values.email, values.password) as LoginResult;
+    if (result.code === "SUCCESS") {
+      Swal.fire({
+        title: "註冊成功",
+        icon: "success",
+        confirmButtonText: "確定",
+      }).then(() => {
+        router.push("/login");
+      });
+    } else {
+      let msg = "";
+      switch (result.error.code) {
+        case "auth/email-already-in-use":
+          msg = "Email不存在";
+          break;
+        default:
+          msg = "登入失敗";
+          break;
+      }
+
+      Swal.fire({
+        title: msg,
+        icon: "error",
+        confirmButtonText: "確定",
+      });
+    }
+  };
 
   return (
     <div className="p-5 sm:p-10 max-w-[400px]">

@@ -4,12 +4,12 @@ import React from "react";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
-import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
 
@@ -34,11 +34,8 @@ function RegisterPage() {
     const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username
+      values.username,
     )) as RegisterResult;
-
-    console.log(result);
-
     if (result.code === "SUCCESS") {
       Swal.fire({
         title: "註冊成功",
@@ -52,6 +49,9 @@ function RegisterPage() {
       switch (result.error.code) {
         case "auth/email-already-in-use":
           msg = "Email已存在";
+          break;
+        default:
+          msg = "註冊失敗";
           break;
       }
 
