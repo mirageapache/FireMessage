@@ -2,7 +2,11 @@
 
 import React from "react";
 import {
-  Form, FormControl, FormField, FormItem,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +14,7 @@ import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "react-toastify";
 import { loginFormSchema } from "@/lib/validations/authForm";
 import { loginWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
@@ -31,10 +36,14 @@ function LoginPage() {
     | { code: "ERROR"; error: { code: string; message: string } };
 
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    const result = await loginWithEmailAndPassword(values.email, values.password) as LoginResult;
+    const result = (await loginWithEmailAndPassword(
+      values.email,
+      values.password
+    )) as LoginResult;
     if (result.code === "SUCCESS") {
+      toast("登入成功！");
       Swal.fire({
-        title: "註冊成功",
+        title: "登入成功",
         icon: "success",
         confirmButtonText: "確定",
       }).then(() => {
@@ -43,8 +52,8 @@ function LoginPage() {
     } else {
       let msg = "";
       switch (result.error.code) {
-        case "auth/email-already-in-use":
-          msg = "Email不存在";
+        case "auth/invalid-credential":
+          msg = "Email不存在或密碼錯誤";
           break;
         default:
           msg = "登入失敗";
@@ -68,7 +77,7 @@ function LoginPage() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[20px]">
                 <FormControl>
                   <Input
                     type="email"
@@ -77,6 +86,7 @@ function LoginPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ mirage: 0 }} />
               </FormItem>
             )}
           />
@@ -84,7 +94,7 @@ function LoginPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[20px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -93,6 +103,7 @@ function LoginPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ mirage: 0 }} />
               </FormItem>
             )}
           />

@@ -9,7 +9,7 @@ function OAuthSection() {
       <span className="flex justify-center my-[10px] before:[''] before:absolute before:w-full before:h-[1px] before:bg-white before:top-3">
         <span className="px-3 z-10 bg-[var(--background)]">or</span>
       </span>
-      <h2 className="mb-[20px] md:m-[20px]">快速登入</h2>
+      <h2 className="m-[10px]">快速登入</h2>
       <div className="flex justify-around">
         <Image
           src="/icons/google_icon.svg"

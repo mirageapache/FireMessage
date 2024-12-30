@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
@@ -34,7 +40,7 @@ function RegisterPage() {
     const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username,
+      values.username
     )) as RegisterResult;
     if (result.code === "SUCCESS") {
       Swal.fire({
@@ -75,7 +81,7 @@ function RegisterPage() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[10px]">
                 <FormControl>
                   <Input
                     type="email"
@@ -84,6 +90,7 @@ function RegisterPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />
@@ -91,7 +98,7 @@ function RegisterPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[10px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -100,6 +107,7 @@ function RegisterPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />
@@ -107,7 +115,7 @@ function RegisterPage() {
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[10px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -116,6 +124,7 @@ function RegisterPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />
@@ -123,7 +132,7 @@ function RegisterPage() {
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[10px]">
                 <FormControl>
                   <Input
                     type="text"
@@ -132,19 +141,20 @@ function RegisterPage() {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />
           <Button
             type="submit"
-            className="btn bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
+            className="btn my-[10px] bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
             註冊
           </Button>
           <Button
             type="button"
             onClick={() => router.push("/")}
-            className="btn mt-[20px] bg-white hover:bg-white text-gray-500"
+            className="btn my-[10px] bg-white hover:bg-white text-gray-500"
           >
             返回
           </Button>

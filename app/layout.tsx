@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import type { Metadata } from "next";
 import React from "react";
+import { ToastContainer } from "react-toastify";
 import { Inter, Noto_Sans_TC } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} ${notoSansTC.className}`}>
         <Providers>{children}</Providers>
+        <ToastContainer position="bottom-right" />
       </body>
     </html>
   );

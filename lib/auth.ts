@@ -55,7 +55,7 @@ export const loginWithEmailAndPassword = async (
     store.dispatch(setUser(user));
     return { code: "SUCCESS", data: user };
   } catch (error) {
-    return error;
+    return { code: "ERROR", error };
   }
 };
 
