@@ -19,6 +19,7 @@ import { loginFormSchema } from "@/lib/validations/authForm";
 import { loginWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
 import { useRouter } from "next/navigation";
+import { authResponse } from "@/types/authType";
 
 function LoginPage() {
   const router = useRouter();
@@ -31,24 +32,14 @@ function LoginPage() {
     },
   });
 
-  type LoginResult =
-    | { code: "SUCCESS"; message: string }
-    | { code: "ERROR"; error: { code: string; message: string } };
-
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     const result = (await loginWithEmailAndPassword(
       values.email,
-      values.password
-    )) as LoginResult;
+      values.password,
+    )) as authResponse;
     if (result.code === "SUCCESS") {
       toast("登入成功！");
-      Swal.fire({
-        title: "登入成功",
-        icon: "success",
-        confirmButtonText: "確定",
-      }).then(() => {
-        router.push("/login");
-      });
+      router.push("/dashboard");
     } else {
       let msg = "";
       switch (result.error.code) {
@@ -86,7 +77,7 @@ function LoginPage() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="inputErrorMsg" style={{ mirage: 0 }} />
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />
@@ -103,7 +94,7 @@ function LoginPage() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="inputErrorMsg" style={{ mirage: 0 }} />
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
               </FormItem>
             )}
           />

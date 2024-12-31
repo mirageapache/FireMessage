@@ -33,7 +33,6 @@ export const registerWithEmailAndPassword = async (
       createdAt: new Date(),
       loginType: "email",
     });
-    console.log(user);
     return { code: "SUCCESS", message: "註冊成功" };
   } catch (error) {
     return { code: "ERROR", error };
@@ -51,6 +50,7 @@ export const loginWithEmailAndPassword = async (
       email,
       password,
     );
+    console.log(userCredential);
     const { user } = userCredential;
     store.dispatch(setUser(user));
     return { code: "SUCCESS", data: user };
@@ -60,7 +60,7 @@ export const loginWithEmailAndPassword = async (
 };
 
 /** Oauth 登入 */
-export const loginWithGoogle = async (source: string) => {
+export const loginOAuth = async (source: string) => {
   let provider;
   switch (source) {
     case "google":

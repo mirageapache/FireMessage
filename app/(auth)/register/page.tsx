@@ -18,6 +18,7 @@ import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
+import { authResponse } from "@/types/authType";
 
 function RegisterPage() {
   const router = useRouter();
@@ -32,16 +33,12 @@ function RegisterPage() {
     },
   });
 
-  type RegisterResult =
-    | { code: "SUCCESS"; message: string }
-    | { code: "ERROR"; error: { code: string; message: string } };
-
   const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
     const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
-      values.username
-    )) as RegisterResult;
+      values.username,
+    )) as authResponse;
     if (result.code === "SUCCESS") {
       Swal.fire({
         title: "註冊成功",
