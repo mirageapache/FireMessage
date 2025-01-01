@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
+import { isEmpty } from "lodash";
 import { Slot } from "@radix-ui/react-slot";
 import {
   Controller,
@@ -107,8 +108,7 @@ const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
     <Slot
@@ -154,7 +154,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-destructive m-0 !important", className)}
+      className={cn("text-destructive", className)}
       {...props}
     >
       {!isEmpty(body) ? body : ''}

@@ -19,6 +19,7 @@ import { registerWithEmailAndPassword } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
 import { authResponse } from "@/types/authType";
+import { authErrorHandle } from "@/lib/error";
 
 function RegisterPage() {
   const router = useRouter();
@@ -48,21 +49,14 @@ function RegisterPage() {
         router.push("/login");
       });
     } else {
-      let msg = "";
-      switch (result.error.code) {
-        case "auth/email-already-in-use":
-          msg = "Email已存在";
-          break;
-        default:
-          msg = "註冊失敗";
-          break;
+      const msg = authErrorHandle(result.error.code);
+      if (msg !== "") {
+        Swal.fire({
+          title: msg,
+          icon: "error",
+          confirmButtonText: "確定",
+        });
       }
-
-      Swal.fire({
-        title: msg,
-        icon: "error",
-        confirmButtonText: "確定",
-      });
     }
   };
 
@@ -78,7 +72,7 @@ function RegisterPage() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="my-[10px]">
+              <FormItem>
                 <FormControl>
                   <Input
                     type="email"
@@ -95,7 +89,7 @@ function RegisterPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="my-[10px]">
+              <FormItem>
                 <FormControl>
                   <Input
                     type="password"
@@ -112,7 +106,7 @@ function RegisterPage() {
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem className="my-[10px]">
+              <FormItem>
                 <FormControl>
                   <Input
                     type="password"
@@ -129,7 +123,7 @@ function RegisterPage() {
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem className="my-[10px]">
+              <FormItem>
                 <FormControl>
                   <Input
                     type="text"

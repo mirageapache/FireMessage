@@ -58,10 +58,10 @@
   }
 
   .authInput {
-    @apply w-80 h-[40px] sm:h-10 text-xl sm:text-lg md:text-lg rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)];
+    @apply w-80 h-[40px] sm:h-10 text-lg rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)];
   }
 
   .inputErrorMsg {
-    @apply text-red-500 text-sm font-normal;
+    @apply h-[20px] text-red-500 text-sm font-normal;
   }
 }

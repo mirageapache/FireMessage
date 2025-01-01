@@ -4,22 +4,25 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { loginOAuth } from "@/lib/auth";
 import { authResponse } from "@/types/authType";
+import { authErrorHandle } from "@/lib/error";
 
 function OAuthSection() {
-  const btnStyle = "flex justify-center items-center rounded-md cursor-pointer";
+  const btnStyle = "flex justify-center items-center rounded-[6px] cursor-pointer";
   const router = useRouter();
 
   const handleOAuth = async (provider: string) => {
-    const result = await loginOAuth(provider) as authResponse;
+    const result = (await loginOAuth(provider)) as authResponse;
     if (result.code === "SUCCESS") {
       router.push("/dashboard");
     } else {
-      console.log(result);
-      Swal.fire({
-        title: '發生錯誤',
-        icon: "error",
-        confirmButtonText: "確定",
-      });
+      const msg = authErrorHandle(result.error.code);
+      if (msg !== "") {
+        Swal.fire({
+          title: "發生錯誤",
+          icon: "error",
+          confirmButtonText: "確定",
+        });
+      }
     }
   };
 
@@ -28,14 +31,14 @@ function OAuthSection() {
       <span className="flex justify-center my-[10px] before:[''] before:absolute before:w-full before:h-[1px] before:bg-white before:top-3">
         <span className="px-3 z-10 bg-[var(--background)]">or</span>
       </span>
-      <h2 className="m-[10px]">快速登入</h2>
+      <h2 className="m-[15px]">快速登入</h2>
       <div className="flex justify-around">
         <Image
           src="/icons/google_icon.svg"
           alt="Google"
           width={48}
           height={48}
-          className={`${btnStyle} bg-white rounded-[5px]`}
+          className={`${btnStyle} bg-white`}
           onClick={() => handleOAuth("google")}
         />
         <Image
@@ -51,7 +54,7 @@ function OAuthSection() {
           alt="Github"
           width={48}
           height={48}
-          className={`${btnStyle} border-[3px] border-white bg-white rounded-[6px]`}
+          className={`${btnStyle} border-[3px] border-white bg-white`}
           onClick={() => handleOAuth("github")}
         />
       </div>

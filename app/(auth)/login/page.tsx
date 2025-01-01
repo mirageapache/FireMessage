@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Swal from "sweetalert2";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,8 +19,10 @@ import { loginWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
 import { useRouter } from "next/navigation";
 import { authResponse } from "@/types/authType";
+import { authErrorHandle } from "@/lib/error";
 
 function LoginPage() {
+  const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -33,29 +34,19 @@ function LoginPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    setErrorMsg("");
     const result = (await loginWithEmailAndPassword(
       values.email,
       values.password,
     )) as authResponse;
     if (result.code === "SUCCESS") {
-      toast("登入成功！");
+      toast("歡迎回來！");
       router.push("/dashboard");
     } else {
-      let msg = "";
-      switch (result.error.code) {
-        case "auth/invalid-credential":
-          msg = "Email不存在或密碼錯誤";
-          break;
-        default:
-          msg = "登入失敗";
-          break;
+      const msg = authErrorHandle(result.error.code);
+      if (msg !== "") {
+        setErrorMsg(msg);
       }
-
-      Swal.fire({
-        title: msg,
-        icon: "error",
-        confirmButtonText: "確定",
-      });
     }
   };
 
@@ -63,12 +54,15 @@ function LoginPage() {
     <div className="p-5 sm:p-10 max-w-[400px]">
       <h2 className="mb-[30px]">歡迎回來</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          className="flex flex-col justify-center"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="my-[20px]">
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="email"
@@ -85,7 +79,7 @@ function LoginPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="my-[20px]">
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -94,7 +88,9 @@ function LoginPage() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
+                <FormMessage className="inputErrorMsg" style={{ margin: 0 }}>
+                  {errorMsg && <p>{errorMsg}</p>}
+                </FormMessage>
               </FormItem>
             )}
           />
