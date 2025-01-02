@@ -40,8 +40,10 @@ function LoginPage() {
       values.password,
     )) as authResponse;
     if (result.code === "SUCCESS") {
+      const token = await result.data.getIdToken();
+      console.log(token);
       toast("歡迎回來！");
-      router.push("/dashboard");
+      // router.push("/dashboard");
     } else {
       const msg = authErrorHandle(result.error.code);
       if (msg !== "") {

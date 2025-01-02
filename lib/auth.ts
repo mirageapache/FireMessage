@@ -50,7 +50,6 @@ export const loginWithEmailAndPassword = async (
       email,
       password,
     );
-    console.log(userCredential);
     const { user } = userCredential;
     store.dispatch(setUser(user));
     return { code: "SUCCESS", data: user };
