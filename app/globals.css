@@ -2,26 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
+.brand-color {
+  color: orange;
+}
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --brand-color: #ffa617;
+    --brand-secondary-color: #ff7700;
+    --brand-third-color: #ffc300;
+    --background: #213152;
+    --white: #ffffff;
+    --input-bg-color: #e2e2ea;
+    --input-text-color: #6c757d;
+  }
+  .dark {
+    --background: #213152;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[var(--background)] text-white;
+  }
+  h1 {
+    @apply text-5xl block text-center font-bold;
+  }
+  h2 {
+    @apply text-4xl block text-center font-bold;
+  }
+  h3 {
+    @apply text-3xl block text-center font-semibold;
+  }
+  h4 {
+    @apply text-2xl block text-center;
+  }
+  h5 {
+    @apply text-xl block text-center;
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  /* Common Styles */
+  .btn {
+    @apply w-80 h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
+  }
+
+  .authInput {
+    @apply w-80 h-[40px] sm:h-10 text-lg rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)];
+  }
+
+  .inputErrorMsg {
+    @apply h-[20px] text-red-500 text-sm font-normal;
   }
 }
