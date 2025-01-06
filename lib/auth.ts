@@ -116,6 +116,7 @@ export const logout = async () => {
   try {
     await signOut(auth);
     store.dispatch(clearUser());
+    cookies.remove("UAT");
     return { code: "SUCCESS", message: "登出成功" };
   } catch (error) {
     return error;
