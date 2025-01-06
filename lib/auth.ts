@@ -6,12 +6,35 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  User,
   UserCredential,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import Cookies from 'universal-cookie';
 import { store } from "@/store";
 import { clearUser, setUser } from "@/store/authSlice";
 import { auth, db } from "../firebase";
+import { getRandomColor } from "./utils";
+
+const cookies = new Cookies();
+
+/** 寫入User資料 to firestore */
+const writeUser = async (user: User, username: string | null, source: string) => {
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    email: user.email,
+    username: username === null ? user.email?.slice(0, user.email.indexOf("@")) : username,
+    createdAt: new Date(),
+    loginType: source,
+  });
+  await setDoc(doc(db, "userSettings", user.uid), {
+    uid: user.uid,
+    bgColor: getRandomColor(),
+    darkMode: "dark",
+    toastifyPosition: "bottom-right",
+    template: "default",
+  });
+};
 
 /** 一般註冊 (Email+Password) */
 export const registerWithEmailAndPassword = async (
@@ -26,13 +49,7 @@ export const registerWithEmailAndPassword = async (
       password,
     );
     const { user } = userCredential;
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      email: user.email,
-      username,
-      createdAt: new Date(),
-      loginType: "email",
-    });
+    await writeUser(user, username, "email");
     return { code: "SUCCESS", message: "註冊成功" };
   } catch (error) {
     return { code: "ERROR", error };
@@ -52,6 +69,8 @@ export const loginWithEmailAndPassword = async (
     );
     const { user } = userCredential;
     store.dispatch(setUser(user));
+    const token = await user.getIdToken();
+    cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };
   } catch (error) {
     return { code: "ERROR", error };
@@ -78,19 +97,14 @@ export const loginOAuth = async (source: string) => {
     const result: UserCredential = await signInWithPopup(auth, provider);
     const { user } = result;
 
-    // 將使用者資訊存入 Firestore
-    await setDoc(
-      doc(db, "users", user.uid),
-      {
-        uid: user.uid,
-        email: user.email,
-        username: user.displayName,
-        createdAt: new Date(),
-        loginType: source,
-      },
-      { merge: true },
-    );
+    const isNewUser = await getDoc(doc(db, "users", user.uid));
+    if (!isNewUser.exists()) {
+      await writeUser(user, user.displayName, source);
+    }
 
+    store.dispatch(setUser(user));
+    const token = await user.getIdToken();
+    cookies.set("UAT", token);
     return user;
   } catch (error) {
     return error;
