@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "@/components/Header";
+import BottomNavbar from "@/components/BottomNavbar";
 
 export default function AuthLayout({
   children,
@@ -8,6 +9,7 @@ export default function AuthLayout({
     <main className="flex flex-col justify-center items-center h-screen p-3">
       <Header />
       {children}
+      <BottomNavbar />
     </main>
   );
 }

@@ -8,7 +8,7 @@ import Image from "next/image";
 
 function Header() {
   return (
-    <header className="fixed t-0 w-full h-[50px] flex items-center p-5">
+    <header className="fixed t-0 w-full h-[50px] hidden sm:flex items-center p-5">
       <nav className="flex justify-between items-center w-full md:max-w-[1200px]">
         <Link className="hidden sm:flex justify-center items-center" href="/">
           <Image
