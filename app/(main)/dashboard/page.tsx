@@ -1,9 +1,13 @@
-import React from 'react'
+import ChatList from '@/components/ChatList';
+import React from 'react';
 
-const Dashboard = () => {
+function Dashboard() {
   return (
-    <div>Dashboard</div>
-  )
+    <section className="flex w-screen h-full sm:px-5">
+      <ChatList />
+      <div className="w-full">Chat Room</div>
+    </section>
+  );
 }
 
-export default Dashboard
+export default Dashboard;

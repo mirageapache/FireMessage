@@ -27,19 +27,19 @@ function Avatar(props: {
       const avatarName = userName.substring(0, 1).toUpperCase();
       return (
         <span
-          className={`${size} ${colorStyle} rounded-full flex justify-center items-center font-semibold cursor-default`}
+          className={`rounded-full flex justify-center items-center font-semibold cursor-default ${size} ${colorStyle}`}
         >
           <p className={`${textSize} text-center text-white`}>{avatarName}</p>
         </span>
       );
     }
     return (
-      <span className={`${size} rounded-full flex justify-center items-center border`}>
-        <FontAwesomeIcon icon={faUser} size="2x" />
+      <span className={`${size} rounded-full flex justify-center items-center`}>
+        <FontAwesomeIcon icon={faUser} size="lg" />
       </span>
     );
   }
-  return <Image className={`${size} rounded-full`} src={avatarUrl!} alt="avatar" />;
+  return <Image className={`${size} rounded-full`} src={avatarUrl!} alt="avatar" width={25} height={25} />;
 }
 
 export default Avatar;

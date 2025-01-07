@@ -22,7 +22,7 @@ function Header() {
   const isLogin = !isEmpty(cookies.get("UAT"));
 
   return (
-    <header className="fixed t-0 w-full h-[50px] hidden sm:flex items-center p-5">
+    <header className="fixed top-0 w-full h-[50px] hidden sm:flex items-center p-5">
       <nav className="flex justify-between items-center w-full md:max-w-[1200px]">
         <Link className="hidden sm:flex justify-center items-center" href="/">
           <Image
@@ -41,14 +41,14 @@ function Header() {
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="切換深色模式"
             >
-              <FontAwesomeIcon icon={faMoon} size="2x" />
+              <FontAwesomeIcon icon={faMoon} size="lg" />
             </button>
             <button
               type="button"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="通知"
             >
-              <FontAwesomeIcon icon={faBell} size="2x" />
+              <FontAwesomeIcon icon={faBell} size="lg" />
             </button>
             <button
               type="button"
@@ -61,7 +61,7 @@ function Header() {
                 }
               }}
             >
-              <FontAwesomeIcon icon={faRightFromBracket} size="2x" />
+              <FontAwesomeIcon icon={faRightFromBracket} size="lg" />
             </button>
             <Link
               href="/userProfile"
@@ -74,7 +74,7 @@ function Header() {
               className="text-gray-400 hover:text-white transition-colors sm:hidden"
               aria-label="功能選單"
             >
-              <FontAwesomeIcon icon={faBars} size="2x" />
+              <FontAwesomeIcon icon={faBars} size="lg" />
             </button>
           </div>
         )}
