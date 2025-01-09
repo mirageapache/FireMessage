@@ -6,10 +6,12 @@ export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <main className="flex flex-col justify-center items-center h-screen p-3">
-      <Header />
-      {children}
-      <BottomNavbar />
-    </main>
+    <div className="flex justify-center items-center w-screen h-screen">
+      <div className="fixed w-full md:max-w-[1200px] h-full">
+        <Header />
+        <div className="main-panel mb-[50px] sm:mt-[50px] sm:px-5 w-full h-full">{children}</div>
+        <BottomNavbar />
+      </div>
+    </div>
   );
 }

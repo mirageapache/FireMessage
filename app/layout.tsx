@@ -32,7 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${notoSansTC.className}`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+        </Providers>
         <ToastContainer position="bottom-right" />
       </body>
     </html>

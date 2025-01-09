@@ -12,6 +12,10 @@
   color: orange;
 }
 
+.main-panel {
+  height: calc(100vh - 50px);
+}
+
 @layer base {
   :root {
     --brand-color: #ffa617;

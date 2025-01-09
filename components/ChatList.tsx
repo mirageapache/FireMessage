@@ -24,7 +24,7 @@ function ChatList() {
   }, [activeTab]);
 
   return (
-    <div className="w-full sm:w-1/5 sm:max-w-80 bg-gray-700 rounded-lg p-5">
+    <>
       <div>
         <div className="flex justify-center items-center">
           <button
@@ -56,24 +56,38 @@ function ChatList() {
         </div>
       </div>
       <div className="my-2">
-        <input type="text" placeholder="搜尋" className="w-full p-1 rounded-md" />
+        <input
+          type="text"
+          placeholder="搜尋"
+          className="w-full p-1 rounded-md"
+        />
       </div>
       <div>
-        <div className="flex justify-between items-center hover:bg-gray-200 cursor-pointer p-2">
+        <div className="flex justify-between items-center hover:bg-gray-600 cursor-pointer p-2">
           <div>
-            <Avatar userName="Test" avatarUrl="" size="w-10 h-10" textSize="text-sm" bgColor="#3b82f6" />
+            <Avatar
+              userName="Test"
+              avatarUrl=""
+              size="w-10 h-10"
+              textSize="text-sm"
+              bgColor="#3b82f6"
+            />
           </div>
-          <div className="w-full px-2">
+          <div className="w-full px-2 text-sm">
             <p>好友名稱</p>
-            <p className="text-gray-500">最後訊息</p>
+            <p className="text-gray-500 line-clamp-1">
+              最後訊息最後訊息最後訊息最後訊息最後訊息 最後訊息 最後訊息
+            </p>
           </div>
-          <div className="relative flex justify-end items-center h-12">
-            <p className="absolute top-0 right-0 text-gray-300 text-xs">12:00</p>
-            <p className="bg-orange-500 text-white rounded-full px-1 text-sm">2</p>
+          <div className="relative flex flex-col gap-1 justify-between items-end h-[50px]">
+            <p className="top-0 right-0 text-gray-300 text-xs">12:00</p>
+            <p className="bg-orange-500 text-white rounded-full px-2 text-sm">
+              2
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
