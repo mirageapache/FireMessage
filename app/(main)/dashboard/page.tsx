@@ -1,13 +1,15 @@
-import ChatList from "@/components/ChatList";
 import React from "react";
 
 function Dashboard() {
   return (
-    <div className="flex w-full h-full">
-      <aside className="hidden md:block w-full md:max-w-60 lg:max-w-80 bg-gray-700 rounded-lg p-5">
-        <ChatList />
-      </aside>
-      <section className="block w-full border border-red-500 bg-gray-200">main Dashboard</section>
+    <div className="flex w-full h-full p-5 md:p-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <section className="flex justify-center items-center bg-gray-600 rounded-lg">未讀訊息</section>
+        <section className="flex justify-center items-center bg-gray-600 rounded-lg">通知</section>
+        <section className="flex justify-center items-center bg-gray-600 rounded-lg">推薦好友</section>
+        <section className="flex justify-center items-center bg-gray-600 rounded-lg">item</section>
+        <section className="flex justify-center items-center bg-gray-600 rounded-lg">item</section>
+      </div>
     </div>
   );
 }

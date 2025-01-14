@@ -20,9 +20,11 @@ import OAuthSection from "@/components/OAuthSection";
 import { useRouter } from "next/navigation";
 import { authResponse } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
+import Spinner from "@/components/Spinner";
 
 function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -34,6 +36,7 @@ function LoginPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    setIsLoading(true);
     setErrorMsg("");
     const result = (await loginWithEmailAndPassword(
       values.email,
@@ -48,6 +51,7 @@ function LoginPage() {
         setErrorMsg(msg);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -98,7 +102,7 @@ function LoginPage() {
             type="submit"
             className="btn bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            登入
+            {isLoading ? <Spinner /> : "登入"}
           </Button>
           <Button
             type="button"

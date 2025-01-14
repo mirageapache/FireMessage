@@ -22,7 +22,7 @@ function Avatar(props: {
   } = props;
   const colorStyle = bgColorConvert(bgColor);
 
-  if (isEmpty(avatarUrl)) {
+  if (isEmpty(avatarUrl) || avatarUrl === '') {
     if (userName) {
       const avatarName = userName.substring(0, 1).toUpperCase();
       return (

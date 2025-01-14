@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -20,8 +20,10 @@ import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
 import { authResponse } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
+import Spinner from "@/components/Spinner";
 
 function RegisterPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -35,6 +37,7 @@ function RegisterPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+    setIsLoading(true);
     const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
@@ -58,6 +61,7 @@ function RegisterPage() {
         });
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -140,7 +144,7 @@ function RegisterPage() {
             type="submit"
             className="btn my-[10px] bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            註冊
+            {isLoading ? <Spinner /> : "註冊"}
           </Button>
           <Button
             type="button"

@@ -68,4 +68,8 @@
   .inputErrorMsg {
     @apply h-[20px] text-red-500 text-sm font-normal;
   }
+
+  .activeItem {
+    @apply text-orange-500;
+  }
 }

@@ -6,28 +6,33 @@ import {
   faHome, faMessage, faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSelector } from "react-redux";
 import { RootState } from '@/store';
+import { cn } from '@/lib/utils';
 import Avatar from './Avatar';
 import NotifyTip from './NotifyTip';
 
 function BottomNavbar() {
   const userData = useSelector((state: RootState) => state.auth.user);
+  const path = usePathname();
+  const currentPath = path?.slice(1);
+  const basicItemStyle = "flex justify-center w-full";
 
   return (
     <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden">
-      <Link href="/" className="flex justify-center w-full">
+      <Link href="/dashboard" className={cn(currentPath === 'dashboard' && "activeItem", basicItemStyle)}>
         <FontAwesomeIcon icon={faHome} size="lg" />
       </Link>
-      <Link href="/message" className="relative flex justify-center w-full">
+      <Link href="/chat" className={cn(currentPath === 'chat' && "activeItem", basicItemStyle, "relative")}>
         <FontAwesomeIcon icon={faMessage} size="lg" />
         <NotifyTip amount={1111} />
       </Link>
-      <Link href="/notification" className="relative flex justify-center w-full">
+      <Link href="/notification" className={cn(currentPath === 'notification' && "activeItem", basicItemStyle, "relative")}>
         <FontAwesomeIcon icon={faBell} size="lg" />
         <NotifyTip amount={11} />
       </Link>
-      <Link href="/profile" className="flex justify-center w-full">
+      <Link href="/profile" className={cn(basicItemStyle)}>
         <Avatar
           avatarUrl={userData!.photoURL}
           userName={userData!.displayName}
