@@ -20,7 +20,7 @@ function BottomNavbar() {
   const basicItemStyle = "flex justify-center w-full";
 
   return (
-    <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden">
+    <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden bg-[var(--background)]">
       <Link href="/dashboard" className={cn(currentPath === 'dashboard' && "activeItem", basicItemStyle)}>
         <FontAwesomeIcon icon={faHome} size="lg" />
       </Link>

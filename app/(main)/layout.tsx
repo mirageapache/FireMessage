@@ -9,7 +9,7 @@ export default function AuthLayout({
     <div className="flex justify-center items-center w-screen h-screen">
       <div className="fixed w-full md:max-w-[1200px] h-full">
         <Header />
-        <div className="main-panel mb-[50px] sm:mt-[50px] sm:px-5 w-full h-full">{children}</div>
+        <div className="main-panel mt-[50px] sm:px-5 w-full h-full overflow-y-auto">{children}</div>
         <BottomNavbar />
       </div>
     </div>

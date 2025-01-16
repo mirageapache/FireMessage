@@ -22,20 +22,22 @@ function Header() {
   const isLogin = !isEmpty(cookies.get("UAT"));
 
   return (
-    <header className="absolute top-0 w-full h-[50px] hidden sm:flex items-center p-5">
+    <header className="absolute top-0 w-full h-[50px] sm:flex items-center p-2">
       <nav className="flex justify-between items-center w-full md:max-w-[1200px]">
-        <Link className="hidden sm:flex justify-center items-center" href="/">
-          <Image
-            src="/icons/fire_icon.png"
-            alt="logo"
-            width={30}
-            height={30}
-            priority
-          />
-          <h4 className="text-white ml-2">FireMessage</h4>
-        </Link>
+        <div className="flex justify-center items-center w-full sm:w-auto">
+          <Link className="flex justify-center items-center" href="/">
+            <Image
+              src="/icons/fire_icon.png"
+              alt="logo"
+              width={30}
+              height={30}
+              priority
+              />
+            <h4 className="text-white ml-2">FireMessage</h4>
+          </Link>
+        </div>
         {isLogin && (
-          <div className="flex items-center gap-4">
+          <div className="items-center gap-4 hidden sm:flex">
             <button
               type="button"
               className="text-gray-400 hover:text-white transition-colors"
