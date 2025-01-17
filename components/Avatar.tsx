@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 // --- functions ---
-import { bgColorConvert } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
 function Avatar(props: {
@@ -20,14 +20,14 @@ function Avatar(props: {
     textSize,
     bgColor,
   } = props;
-  const colorStyle = bgColorConvert(bgColor);
 
   if (isEmpty(avatarUrl) || avatarUrl === '') {
     if (userName) {
       const avatarName = userName.substring(0, 1).toUpperCase();
       return (
         <span
-          className={`rounded-full flex justify-center items-center font-semibold cursor-default ${size} ${colorStyle}`}
+          style={{ backgroundColor: bgColor }}
+          className={cn('rounded-full flex justify-center items-center font-semibold cursor-default', size)}
         >
           <p className={`${textSize} text-center text-white`}>{avatarName}</p>
         </span>

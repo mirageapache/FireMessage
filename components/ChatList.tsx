@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Avatar from "./Avatar";
+import ChatItem from "./ChatItem";
 
 function ChatList() {
   const [activeTab, setActiveTab] = useState("all");
@@ -63,29 +63,13 @@ function ChatList() {
         />
       </div>
       <div>
-        <div className="flex justify-between items-center hover:bg-gray-600 cursor-pointer p-2">
-          <div>
-            <Avatar
-              userName="Test"
-              avatarUrl=""
-              size="w-10 h-10"
-              textSize="text-sm"
-              bgColor="#3b82f6"
-            />
-          </div>
-          <div className="w-full px-2 text-sm">
-            <p>好友名稱</p>
-            <p className="text-gray-500 line-clamp-1">
-              最後訊息最後訊息最後訊息最後訊息最後訊息 最後訊息 最後訊息
-            </p>
-          </div>
-          <div className="relative flex flex-col gap-1 justify-between items-end h-[50px]">
-            <p className="top-0 right-0 text-gray-300 text-xs">12:00</p>
-            <p className="bg-orange-500 text-white rounded-full px-2 text-sm">
-              2
-            </p>
-          </div>
-        </div>
+        <ChatItem
+          userName="Test"
+          avatarUrl=""
+          lastMessage="Test"
+          lastMessageTime="12:00"
+          unreadCount={2}
+        />
       </div>
     </>
   );

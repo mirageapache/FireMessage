@@ -1,41 +1,67 @@
-import Avatar from "@/components/Avatar";
+import ChatItem from "@/components/ChatItem";
+import ProfileCard from "@/components/ProfileCard";
+import UserItem from "@/components/UserItem";
 import { cn } from "@/lib/utils";
 import React from "react";
 
 function Dashboard() {
-  const sectionStyle = "flex justify-center items-center h-auto py-4 px-6 bg-gray-600 rounded-lg";
+  const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-gray-600 rounded-lg";
 
   return (
     <div className="flex w-full h-full p-5 md:p-0">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <section className={cn(sectionStyle, "flex flex-col")}>
-          <div className="flex justify-between items-center w-full border-b border-gray-200 mb-2 pb-2">
-            <span>
-              <h3>James</h3>
-              <p className="pl-1">james_w11</p>
-            </span>
-            <span>
-              <Avatar
-                avatarUrl={''}
-                userName='James'
-                size="w-14 h-14"
-                textSize="text-2xl"
-                bgColor="#3b82f6"
-              />
-            </span>
-          </div>
-          <div className="w-full">
-            <p>Hi, I'm James</p>
-            <p>‍💻 Frontend Engineer from TW</p>
-            <p>📨 工作邀約請連繫：james11@test.com.tw</p>
-          </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 content-start w-full">
+        <div className="hidden md:block" />
+        <section className={cn(sectionStyle, "px-6")}>
+          <ProfileCard />
         </section>
-        <section className={sectionStyle}>未讀訊息</section>
-        <section className={sectionStyle}>通知</section>
-        <section className={sectionStyle}>推薦好友</section>
-        <section className={sectionStyle}>item</section>
-        <section className={sectionStyle}>item</section>
+
+        <section>
+          <h4 className="text-left mb-2">未讀訊息</h4>
+          <div className={sectionStyle}>
+            <ChatItem
+              userName="Test"
+              avatarUrl=""
+              lastMessage="Test"
+              lastMessageTime="12:00"
+              unreadCount={2}
+            />
+            <ChatItem
+              userName="Test"
+              avatarUrl=""
+              lastMessage="Test"
+              lastMessageTime="12:00"
+              unreadCount={2}
+            />
+            <ChatItem
+              userName="Test"
+              avatarUrl=""
+              lastMessage="Test"
+              lastMessageTime="12:00"
+              unreadCount={2}
+            />
+          </div>
+        </section>
+
+        <section>
+          <h4 className="text-left mb-2">推薦好友</h4>
+          <div className={sectionStyle}>
+            <UserItem
+              userName="Test"
+              avatarUrl=""
+              userAccount="Test_1"
+            />
+            <UserItem
+              userName="Test"
+              avatarUrl=""
+              userAccount="Test_2"
+            />
+            <UserItem
+              userName="Test"
+              avatarUrl=""
+              userAccount="Test_3"
+            />
+          </div>
+        </section>
       </div>
     </div>
   );

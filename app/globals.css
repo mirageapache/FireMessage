@@ -25,6 +25,12 @@
     --brand-color: #ffa617;
     --brand-secondary-color: #ff7700;
     --brand-third-color: #ffc300;
+    --primary: #3b82f6;
+    --success: #22c55e;
+    --warning: #ffc542;
+    --error: #fc5a5a;
+    --disable: #6c757d; /* (選項)停用 */
+    --active: #f97316; /* (選項)作用中 */
     --background: #213152;
     --white: #ffffff;
     --input-bg-color: #e2e2ea;
@@ -99,6 +105,6 @@
   }
 
   .activeItem {
-    @apply text-orange-500;
+    color: var(--active);
   }
 }
