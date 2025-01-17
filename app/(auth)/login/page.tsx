@@ -18,7 +18,7 @@ import { loginFormSchema } from "@/lib/validations/authForm";
 import { loginWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
 import { useRouter } from "next/navigation";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
 import Spinner from "@/components/Spinner";
 
@@ -41,7 +41,7 @@ function LoginPage() {
     const result = (await loginWithEmailAndPassword(
       values.email,
       values.password,
-    )) as authResponse;
+    )) as authResponseType;
     if (result.code === "SUCCESS") {
       toast("歡迎回來！");
       router.push("/dashboard");

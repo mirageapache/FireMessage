@@ -11,7 +11,7 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "@/lib/auth";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
@@ -57,7 +57,7 @@ function Header() {
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="登出"
               onClick={async () => {
-                const res = (await logout()) as authResponse;
+                const res = (await logout()) as authResponseType;
                 if (res.code === "SUCCESS") {
                   router.push("/");
                 }

@@ -1,9 +1,9 @@
+import { userDataType } from '@/types/userType';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from 'firebase/auth';
 
 // 定義 State 型別
 interface AuthState {
-  user: User | null;
+  user: userDataType | null;
   loading: boolean;
 }
 
@@ -18,7 +18,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     // 設定使用者
-    setUser: (state, action: PayloadAction<User | null>) => {
+    setUser: (state, action: PayloadAction<userDataType | null>) => {
       state.user = action.payload;
       state.loading = false;
     },

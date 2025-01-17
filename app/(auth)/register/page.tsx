@@ -18,7 +18,7 @@ import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
 import Spinner from "@/components/Spinner";
 
@@ -42,7 +42,7 @@ function RegisterPage() {
       values.email,
       values.password,
       values.username,
-    )) as authResponse;
+    )) as authResponseType;
     if (result.code === "SUCCESS") {
       Swal.fire({
         title: "註冊成功",

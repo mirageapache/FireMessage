@@ -9,26 +9,44 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { get } from "lodash";
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 import Cookies from 'universal-cookie';
 import { store } from "@/store";
 import { clearUser, setUser } from "@/store/authSlice";
-import { auth, db } from "../firebase";
+import { userDataType } from "@/types/userType";
 import { getRandomColor } from "./utils";
+import { auth, db } from "../firebase";
 
 const cookies = new Cookies();
 
-/** 寫入User資料 to firestore */
+/** write new User to firestore */
 const writeUser = async (user: User, username: string | null, source: string) => {
+  const userName = username === null ? user.email?.slice(0, user.email.indexOf("@")) : username;
+  // 檢查 userName 是否已存在
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("userName", "==", userName));
+  const querySnapshot = await getDocs(q);
+
+  let userAccount = userName;
+  if (!querySnapshot.empty) {
+    // 如果用戶名已存在，再加入3位數亂數
+    const randomNum = Math.floor(Math.random() * 900) + 100; // 生成100-999之間的隨機數
+    userAccount = `${userName}_${randomNum}`;
+  }
+
   await setDoc(doc(db, "users", user.uid), {
     uid: user.uid,
     email: user.email,
-    username: username === null ? user.email?.slice(0, user.email.indexOf("@")) : username,
+    userName,
+    userAccount,
     createdAt: new Date(),
     loginType: source,
+    userType: '0', // 0: 一般使用者, 1: 管理員
   });
   await setDoc(doc(db, "userSettings", user.uid), {
     uid: user.uid,
+    avatarUrl: '',
     bgColor: getRandomColor(),
     darkMode: "dark",
     toastifyPosition: "bottom-right",
@@ -68,7 +86,20 @@ export const loginWithEmailAndPassword = async (
       password,
     );
     const { user } = userCredential;
-    store.dispatch(setUser(user));
+    console.log(userCredential);
+
+    const userData: userDataType = {
+      id: user.uid,
+      uid: user.uid,
+      email: user.email,
+      displayName: get(user, "providerData[0].displayName", ''),
+      photoURL: get(user, "providerData[0].photoURL", ''),
+      loginType: "email",
+      createdAt: user.metadata.creationTime,
+      emailVerified: user.emailVerified,
+    };
+
+    store.dispatch(setUser(userData));
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };

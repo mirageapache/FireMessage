@@ -1,5 +1,6 @@
 import { User } from "firebase/auth";
 
-export type authResponse =
+/** response type of firebase auth */
+export type authResponseType =
 | { code: "SUCCESS"; data: User }
 | { code: "ERROR"; error: { code: string; message: string } };
