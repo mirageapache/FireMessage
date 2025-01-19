@@ -9,7 +9,6 @@ import {
   User,
   UserCredential,
 } from "firebase/auth";
-import { get } from "lodash";
 import {
   doc,
   getDoc,
@@ -53,14 +52,14 @@ const writeUser = async (
       email: user.email,
       userName,
       userAccount,
+      avatarUrl: "",
+      bgColor: getRandomColor(), // 頭貼背景色
       createdAt: new Date(),
       loginType: source,
       userType: "0", // 0: 一般使用者, 1: 管理員
     });
     await setDoc(doc(db, "userSettings", user.uid), {
       uid: user.uid,
-      avatarUrl: "",
-      bgColor: getRandomColor(),
       darkMode: "dark",
       toastifyPosition: "bottom-right",
       template: "default",
@@ -105,18 +104,6 @@ export const loginWithEmailAndPassword = async (
     );
     const { user } = userCredential;
 
-    const userData: userDataType = {
-      id: user.uid,
-      uid: user.uid,
-      email: user.email,
-      displayName: get(user, "providerData[0].displayName", ""),
-      photoURL: get(user, "providerData[0].photoURL", ""),
-      loginType: "email",
-      createdAt: user.metadata.creationTime,
-      emailVerified: user.emailVerified,
-    };
-
-    store.dispatch(setUser(userData));
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };
@@ -150,7 +137,13 @@ export const loginOAuth = async (source: string) => {
       await writeUser(user, user.displayName, source);
     }
 
-    store.dispatch(setUser(user));
+    // 獲取用戶文檔數據
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data() as userDataType;
+      store.dispatch(setUser(userData)); // 存儲序列化後的用戶數據
+    }
+
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return user;
@@ -163,7 +156,9 @@ export const loginOAuth = async (source: string) => {
 export const logout = async () => {
   try {
     await signOut(auth);
+    localStorage.clear();
     store.dispatch(clearUser());
+    window.indexedDB.deleteDatabase('firebaseLocalStorage');
     cookies.remove("UAT");
     return { code: "SUCCESS", message: "登出成功" };
   } catch (error) {

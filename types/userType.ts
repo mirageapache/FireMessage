@@ -4,9 +4,12 @@ import { User } from "next-auth";
 export type userDataType = Omit<User, 'providerData'> & {
   uid: string;
   email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  loginType: string;
+  userName: string | null;
+  userAccount: string | null;
+  avatarUrl: string | null;
+  bgColor: string;
   createdAt: string | undefined;
+  loginType: string;
+  userType: string;
   emailVerified: boolean;
 };

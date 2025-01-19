@@ -34,8 +34,8 @@ function BottomNavbar() {
       </Link>
       <Link href="/profile" className={cn(basicItemStyle)}>
         <Avatar
-          avatarUrl={userData!.photoURL}
-          userName={userData!.displayName}
+          avatarUrl={userData!.avatarUrl}
+          userName={userData!.userName}
           size="w-8 h-8"
           textSize="text-md"
           bgColor="#3b82f6"
