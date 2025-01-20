@@ -54,6 +54,7 @@ const writeUser = async (
       userAccount,
       avatarUrl: "",
       bgColor: getRandomColor(), // 頭貼背景色
+      biography: "",
       createdAt: new Date(),
       loginType: source,
       userType: "0", // 0: 一般使用者, 1: 管理員
@@ -61,7 +62,7 @@ const writeUser = async (
     await setDoc(doc(db, "userSettings", user.uid), {
       uid: user.uid,
       darkMode: "dark",
-      toastifyPosition: "bottom-right",
+      toastifyPosition: "top-center",
       template: "default",
     });
 

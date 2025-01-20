@@ -59,7 +59,7 @@ function Header() {
               onClick={async () => {
                 const res = (await logout()) as authResponseType;
                 if (res.code === "SUCCESS") {
-                  router.push("/");
+                  router.push("/login");
                 }
               }}
             >

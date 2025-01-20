@@ -8,7 +8,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser, setLoading } from "@/store/authSlice";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection, query, where, getDocs,
+} from "firebase/firestore";
 import { userDataType } from "@/types/userType";
 
 // 監聽 Firebase 認證狀態
@@ -33,9 +35,10 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
               email: userInfo.email,
               userName: userInfo.userName,
               userAccount: userInfo.userAccount,
-              avatarUrl: userInfo.avatarUrl,
-              bgColor: userInfo.bgColor,
-              createdAt: userInfo.createdAt,
+              avatarUrl: userInfo.avatarUrl || '',
+              bgColor: userInfo.bgColor || '',
+              biography: userInfo.biography || '',
+              createdAt: userInfo.createdAt.toDate().toISOString(),
               loginType: userInfo.loginType,
               userType: userInfo.userType,
               emailVerified: currentUser.emailVerified,

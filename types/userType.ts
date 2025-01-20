@@ -8,7 +8,8 @@ export type userDataType = Omit<User, 'providerData'> & {
   userAccount: string | null;
   avatarUrl: string | null;
   bgColor: string;
-  createdAt: string | undefined;
+  biography: string | null;
+  createdAt: object | unknown;
   loginType: string;
   userType: string;
   emailVerified: boolean;
