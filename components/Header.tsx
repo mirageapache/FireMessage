@@ -32,7 +32,7 @@ function Header() {
               width={30}
               height={30}
               priority
-              />
+            />
             <h4 className="text-white ml-2">FireMessage</h4>
           </Link>
         </div>

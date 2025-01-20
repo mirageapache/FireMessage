@@ -31,7 +31,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${notoSansTC.className}`}>
+      <body className={`${inter.className} ${notoSansTC.className} dark`}>
         <Providers>
           {children}
         </Providers>

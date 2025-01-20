@@ -7,6 +7,8 @@ import {
   faMessage,
   faBell,
   faXmark,
+  faRightFromBracket,
+  faMoon,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -59,7 +61,7 @@ function BottomNavbar() {
         />
       </Button>
       {isOpen && (
-        <div className="fixed bottom-0 left-0 w-full h-full p-8 bg-black/80">
+        <div className="fixed bottom-0 left-0 w-full h-full p-8 bg-black/90">
           <Button
             onClick={() => setIsOpen(false)}
             className="absolute top-5 right-5 text-gray-300 hover:text-gray-400 cursor-pointer"
@@ -68,11 +70,13 @@ function BottomNavbar() {
           </Button>
           <nav className="flex flex-col justify-between h-full pt-12">
             <div className="flex flex-col gap-4 text-2xl">
-              <Link href="/profile">個人資料</Link>
-              <Link href="/setting">設定</Link>
+              <Link href="/profile" className="hover:text-[var(--active)]">個人資料</Link>
+              <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
             </div>
-            <div>
-              <Button>darkmode</Button>
+            <div className="flex justify-between">
+              <Button>
+                <FontAwesomeIcon icon={faMoon} size="lg" />
+              </Button>
               <Button onClick={async () => {
                 const res = (await logout()) as authResponseType;
                 if (res.code === "SUCCESS") {
@@ -80,7 +84,7 @@ function BottomNavbar() {
                 }
               }}
               >
-                logout
+                <FontAwesomeIcon icon={faRightFromBracket} size="lg" />
               </Button>
             </div>
           </nav>

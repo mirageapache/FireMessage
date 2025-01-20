@@ -8,7 +8,7 @@ function Dashboard() {
   const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-gray-600 rounded-lg";
 
   return (
-    <div className="flex w-full h-full p-5 md:p-0">
+    <div className="flex w-full p-5 md:p-0">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 content-start w-full">
         <div className="hidden md:block" />
         <section className={cn(sectionStyle, "px-6")}>

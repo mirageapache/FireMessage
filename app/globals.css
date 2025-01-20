@@ -16,7 +16,7 @@
   height: calc(100vh - 100px);
 
   @media screen and (min-width: 640px) {
-    height: 100vh;
+    height: calc(100vh - 50px);
   }
 }
 
@@ -31,8 +31,12 @@
     --error: #fc5a5a;
     --disable: #6c757d; /* (選項)停用 */
     --active: #f97316; /* (選項)作用中 */
-    --background: #213152;
-    --white: #ffffff;
+    --background: #ffffff;
+    /* text style */
+    --text-color: #171725;
+    --secondary-text-color: #44444f;
+    --disalbe-text-color: #92929d;
+    /* input style */
     --input-bg-color: #e2e2ea;
     --input-text-color: #6c757d;
     /* origin */
@@ -50,7 +54,7 @@
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%; */
+    --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
@@ -58,11 +62,15 @@
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-5: 27 87% 67%; */
     --radius: 0.5rem;
   }
   .dark {
     --background: #213152;
+    /* text style */
+    --text-color: #ffffff;
+    --secondary-text-color: #b5b5be;
+    --disalbe-text-color: #696974;
   }
 }
 
