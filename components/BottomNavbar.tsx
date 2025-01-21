@@ -9,11 +9,14 @@ import {
   faXmark,
   faRightFromBracket,
   faMoon,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useAppDispatch } from "@/store/hooks";
+import { setDarkMode } from "@/store/sysSlice";
 import { cn } from "@/lib/utils";
 import { authResponseType } from "@/types/authType";
 import { logout } from "@/lib/auth";
@@ -24,7 +27,8 @@ import { Button } from "./ui/button";
 function BottomNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const userData = useSelector((state: RootState) => state.auth.user);
+  const userData = useSelector((state: RootState) => state.user.userData);
+  const dispatch = useAppDispatch();
   const path = usePathname();
   const currentPath = path?.slice(1);
   const basicItemStyle = "flex justify-center w-full";
@@ -74,9 +78,25 @@ function BottomNavbar() {
               <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
             </div>
             <div className="flex justify-between">
-              <Button>
-                <FontAwesomeIcon icon={faMoon} size="lg" />
+              <Button
+                aria-label="darkMode"
+                className="w-14 h-7 flex items-center border border-gray-400 rounded-full px-2 bg-gray-150 dark:bg-gray-700"
+                onClick={() => {
+                  dispatch(setDarkMode());
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faSun}
+                  size="lg"
+                  className="h-5 w-5 text-gray-900 translate-x-0 opacity-100 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-0"
+                />
+                <FontAwesomeIcon
+                  icon={faMoon}
+                  size="lg"
+                  className="absolute h-5 w-5 text-white translate-x-0 opacity-0 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-100"
+                />
               </Button>
+
               <Button onClick={async () => {
                 const res = (await logout()) as authResponseType;
                 if (res.code === "SUCCESS") {

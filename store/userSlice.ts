@@ -2,29 +2,29 @@ import { userDataType } from '@/types/userType';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // 定義 State 型別
-interface AuthState {
-  user: userDataType | null;
+interface UserState {
+  userData: userDataType | null;
   loading: boolean;
 }
 
 // 初始狀態
-const initialState: AuthState = {
-  user: null,
+const initialState: UserState = {
+  userData: null,
   loading: true,
 };
 
-const authSlice = createSlice({
-  name: 'auth',
+const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
     // 設定使用者
     setUser: (state, action: PayloadAction<userDataType | null>) => {
-      state.user = action.payload;
+      state.userData = action.payload;
       state.loading = false;
     },
     // 清除使用者（登出）
     clearUser: (state) => {
-      state.user = null;
+      state.userData = null;
       state.loading = false;
     },
     // 設定載入狀態
@@ -34,5 +34,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading } = authSlice.actions;
-export default authSlice.reducer;
+export const { setUser, clearUser, setLoading } = userSlice.actions;
+export default userSlice.reducer;

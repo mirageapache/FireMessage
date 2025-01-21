@@ -20,7 +20,7 @@ import {
 } from "firebase/firestore";
 import Cookies from "universal-cookie";
 import { store } from "@/store";
-import { clearUser, setUser } from "@/store/authSlice";
+import { clearUser, setUser } from "@/store/userSlice";
 import { userDataType } from "@/types/userType";
 import { getRandomColor } from "./utils";
 import { auth, db } from "../firebase";
@@ -64,6 +64,7 @@ const writeUser = async (
       darkMode: "dark",
       toastifyPosition: "top-center",
       template: "default",
+      language: "zh-TW",
     });
 
     return 'success';

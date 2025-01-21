@@ -3,14 +3,22 @@ import { User } from "next-auth";
 /** 使用者資料 */
 export type userDataType = Omit<User, 'providerData'> & {
   uid: string;
-  email: string | null;
-  userName: string | null;
-  userAccount: string | null;
-  avatarUrl: string | null;
+  email: string;
+  userName: string;
+  userAccount: string;
+  avatarUrl: string;
   bgColor: string;
-  biography: string | null;
-  createdAt: object | unknown;
+  biography: string;
+  createdAt: string | object | unknown;
   loginType: string;
   userType: string;
   emailVerified: boolean;
+};
+
+/** 使用者設定 */
+export type userSettingsType = {
+  darkMode: string;
+  toastifyPosition: string;
+  themeMode: string;
+  language: string;
 };

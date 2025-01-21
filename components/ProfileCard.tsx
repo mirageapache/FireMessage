@@ -7,7 +7,7 @@ import { isEmpty } from "lodash";
 import Avatar from "./Avatar";
 
 function ProfileCard() {
-  const userData = useSelector((state: RootState) => state.auth.user);
+  const userData = useSelector((state: RootState) => state.user.userData);
 
   return (
     <>
