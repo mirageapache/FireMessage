@@ -78,9 +78,10 @@ function BottomNavbar() {
               <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
             </div>
             <div className="flex justify-between">
-              <Button
+              <button
                 aria-label="darkMode"
-                className="w-14 h-7 flex items-center border border-gray-400 rounded-full px-2 bg-gray-150 dark:bg-gray-700"
+                type="button"
+                className="w-14 h-7 flex justify-start items-center border border-gray-400 rounded-full px-2 bg-gray-800"
                 onClick={() => {
                   dispatch(setDarkMode());
                 }}
@@ -88,14 +89,14 @@ function BottomNavbar() {
                 <FontAwesomeIcon
                   icon={faSun}
                   size="lg"
-                  className="h-5 w-5 text-gray-900 translate-x-0 opacity-100 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-0"
+                  className="h-5 w-5 text-white translate-x-0 opacity-100 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-0"
                 />
                 <FontAwesomeIcon
                   icon={faMoon}
                   size="lg"
                   className="absolute h-5 w-5 text-white translate-x-0 opacity-0 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-100"
                 />
-              </Button>
+              </button>
 
               <Button onClick={async () => {
                 const res = (await logout()) as authResponseType;

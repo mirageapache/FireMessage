@@ -16,7 +16,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   }, [darkMode]);
 
   return (
-    <div className="dark">
+    <div className="text-[var(--text-color)]">
       {children}
       <ToastContainer
         position="top-center"

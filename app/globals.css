@@ -31,7 +31,8 @@
     --error: #fc5a5a;
     --disable: #6c757d; /* (選項)停用 */
     --active: #f97316; /* (選項)作用中 */
-    --background: #ffffff;
+    --background: #eaebee;
+    --card-bg-color: white;
     /* text style */
     --text-color: #171725;
     --secondary-text-color: #44444f;
@@ -67,6 +68,7 @@
   }
   .dark {
     --background: #213152;
+    --card-bg-color: #57534e;
     /* text style */
     --text-color: #ffffff;
     --secondary-text-color: #b5b5be;

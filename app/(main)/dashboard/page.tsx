@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 
 function Dashboard() {
-  const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-gray-600 rounded-lg";
+  const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-[var(--card-bg-color)] rounded-lg";
 
   return (
     <div className="flex w-full p-5 md:p-0">
