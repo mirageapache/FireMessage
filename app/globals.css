@@ -33,6 +33,7 @@
     --active: #f97316; /* (選項)作用中 */
     --background: #eaebee;
     --card-bg-color: white;
+    --divider-color: #d1d5db;
     /* text style */
     --text-color: #171725;
     --secondary-text-color: #44444f;
@@ -68,7 +69,8 @@
   }
   .dark {
     --background: #213152;
-    --card-bg-color: #57534e;
+    --card-bg-color: #4b5563;
+    --divider-color: #6b7280;
     /* text style */
     --text-color: #ffffff;
     --secondary-text-color: #b5b5be;

@@ -43,6 +43,7 @@ function BottomNavbar() {
       </Link>
       <Link
         href="/chat"
+        aria-label="聊天"
         className={cn(currentPath === "chat" && "activeItem", basicItemStyle, "relative")}
       >
         <FontAwesomeIcon icon={faMessage} size="lg" />
@@ -50,67 +51,76 @@ function BottomNavbar() {
       </Link>
       <Link
         href="/notification"
+        aria-label="通知"
         className={cn(currentPath === "notification" && "activeItem", basicItemStyle, "relative")}
       >
         <FontAwesomeIcon icon={faBell} size="lg" />
         <NotifyTip amount={11} />
       </Link>
-      <Button onClick={() => setIsOpen(true)} className={cn(basicItemStyle)}>
+      <button aria-label="使用者選單" type="button" onClick={() => setIsOpen(true)} className={cn(basicItemStyle)}>
         <Avatar
           avatarUrl={userData?.avatarUrl || ""}
           userName={userData?.userName || ""}
-          size="w-8 h-8"
+          classname="w-8 h-8"
           textSize="text-md"
           bgColor={userData?.bgColor || ""}
         />
-      </Button>
-      {isOpen && (
-        <div className="fixed bottom-0 left-0 w-full h-full p-8 bg-black/90">
-          <Button
-            onClick={() => setIsOpen(false)}
-            className="absolute top-5 right-5 text-gray-300 hover:text-gray-400 cursor-pointer"
-          >
-            <FontAwesomeIcon icon={faXmark} className="w-8 h-8" />
-          </Button>
-          <nav className="flex flex-col justify-between h-full pt-12">
-            <div className="flex flex-col gap-4 text-2xl">
-              <Link href="/profile" className="hover:text-[var(--active)]">個人資料</Link>
-              <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
-            </div>
-            <div className="flex justify-between">
-              <button
-                aria-label="darkMode"
-                type="button"
-                className="w-14 h-7 flex justify-start items-center border border-gray-400 rounded-full px-2 bg-gray-800"
-                onClick={() => {
-                  dispatch(setDarkMode());
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faSun}
-                  size="lg"
-                  className="h-5 w-5 text-white translate-x-0 opacity-100 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-0"
-                />
-                <FontAwesomeIcon
-                  icon={faMoon}
-                  size="lg"
-                  className="absolute h-5 w-5 text-white translate-x-0 opacity-0 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-100"
-                />
-              </button>
+      </button>
 
-              <Button onClick={async () => {
-                const res = (await logout()) as authResponseType;
-                if (res.code === "SUCCESS") {
-                  router.push("/login");
-                }
-              }}
-              >
-                <FontAwesomeIcon icon={faRightFromBracket} size="lg" />
-              </Button>
-            </div>
-          </nav>
-        </div>
+      {/* 使用者選單 */}
+      <div className={cn(
+        "fixed bottom-0 left-0 w-full h-full p-8 bg-black/90",
+        "transform duration-200 ease-linear",
+        isOpen
+          ? "translate-y-0 opacity-100"
+          : "translate-y-[-200px] opacity-0",
       )}
+      >
+        <Button
+          onClick={() => setIsOpen(false)}
+          className="absolute top-5 right-5 text-gray-300 hover:text-gray-400 cursor-pointer"
+        >
+          <FontAwesomeIcon icon={faXmark} className="w-8 h-8" />
+        </Button>
+        <nav className="flex flex-col justify-between text-white h-full pt-12">
+          <div className="flex flex-col gap-6 text-3xl">
+            <Link href="/profile" className="hover:text-[var(--active)]">個人資料</Link>
+            <Link href="/friend" className="hover:text-[var(--active)]">好友</Link>
+            <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
+          </div>
+          <div className="flex justify-between items-center">
+            <button
+              aria-label="深色模式切換"
+              type="button"
+              className="w-14 h-7 flex justify-start items-center border border-gray-400 rounded-full px-2 bg-gray-800"
+              onClick={() => {
+                dispatch(setDarkMode());
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faSun}
+                size="lg"
+                className="h-5 w-5 text-orange-500 translate-x-0 opacity-100 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-0"
+              />
+              <FontAwesomeIcon
+                icon={faMoon}
+                size="lg"
+                className="absolute h-5 w-5 text-yellow-600 translate-x-0 opacity-0 transform duration-300 ease-linear dark:translate-x-5 dark:opacity-100"
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="登出"
+              onClick={async () => {
+                const res = (await logout()) as authResponseType;
+                if (res.code === "SUCCESS") router.push("/login");
+              }}
+            >
+              <FontAwesomeIcon icon={faRightFromBracket} size="lg" className="w-6 h-6 hover:text-gray-400" />
+            </button>
+          </div>
+        </nav>
+      </div>
     </nav>
   );
 }

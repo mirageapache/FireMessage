@@ -28,7 +28,6 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
           emailVerified: currentUser.emailVerified,
         }));
         const userSettings = await getUserSettings(currentUser.uid) as userSettingsType;
-        console.log(userSettings);
         if (userSettings) dispatch(setInitSetting(userSettings));
       }
       dispatch(setLoading(false));

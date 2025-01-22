@@ -9,14 +9,14 @@ import Image from 'next/image';
 function Avatar(props: {
   userName: string | null;
   avatarUrl: string | null;
-  size: string;
+  classname: string;
   textSize: string;
   bgColor: string;
 }) {
   const {
     userName,
     avatarUrl,
-    size,
+    classname,
     textSize,
     bgColor,
   } = props;
@@ -27,19 +27,19 @@ function Avatar(props: {
       return (
         <span
           style={{ backgroundColor: bgColor }}
-          className={cn('rounded-full flex justify-center items-center font-semibold cursor-default', size)}
+          className={cn('rounded-full flex justify-center items-center font-semibold', classname)}
         >
           <p className={`${textSize} text-center text-white`}>{avatarName}</p>
         </span>
       );
     }
     return (
-      <span className={`${size} rounded-full flex justify-center items-center`}>
+      <span className={`${classname} rounded-full flex justify-center items-center`}>
         <FontAwesomeIcon icon={faUser} size="lg" />
       </span>
     );
   }
-  return <Image className={`${size} rounded-full`} src={avatarUrl!} alt="avatar" width={25} height={25} />;
+  return <Image className={`${classname} rounded-full`} src={avatarUrl!} alt="avatar" width={25} height={25} />;
 }
 
 export default Avatar;

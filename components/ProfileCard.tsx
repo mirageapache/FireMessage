@@ -11,7 +11,7 @@ function ProfileCard() {
 
   return (
     <>
-      <div className="flex justify-between items-center w-full border-b border-gray-200 mb-2 pb-2">
+      <div className="flex justify-between items-center w-full border-b border-[var(--divider-color)] mb-2 pb-2">
         <span>
           <h3>{userData?.userName}</h3>
           <p className="pl-1">{userData?.userAccount}</p>
@@ -20,7 +20,7 @@ function ProfileCard() {
           <Avatar
             avatarUrl={userData?.avatarUrl || ""}
             userName={userData?.userName || ""}
-            size="w-14 h-14"
+            classname="w-14 h-14"
             textSize="text-2xl"
             bgColor={userData?.bgColor || ""}
           />
@@ -28,7 +28,7 @@ function ProfileCard() {
       </div>
       <div className="w-full">
         {isEmpty(userData?.biography) ? (
-          <i className="text-gray-500">尚未設定個人簡介</i>
+          <i className="text-[var(--secondary-text-color)]">尚未設定個人簡介</i>
         ) : (
           <p>{userData?.biography}</p>
         )}

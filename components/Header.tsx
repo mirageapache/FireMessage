@@ -1,14 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
   faBell,
   faMoon,
-  faRightFromBracket,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "@/lib/auth";
@@ -16,17 +14,25 @@ import { authResponseType } from "@/types/authType";
 import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
+import { cn } from "@/lib/utils";
+import { RootState } from "@/store";
 import { setDarkMode } from "@/store/sysSlice";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import Avatar from "./Avatar";
 
 function Header() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cookies = new Cookies();
+  const [showDropdown, setShowDropdown] = useState(false);
   const isLogin = !isEmpty(cookies.get("UAT"));
+  const userData = useAppSelector((state: RootState) => state.user.userData);
+  const navItemStyle = "rounded-full p-[5px]";
+  const navItemHoverStyle = " hover:bg-gray-200 dark:hover:bg-gray-600";
+  const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
   return (
-    <header className="absolute top-0 w-full h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex items-center p-2">
+    <header className="absolute top-0 w-full h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex items-center py-2 px-5">
       <nav className="flex justify-between items-center w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
           <Link className="flex justify-center items-center" href="/">
@@ -41,58 +47,86 @@ function Header() {
           </Link>
         </div>
         {isLogin && (
-          <div className="items-center gap-4 hidden sm:flex">
-            <button
-              type="button"
-              className="relative text-gray-400 hover:text-[var(--active)]"
-              aria-label="切換深色模式"
-              onClick={() => dispatch(setDarkMode())}
-            >
-              <FontAwesomeIcon
-                icon={faSun}
-                size="lg"
-                className="h-5 w-5 translate-y-0 opacity-100 transform duration-300 ease-linear dark:translate-y-5 dark:opacity-0"
-              />
-              <FontAwesomeIcon
-                icon={faMoon}
-                size="lg"
-                className="absolute h-5 w-5 top-[2px] left-0 translate-y-5 opacity-0 transform duration-300 ease-linear dark:translate-y-0 dark:opacity-100"
-              />
-            </button>
-            <button
-              type="button"
-              className="text-gray-400 hover:text-[var(--active)]"
-              aria-label="通知"
-            >
-              <FontAwesomeIcon icon={faBell} size="lg" />
-            </button>
-            <button
-              type="button"
-              className="text-gray-400 hover:text-[var(--active)]"
-              aria-label="登出"
-              onClick={async () => {
-                const res = (await logout()) as authResponseType;
-                if (res.code === "SUCCESS") {
-                  router.push("/login");
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faRightFromBracket} size="lg" />
-            </button>
-            <Link
-              href="/userProfile"
-              className="hidden sm:block px-4 py-2 hover:text-gray-300"
-            >
-              User Profile
-            </Link>
-            <button
-              type="button"
-              className="text-gray-400 hover:text-[var(--active)] sm:hidden"
-              aria-label="功能選單"
-            >
-              <FontAwesomeIcon icon={faBars} size="lg" />
-            </button>
-          </div>
+          <>
+            <div className="hidden sm:flex items-center gap-1">
+              <button
+                type="button"
+                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                aria-label="切換深色模式"
+                onClick={() => dispatch(setDarkMode())}
+              >
+                <FontAwesomeIcon
+                  icon={faSun}
+                  size="lg"
+                  className="h-[21px] w-[21px] text-orange-500 translate-y-0 opacity-100 transform duration-300 ease-linear dark:translate-y-5 dark:opacity-0"
+                />
+                <FontAwesomeIcon
+                  icon={faMoon}
+                  size="lg"
+                  className="absolute h-[21px] w-[21px] text-yellow-600 translate-y-5 opacity-0 transform duration-300 ease-linear dark:translate-y-0 dark:opacity-100"
+                />
+              </button>
+              <button
+                type="button"
+                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                aria-label="通知"
+              >
+                <FontAwesomeIcon icon={faBell} size="lg" />
+              </button>
+              <button
+                aria-label="使用者選單"
+                type="button"
+                className={cn(navItemStyle, navItemHoverStyle, "hidden sm:flex justify-center items-center mt-[2px]")}
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <Avatar
+                  userName={userData?.userName || ""}
+                  avatarUrl={userData?.avatarUrl || ""}
+                  classname="w-[26px] h-[26px]"
+                  textSize="text-md"
+                  bgColor={userData?.bgColor || ""}
+                />
+              </button>
+            </div>
+
+            {/* 使用者選單 */}
+            {showDropdown && (
+              <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg">
+                <div className="flex justify-start items-center gap-2 px-2 cursor-default">
+                  <Avatar
+                    userName={userData?.userName || ""}
+                    avatarUrl={userData?.avatarUrl || ""}
+                    classname="w-10 h-10"
+                    textSize="text-md"
+                    bgColor={userData?.bgColor || ""}
+                  />
+                  <span className="leading-5">
+                    <p>{userData?.userName}</p>
+                    <p className="text-[13px]">{userData?.email}</p>
+                  </span>
+                </div>
+                <div className="flex flex-col border-y border-[var(--divider-color)] my-3 py-3">
+                  <Link href="/friend" className={cn(dropdownItemStyle)}>好友</Link>
+                  <Link href="/setting" className={cn(dropdownItemStyle)}>設定</Link>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className={cn(dropdownItemStyle, "w-full")}
+                    aria-label="登出"
+                    onClick={async () => {
+                      const res = (await logout()) as authResponseType;
+                      if (res.code === "SUCCESS") {
+                        router.push("/login");
+                      }
+                    }}
+                  >
+                    登出
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </nav>
     </header>
