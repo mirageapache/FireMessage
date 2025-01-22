@@ -9,7 +9,7 @@ export type userDataType = Omit<User, 'providerData'> & {
   avatarUrl: string;
   bgColor: string;
   biography: string;
-  createdAt: string | object | unknown;
+  createdAt: string;
   loginType: string;
   userType: string;
   emailVerified: boolean;

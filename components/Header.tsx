@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -31,11 +31,20 @@ function Header() {
   const navItemHoverStyle = " hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
+  // 監聽螢幕 resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (showDropdown) setShowDropdown(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize); // 清理監聽
+  }, [showDropdown]);
+
   return (
     <header className="absolute top-0 w-full h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex items-center py-2 px-5">
       <nav className="flex justify-between items-center w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
-          <Link className="flex justify-center items-center" href="/">
+          <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
             <Image
               src="/icons/fire_icon.png"
               alt="logo"
@@ -92,7 +101,11 @@ function Header() {
             {/* 使用者選單 */}
             {showDropdown && (
               <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg">
-                <div className="flex justify-start items-center gap-2 px-2 cursor-default">
+                <Link
+                  href="/profile"
+                  className={cn(dropdownItemStyle, "flex justify-start items-center gap-2 px-2 hover:text-[var(--text-color)]")}
+                  onClick={() => setShowDropdown(false)}
+                >
                   <Avatar
                     userName={userData?.userName || ""}
                     avatarUrl={userData?.avatarUrl || ""}
@@ -104,10 +117,10 @@ function Header() {
                     <p>{userData?.userName}</p>
                     <p className="text-[13px]">{userData?.email}</p>
                   </span>
-                </div>
+                </Link>
                 <div className="flex flex-col border-y border-[var(--divider-color)] my-3 py-3">
-                  <Link href="/friend" className={cn(dropdownItemStyle)}>好友</Link>
-                  <Link href="/setting" className={cn(dropdownItemStyle)}>設定</Link>
+                  <Link href="/friend" className={cn(dropdownItemStyle)} onClick={() => setShowDropdown(false)}>好友</Link>
+                  <Link href="/setting" className={cn(dropdownItemStyle)} onClick={() => setShowDropdown(false)}>設定</Link>
                 </div>
                 <div>
                   <button
@@ -115,6 +128,7 @@ function Header() {
                     className={cn(dropdownItemStyle, "w-full")}
                     aria-label="登出"
                     onClick={async () => {
+                      setShowDropdown(false);
                       const res = (await logout()) as authResponseType;
                       if (res.code === "SUCCESS") {
                         router.push("/login");

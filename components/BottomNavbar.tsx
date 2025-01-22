@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -32,6 +32,15 @@ function BottomNavbar() {
   const path = usePathname();
   const currentPath = path?.slice(1);
   const basicItemStyle = "flex justify-center w-full";
+
+  // 監聽螢幕 resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (isOpen) setIsOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize); // 清理監聽
+  }, [isOpen]);
 
   return (
     <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden bg-[var(--background)]">
@@ -84,9 +93,9 @@ function BottomNavbar() {
         </Button>
         <nav className="flex flex-col justify-between text-white h-full pt-12">
           <div className="flex flex-col gap-6 text-3xl">
-            <Link href="/profile" className="hover:text-[var(--active)]">個人資料</Link>
-            <Link href="/friend" className="hover:text-[var(--active)]">好友</Link>
-            <Link href="/setting" className="hover:text-[var(--active)]">設定</Link>
+            <Link href="/profile" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
+            <Link href="/friend" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>好友</Link>
+            <Link href="/setting" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>設定</Link>
           </div>
           <div className="flex justify-between items-center">
             <button
@@ -112,6 +121,7 @@ function BottomNavbar() {
               type="button"
               aria-label="登出"
               onClick={async () => {
+                setIsOpen(false);
                 const res = (await logout()) as authResponseType;
                 if (res.code === "SUCCESS") router.push("/login");
               }}
