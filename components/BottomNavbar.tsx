@@ -82,7 +82,7 @@ function BottomNavbar() {
         "transform duration-200 ease-linear",
         isOpen
           ? "translate-y-0 opacity-100"
-          : "translate-y-[-200px] opacity-0",
+          : "translate-y-[-100%] opacity-0",
       )}
       >
         <Button

@@ -8,6 +8,7 @@ export type userDataType = Omit<User, 'providerData'> & {
   userAccount: string;
   avatarUrl: string;
   bgColor: string;
+  coverUrl: string;
   biography: string;
   createdAt: string;
   loginType: string;

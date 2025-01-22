@@ -34,8 +34,8 @@ function Avatar(props: {
       );
     }
     return (
-      <span className={`${classname} rounded-full flex justify-center items-center`}>
-        <FontAwesomeIcon icon={faUser} size="lg" />
+      <span className={`${classname} rounded-full flex justify-center items-center bg-[var(--card-bg-color)]`}>
+        <FontAwesomeIcon icon={faUser} size="lg" className={textSize} />
       </span>
     );
   }

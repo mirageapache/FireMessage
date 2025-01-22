@@ -55,6 +55,7 @@ const writeUser = async (
       avatarUrl: "",
       bgColor: getRandomColor(), // 頭貼背景色
       biography: "",
+      coverUrl: "",
       createdAt: new Date(),
       loginType: source,
       userType: "0", // 0: 一般使用者, 1: 管理員

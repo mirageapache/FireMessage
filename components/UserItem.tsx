@@ -15,7 +15,7 @@ function UserItem({
   userAccount,
 }: UserItemProps) {
   return (
-    <div className="flex justify-between items-center w-full hover:bg-gray-700 cursor-pointer px-3 py-2 rounded-lg">
+    <div className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg">
       <div>
         <Avatar
           userName={userName}

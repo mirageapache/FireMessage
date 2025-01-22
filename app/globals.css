@@ -34,6 +34,7 @@
     --background: #eaebee;
     --card-bg-color: white;
     --divider-color: #bbb;
+    --hover-bg-color: #d5d7db;
     /* text style */
     --text-color: #171725;
     --secondary-text-color: #44444f;
@@ -71,6 +72,7 @@
     --background: #213152;
     --card-bg-color: #4b5563;
     --divider-color: #6b7280;
+    --hover-bg-color: #374151;
     /* text style */
     --text-color: #ffffff;
     --secondary-text-color: #b5b5be;
