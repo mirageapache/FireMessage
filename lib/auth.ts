@@ -1,8 +1,10 @@
 import {
   createUserWithEmailAndPassword,
   FacebookAuthProvider,
+  getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -27,8 +29,8 @@ import { auth, db } from "../firebase";
 
 const cookies = new Cookies();
 
-/** write new User to firestore */
-const writeUser = async (
+/** 建立使用者 */
+const createUser = async (
   user: User,
   username: string | null,
   source: string,
@@ -74,6 +76,16 @@ const writeUser = async (
   }
 };
 
+/** 發送email驗證信 */
+export const sendVerification = async () => {
+  const authentication = getAuth();
+  const user = authentication.currentUser as User;
+  const res = await sendEmailVerification(user)
+    .then(() => ({ code: "SUCCESS", message: "驗證信已發送" }))
+    .catch((error) => ({ code: "ERROR", error }));
+  return res;
+};
+
 /** 一般註冊 (Email+Password) */
 export const registerWithEmailAndPassword = async (
   email: string,
@@ -87,7 +99,8 @@ export const registerWithEmailAndPassword = async (
       password,
     );
     const { user } = userCredential;
-    await writeUser(user, username, "email");
+    await createUser(user, username, "email");
+    await sendEmailVerification(user);
     return { code: "SUCCESS", message: "註冊成功" };
   } catch (error) {
     return { code: "ERROR", error };
@@ -137,7 +150,7 @@ export const loginOAuth = async (source: string) => {
 
     const isNewUser = await getDoc(doc(db, "users", user.uid));
     if (!isNewUser.exists()) {
-      await writeUser(user, user.displayName, source);
+      await createUser(user, user.displayName, source);
     }
 
     // 獲取用戶文檔數據

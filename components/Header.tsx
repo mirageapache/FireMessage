@@ -102,7 +102,7 @@ function Header() {
             {showDropdown && (
               <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-20">
                 <Link
-                  href="/profile"
+                  href={`/profile/${userData?.uid}`}
                   className={cn(dropdownItemStyle, "flex justify-start items-center gap-2 px-2 hover:text-[var(--text-color)]")}
                   onClick={() => setShowDropdown(false)}
                 >

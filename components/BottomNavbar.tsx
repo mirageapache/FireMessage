@@ -93,7 +93,7 @@ function BottomNavbar() {
         </Button>
         <nav className="flex flex-col justify-between text-white h-full pt-12">
           <div className="flex flex-col gap-6 text-3xl">
-            <Link href="/profile" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
+            <Link href={`/profile/${userData?.uid}`} className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
             <Link href="/friend" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>好友</Link>
             <Link href="/setting" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>設定</Link>
           </div>
