@@ -41,7 +41,7 @@ function Header() {
   }, [showDropdown]);
 
   return (
-    <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5">
+    <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
       <nav className="relative flex justify-between items-center w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
           <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
@@ -100,7 +100,7 @@ function Header() {
 
             {/* 使用者選單 */}
             {showDropdown && (
-              <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-20">
+              <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-50">
                 <Link
                   href={`/profile/${userData?.uid}`}
                   className={cn(dropdownItemStyle, "flex justify-start items-center gap-2 px-2 hover:text-[var(--text-color)]")}
@@ -145,7 +145,7 @@ function Header() {
       </nav>
       {showDropdown
         && (
-          <button aria-label="關閉使用者選單" type="button" className="fixed top-[50px] left-0 w-screen h-[calc(100vh-50px)] z-10" onClick={() => setShowDropdown(false)} />
+          <button aria-label="關閉使用者選單" type="button" className="fixed top-[50px] left-0 w-screen h-[calc(100vh-50px)] cursor-default" onClick={() => setShowDropdown(false)} />
         )}
     </header>
   );

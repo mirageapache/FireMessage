@@ -2,16 +2,9 @@ import { db } from "@/firebase";
 import {
   collection, query, where, getDocs, updateDoc,
 } from "firebase/firestore";
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_CLIENT_ID,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 
 /** 更新使用者資料 */
-export const updateUserData = async (
+const updateUserData = async (
   uid: string,
   type: string,
   data: { secure_url: string, public_id: string },
@@ -52,21 +45,75 @@ export const updateUserImage = async (
       reader.readAsDataURL(file);
     });
 
-    // 上傳圖片至 Cloudinary
-    const uploadResponse = await cloudinary.uploader.upload(base64string, {
-      public_id: imagePublicId,
-      overwrite: true,
-      folder: `fireMessage/${type}`,
+    // 透過 API 上傳圖片至 Cloudinary
+    const response = await fetch('/api/image/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        image: base64string,
+        type,
+        publicId: imagePublicId,
+      }),
     });
+
+    const data = await response.json();
+    if (data.code === "ERROR") {
+      throw new Error(data.message || '圖片上傳失敗');
+    }
 
     await updateUserData(
       uid,
       type,
-      { secure_url: uploadResponse.secure_url, public_id: uploadResponse.public_id },
+      { secure_url: data.secure_url, public_id: data.public_id.split("/")[2] },
     );
 
-    return { code: "SUCCESS", imageUrl: uploadResponse.secure_url };
+    return { code: "SUCCESS", imageUrl: data.secure_url, public_id: data.public_id.split("/")[2] };
   } catch (error) {
-    return { code: "ERROR", error };
+    return {
+      code: "ERROR",
+      error: error instanceof Error ? error.message : '更新圖片失敗',
+    };
+  }
+};
+
+/** 刪除圖片 */
+export const deleteUserImage = async (
+  uid: string,
+  type: string,
+  imagePublicId: string,
+) => {
+  try {
+    // 透過 API 從 Cloudinary 刪除圖片
+    const response = await fetch('/api/image/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type,
+        publicId: imagePublicId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.code === "ERROR") {
+      throw new Error(data.message || '圖片刪除失敗');
+    }
+
+    // 更新使用者資料，清空相關欄位
+    await updateUserData(
+      uid,
+      type,
+      { secure_url: '', public_id: '' },
+    );
+
+    return { code: "SUCCESS" };
+  } catch (error) {
+    return {
+      code: "ERROR",
+      error: error instanceof Error ? error.message : '圖片刪除失敗',
+    };
   }
 };

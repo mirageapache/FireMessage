@@ -39,7 +39,7 @@ function Avatar(props: {
       </span>
     );
   }
-  return <Image className={`${classname} rounded-full`} src={avatarUrl!} alt="avatar" width={25} height={25} />;
+  return <Image className={`${classname} rounded-full object-cover`} src={avatarUrl!} alt="avatar" width={100} height={100} />;
 }
 
 export default Avatar;
