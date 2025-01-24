@@ -116,6 +116,7 @@ function Profile({ params }: { params: { uid: string } }) {
 
   return (
     <>
+      {/* 封面 */}
       <section className="relative h-[200px] bg-[var(--card-bg-color)]">
         {(cover || cover !== "") && (
           <Image
@@ -148,6 +149,8 @@ function Profile({ params }: { params: { uid: string } }) {
             </div>
           )}
       </section>
+
+      {/* 頭貼 */}
       <section className="relative h-[50px] z-10">
         <Avatar
           userName={userData?.userName || ""}
@@ -178,6 +181,8 @@ function Profile({ params }: { params: { uid: string } }) {
             )}
         </div>
       </section>
+
+      {/* 個人資料 */}
       <section className="flex flex-col gap-2 mb-4 pb-4 px-4 border-b border-[var(--divider-color)]">
         <div className="flex justify-between items-start">
           <span className="flex justify-start items-end gap-2">
@@ -205,7 +210,10 @@ function Profile({ params }: { params: { uid: string } }) {
           )}
         </div>
       </section>
-      <section className="flex flex-col gap-4 px-4">
+
+      {/* 詳細資訊 */}
+      <section className="flex flex-col gap-4 mb-4 pb-4 px-4 border-b border-[var(--divider-color)]">
+        <h5 className="sm:text-left">詳細資訊</h5>
         <div className={cn(listItemStyle)}>
           <p>Email</p>
           <p>{userData?.email}</p>
@@ -248,6 +256,37 @@ function Profile({ params }: { params: { uid: string } }) {
           <p>{moment(userData?.createdAt).format("YYYY/MM/DD")}</p>
         </div>
       </section>
+
+      {/* 設定 */}
+      <section className="flex flex-col gap-4 mb-4 pb-4 px-4 border-b border-[var(--divider-color)]">
+        <h5 className="sm:text-left">設定</h5>
+        <div className={cn(listItemStyle)}>
+          <p>好友管理</p>
+          <p>開啟</p>
+        </div>
+        <div className={cn(listItemStyle)}>
+          <p>語言</p>
+          <p>繁體中文</p>
+        </div>
+        <div className={cn(listItemStyle)}>
+          <p>提示訊息位置</p>
+          <p>中間上方</p>
+        </div>
+        <div className={cn(listItemStyle)}>
+          <p>版面</p>
+          <p>預設</p>
+        </div>
+      </section>
+
+      {/* 刪除帳號 */}
+      <section className="flex flex-col gap-4 mb-4 pb-4 px-4">
+        <div className="flex justify-between items-center">
+          <p>刪除帳號</p>
+          <Button type="button" disabled className="bg-[var(--error)]">刪除帳號</Button>
+        </div>
+      </section>
+
+      {/* Popup */}
       {showCoverModal && (
         <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
           <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] text-white p-5 rounded-lg shadow-lg z-20">
