@@ -80,7 +80,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入E-mail"
                     {...field}
                   />
@@ -97,7 +97,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入密碼"
                     {...field}
                   />
@@ -114,7 +114,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入確認密碼"
                     {...field}
                   />
@@ -131,7 +131,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="text"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入名稱"
                     {...field}
                   />

@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { sendVerification } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Avatar from "@/components/Avatar";
@@ -19,10 +20,12 @@ import { deleteUserImage, updateUserImage } from "@/lib/image";
 import { setUser } from "@/store/userSlice";
 import { userDataType } from "@/types/userType";
 import Spinner from "@/components/Spinner";
+import EditProfileModal from "@/components/EditProfileModal";
 
 function Profile({ params }: { params: { uid: string } }) {
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const listItemStyle = "flex justify-between items-center";
+  const [editmode, setEditmode] = useState(false);
   const [showCoverModal, setShowCoverModal] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [isCoverLoading, setIsCoverLoading] = useState(false);
@@ -30,6 +33,7 @@ function Profile({ params }: { params: { uid: string } }) {
   const [cover, setCover] = useState(userData?.coverUrl || "");
   const [avatar, setAvatar] = useState(userData?.avatarUrl || "");
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     setCover(userData?.coverUrl || "");
@@ -192,7 +196,7 @@ function Profile({ params }: { params: { uid: string } }) {
               {userData?.userAccount}
             </p>
           </span>
-          <button aria-label="編輯個人資料" type="button">
+          <button aria-label="編輯個人資料" type="button" onClick={() => setEditmode(true)}>
             <FontAwesomeIcon
               icon={faPenToSquare}
               size="lg"
@@ -285,8 +289,15 @@ function Profile({ params }: { params: { uid: string } }) {
           <Button type="button" disabled className="bg-[var(--error)]">刪除帳號</Button>
         </div>
       </section>
+      <section className="flex justify-center items-center">
+        <Button type="button" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--secondary)]" onClick={() => router.push("/dashboard")}>返回</Button>
+      </section>
 
-      {/* Popup */}
+      {/* 修改個人資料modal */}
+      {editmode && (
+        <EditProfileModal setEditmode={setEditmode} />
+      )}
+      {/* 修改封面modal */}
       {showCoverModal && (
         <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
           <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] text-white p-5 rounded-lg shadow-lg z-20">
@@ -320,6 +331,7 @@ function Profile({ params }: { params: { uid: string } }) {
           />
         </div>
       )}
+      {/* 修改頭貼modal */}
       {showAvatarModal && (
         <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
           <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] text-white p-5 rounded-lg shadow-lg z-20">

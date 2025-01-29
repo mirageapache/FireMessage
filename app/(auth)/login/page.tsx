@@ -70,7 +70,7 @@ function LoginPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入E-mail"
                     {...field}
                   />
@@ -87,7 +87,7 @@ function LoginPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入密碼"
                     {...field}
                   />
