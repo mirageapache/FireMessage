@@ -73,6 +73,11 @@ function LoginPage() {
                     className="formInput"
                     placeholder="請輸入E-mail"
                     {...field}
+                    onFocus={() => {
+                      if (errorMsg) {
+                        setErrorMsg("");
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
@@ -90,6 +95,12 @@ function LoginPage() {
                     className="formInput"
                     placeholder="請輸入密碼"
                     {...field}
+                    onFocus={() => {
+                      if (errorMsg) {
+                        setErrorMsg("");
+                        form.resetField("password");
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="inputErrorMsg" style={{ margin: 0 }}>
