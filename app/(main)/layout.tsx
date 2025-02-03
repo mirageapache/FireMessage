@@ -7,11 +7,11 @@ export default function AuthLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="flex justify-center items-center w-screen h-screen">
-      <div className="fixed w-full md:max-w-[1200px] h-full">
-        <Header />
-        <div className="main-panel mt-[50px] sm:p-5 w-full h-full overflow-y-auto">{children}</div>
-        <BottomNavbar />
+      <Header />
+      <div className="main-panel fixed flex justify-center items-center w-full h-full overflow-y-auto">
+        <div className="px-5 md:px-0 w-full md:max-w-[1200px] h-full">{children}</div>
       </div>
+      <BottomNavbar />
     </div>
   );
 }

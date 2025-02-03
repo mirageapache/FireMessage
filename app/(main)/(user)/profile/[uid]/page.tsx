@@ -291,8 +291,10 @@ function Profile({ params }: { params: { uid: string } }) {
           <Button type="button" disabled className="bg-[var(--error)]">刪除帳號</Button>
         </div>
       </section>
-      <section className="flex justify-center items-center">
-        <Button type="button" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
+
+      {/* 返回 */}
+      <section className="flex justify-center items-center pb-5 px-4">
+        <Button type="button" className="w-full sm:w-auto bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
       </section>
 
       {/* 修改個人資料modal */}

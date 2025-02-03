@@ -42,7 +42,7 @@ function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
-      <nav className="relative flex justify-between items-center w-full md:max-w-[1200px]">
+      <nav className="relative flex justify-between items-center md:mr-4 w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
           <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
             <Image
