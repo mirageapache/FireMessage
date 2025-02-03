@@ -43,7 +43,7 @@ function BottomNavbar() {
   }, [isOpen]);
 
   return (
-    <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden bg-[var(--background)]">
+    <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden bg-[var(--background)] z-50">
       <Link
         href="/dashboard"
         className={cn(currentPath === "dashboard" && "activeItem", basicItemStyle)}
@@ -91,10 +91,11 @@ function BottomNavbar() {
         >
           <FontAwesomeIcon icon={faXmark} className="w-8 h-8" />
         </Button>
-        <nav className="flex flex-col justify-between text-white h-full pt-12">
+        <nav className="flex flex-col justify-between text-white h-full pt-12 z-50">
           <div className="flex flex-col gap-6 text-3xl">
             <Link href={`/profile/${userData?.uid}`} className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
             <Link href="/friend" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>好友</Link>
+            <Link href="/search" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>搜尋</Link>
             <Link href="/setting" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>設定</Link>
           </div>
           <div className="flex justify-between items-center">

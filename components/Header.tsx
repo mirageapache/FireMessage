@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faMoon,
+  faSearch,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "@/lib/auth";
@@ -28,7 +29,7 @@ function Header() {
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const navItemStyle = "rounded-full p-[5px]";
-  const navItemHoverStyle = " hover:bg-gray-200 dark:hover:bg-gray-600";
+  const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
   // 監聽螢幕 resize
@@ -58,6 +59,17 @@ function Header() {
         {isLogin && (
           <>
             <div className="hidden sm:flex items-center gap-1">
+              {/* 搜尋 */}
+              <button
+                type="button"
+                aria-label="搜尋"
+                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                onClick={() => router.push("/search")}
+              >
+                <FontAwesomeIcon icon={faSearch} size="lg" />
+              </button>
+
+              {/* 深色模式 */}
               <button
                 type="button"
                 className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
@@ -75,6 +87,8 @@ function Header() {
                   className="absolute h-[21px] w-[21px] text-yellow-600 translate-y-5 opacity-0 transform duration-300 ease-linear dark:translate-y-0 dark:opacity-100"
                 />
               </button>
+
+              {/* 通知 */}
               <button
                 type="button"
                 className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
@@ -82,6 +96,8 @@ function Header() {
               >
                 <FontAwesomeIcon icon={faBell} size="lg" />
               </button>
+
+              {/* 使用者選單 */}
               <button
                 aria-label="使用者選單"
                 type="button"
@@ -98,7 +114,7 @@ function Header() {
               </button>
             </div>
 
-            {/* 使用者選單 */}
+            {/* 使用者下拉選單 */}
             {showDropdown && (
               <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-50">
                 <Link
