@@ -12,19 +12,21 @@ import {
 import storage from 'redux-persist/lib/storage';
 
 // 引入 Reducers
-import authReducer from './authSlice';
+import sysReducer from './sysSlice';
+import userReducer from './userSlice';
 
-// Persist 配置
+// Persist 配置 [用於保留指定的 Redux 狀態]
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth'], // 只持久化 auth reducer
+  whitelist: [],
 };
 
 // 合併 Reducers
 const rootReducer = combineReducers({
-  auth: authReducer,
+  system: sysReducer,
+  user: userReducer,
 });
 
 // 建立持久化 Reducer

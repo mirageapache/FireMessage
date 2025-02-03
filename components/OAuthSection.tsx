@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { loginOAuth } from "@/lib/auth";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
 
 function OAuthSection() {
@@ -11,7 +11,7 @@ function OAuthSection() {
   const router = useRouter();
 
   const handleOAuth = async (provider: string) => {
-    const result = (await loginOAuth(provider)) as authResponse;
+    const result = (await loginOAuth(provider)) as authResponseType;
     if (result.code === "SUCCESS") {
       router.push("/dashboard");
     } else {

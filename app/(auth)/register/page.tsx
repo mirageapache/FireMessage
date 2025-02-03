@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,10 +18,12 @@ import { registerFormSchema } from "@/lib/validations/authForm";
 import { registerWithEmailAndPassword } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import OAuthSection from "@/components/OAuthSection";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
+import Spinner from "@/components/Spinner";
 
 function RegisterPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -35,11 +37,12 @@ function RegisterPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+    setIsLoading(true);
     const result = (await registerWithEmailAndPassword(
       values.email,
       values.password,
       values.username,
-    )) as authResponse;
+    )) as authResponseType;
     if (result.code === "SUCCESS") {
       Swal.fire({
         title: "註冊成功",
@@ -58,6 +61,7 @@ function RegisterPage() {
         });
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -76,7 +80,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入E-mail"
                     {...field}
                   />
@@ -93,7 +97,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入密碼"
                     {...field}
                   />
@@ -110,7 +114,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入確認密碼"
                     {...field}
                   />
@@ -127,7 +131,7 @@ function RegisterPage() {
                 <FormControl>
                   <Input
                     type="text"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入名稱"
                     {...field}
                   />
@@ -140,7 +144,7 @@ function RegisterPage() {
             type="submit"
             className="btn my-[10px] bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            註冊
+            {isLoading ? <Spinner /> : "註冊"}
           </Button>
           <Button
             type="button"

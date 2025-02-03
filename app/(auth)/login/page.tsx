@@ -18,11 +18,13 @@ import { loginFormSchema } from "@/lib/validations/authForm";
 import { loginWithEmailAndPassword } from "@/lib/auth";
 import OAuthSection from "@/components/OAuthSection";
 import { useRouter } from "next/navigation";
-import { authResponse } from "@/types/authType";
+import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
+import Spinner from "@/components/Spinner";
 
 function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -34,11 +36,12 @@ function LoginPage() {
   });
 
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    setIsLoading(true);
     setErrorMsg("");
     const result = (await loginWithEmailAndPassword(
       values.email,
       values.password,
-    )) as authResponse;
+    )) as authResponseType;
     if (result.code === "SUCCESS") {
       toast("歡迎回來！");
       router.push("/dashboard");
@@ -48,6 +51,7 @@ function LoginPage() {
         setErrorMsg(msg);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -66,9 +70,14 @@ function LoginPage() {
                 <FormControl>
                   <Input
                     type="email"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入E-mail"
                     {...field}
+                    onFocus={() => {
+                      if (errorMsg) {
+                        setErrorMsg("");
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
@@ -83,9 +92,15 @@ function LoginPage() {
                 <FormControl>
                   <Input
                     type="password"
-                    className="authInput"
+                    className="formInput"
                     placeholder="請輸入密碼"
                     {...field}
+                    onFocus={() => {
+                      if (errorMsg) {
+                        setErrorMsg("");
+                        form.resetField("password");
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage className="inputErrorMsg" style={{ margin: 0 }}>
@@ -98,7 +113,7 @@ function LoginPage() {
             type="submit"
             className="btn bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            登入
+            {isLoading ? <Spinner /> : "登入"}
           </Button>
           <Button
             type="button"

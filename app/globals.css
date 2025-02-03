@@ -12,18 +12,75 @@
   color: orange;
 }
 
+.main-panel {
+  height: calc(100vh - 100px);
+
+  @media screen and (min-width: 640px) {
+    margin-top: 50px;
+    height: calc(100vh - 50px);
+  }
+}
+
 @layer base {
   :root {
     --brand-color: #ffa617;
     --brand-secondary-color: #ff7700;
     --brand-third-color: #ffc300;
-    --background: #213152;
-    --white: #ffffff;
+    --primary: #3b82f6;
+    --secondary: #6c757d;
+    --success: #22c55e;
+    --warning: #ffc542;
+    --error: #fc5a5a;
+    --disable: #6c757d; /* (選項)停用 */
+    --active: #f97316; /* (選項)作用中 */
+    --background: #eaebee;
+    --card-bg-color: white;
+    --modal-bg-color: #ccc;
+    --divider-color: #bbb;
+    --hover-bg-color: #d5d7db;
+    /* text style */
+    --text-color: #171725;
+    --secondary-text-color: #44444f;
+    --disable-text-color: #92929d;
+    /* input style */
     --input-bg-color: #e2e2ea;
     --input-text-color: #6c757d;
+    /* origin */
+    /* --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%; */
+    --border: 214.3 31.8% 91.4%;
+    --radius: 0.5rem;
   }
   .dark {
     --background: #213152;
+    --card-bg-color: #4b5563;
+    --modal-bg-color: #4b5563;
+    --divider-color: #6b7280;
+    --hover-bg-color: #374151;
+    /* text style */
+    --text-color: #ffffff;
+    --secondary-text-color: #b5b5be;
+    --disable-text-color: #696974;
   }
 }
 
@@ -57,11 +114,15 @@
     @apply w-80 h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
   }
 
-  .authInput {
-    @apply w-80 h-[40px] sm:h-10 text-lg rounded-[8px] bg-[var(--input-bg-color)] text-[var(--input-text-color)];
+  .formInput {
+    @apply w-full h-10 text-lg rounded-[8px] border-0 bg-[var(--input-bg-color)] text-[var(--input-text-color)];
   }
 
   .inputErrorMsg {
     @apply h-[20px] text-red-500 text-sm font-normal;
+  }
+
+  .activeItem {
+    color: var(--active);
   }
 }
