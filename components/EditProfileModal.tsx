@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { editProfileSchema } from '@/lib/validations/profileForm';
 import { RootState } from '@/store';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { updateUserData } from '@/lib/user';
@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { useForm } from "react-hook-form";
+import { setUser } from '@/store/userSlice';
+import { userDataType } from '@/types/userType';
 import {
   Form,
   FormControl,
@@ -27,6 +29,7 @@ import { Textarea } from './ui/textarea';
 function EditProfileModal({ setEditmode }: { setEditmode: (editmode: boolean) => void }) {
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const form = useForm<z.infer<typeof editProfileSchema>>({
     resolver: zodResolver(editProfileSchema),
@@ -46,10 +49,16 @@ function EditProfileModal({ setEditmode }: { setEditmode: (editmode: boolean) =>
       values.bio,
     ));
     if (result.code === "SUCCESS") {
-      toast.success("更新成功");
+      dispatch(setUser({
+        ...userData,
+        userName: values.username,
+        userAccount: values.account,
+        biography: values.bio,
+      } as userDataType));
       setEditmode(false);
+      toast.success("更新成功");
     } else {
-      toast.error("更新時發生錯誤");
+      toast.error(result.message);
     }
     setIsLoading(false);
   };
@@ -113,24 +122,24 @@ function EditProfileModal({ setEditmode }: { setEditmode: (editmode: boolean) =>
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea className="formInput resize-none" maxLength={200} placeholder="設定個人簡介..." {...field} />
+                    <Textarea
+                      className="formInput resize-none min-h-[100px]"
+                      maxLength={200}
+                      placeholder="設定個人簡介..."
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage className="inputErrorMsg" style={{ margin: 0 }} />
                 </FormItem>
               )}
             />
-            <Button type="button" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--secondary)]">
+            <Button type="submit" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]">
               {isLoading ? <Spinner /> : "儲存"}
             </Button>
           </form>
         </Form>
       </div>
-      {/* <button
-        aria-label="關閉編輯視窗"
-        type="button"
-        className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60"
-        onClick={() => setEditmode(false)}
-      /> */}
+      <div className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60" />
     </div>
   );
 }

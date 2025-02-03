@@ -3,8 +3,8 @@ import {
   collection, query, where, getDocs, updateDoc,
 } from "firebase/firestore";
 
-/** 更新使用者資料 */
-const updateUserData = async (
+/** 更新使用者封面/頭貼 */
+const updateUserImage = async (
   uid: string,
   type: string,
   data: { secure_url: string, public_id: string },
@@ -28,7 +28,7 @@ const updateUserData = async (
 };
 
 /** 上傳頭貼/封面 */
-export const updateUserImage = async (
+export const uploadImage = async (
   uid: string,
   type: string,
   imagePublicId: string,
@@ -63,7 +63,7 @@ export const updateUserImage = async (
       throw new Error(data.message || '圖片上傳失敗');
     }
 
-    await updateUserData(
+    await updateUserImage(
       uid,
       type,
       { secure_url: data.secure_url, public_id: data.public_id.split("/")[2] },
@@ -103,7 +103,7 @@ export const deleteUserImage = async (
     }
 
     // 更新使用者資料，清空相關欄位
-    await updateUserData(
+    await updateUserImage(
       uid,
       type,
       { secure_url: '', public_id: '' },

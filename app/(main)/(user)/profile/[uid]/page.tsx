@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Avatar from "@/components/Avatar";
-import { deleteUserImage, updateUserImage } from "@/lib/image";
+import { deleteUserImage, uploadImage } from "@/lib/image";
 import { setUser } from "@/store/userSlice";
 import { userDataType } from "@/types/userType";
 import Spinner from "@/components/Spinner";
@@ -57,7 +57,7 @@ function Profile({ params }: { params: { uid: string } }) {
     const fileList = event.target.files;
     if (!isEmpty(fileList) && fileList?.length) {
       const file = fileList[0];
-      const result = await updateUserImage(params.uid, type, publicId, file);
+      const result = await uploadImage(params.uid, type, publicId, file);
       if (result.code === "ERROR") {
         toast.error(result.error || "上傳失敗");
       } else {
@@ -210,7 +210,9 @@ function Profile({ params }: { params: { uid: string } }) {
               尚未設定個人簡介
             </p>
           ) : (
-            <p className="text-[var(--text-color)]">{userData?.biography}</p>
+            <p className="text-[var(--text-color)] whitespace-pre-wrap">
+              {userData?.biography}
+            </p>
           )}
         </div>
       </section>
@@ -290,7 +292,7 @@ function Profile({ params }: { params: { uid: string } }) {
         </div>
       </section>
       <section className="flex justify-center items-center">
-        <Button type="button" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--secondary)]" onClick={() => router.push("/dashboard")}>返回</Button>
+        <Button type="button" className="bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
       </section>
 
       {/* 修改個人資料modal */}
