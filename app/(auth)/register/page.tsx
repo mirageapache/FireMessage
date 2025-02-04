@@ -69,14 +69,14 @@ function RegisterPage() {
       <h2 className="mb-[15px]">註冊成為會員</h2>
       <Form {...form}>
         <form
-          className="flex flex-col items-center"
+          className="flex flex-col justify-center"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="email"
@@ -93,7 +93,7 @@ function RegisterPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -110,7 +110,7 @@ function RegisterPage() {
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="password"
@@ -127,7 +127,7 @@ function RegisterPage() {
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="my-[5px]">
                 <FormControl>
                   <Input
                     type="text"

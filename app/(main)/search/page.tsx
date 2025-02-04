@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import UserItem from '@/components/UserItem';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { searchUser } from '@/lib/search';
 import { userDataType } from '@/types/userType';
@@ -20,7 +20,7 @@ function Search() {
 
   /** 處理搜尋功能 */
   const handleSearch = async (searchString: string) => {
-    const result = await searchUser(searchString.trim());
+    const result = await searchUser(searchString.trim(), userData?.uid || "");
     const dataList = result.data as userDataType[];
 
     if (result.code === "SUCCESS") {
@@ -89,6 +89,21 @@ function Search() {
           }}
           onKeyDown={(e) => handleSearchHistory(e)}
         />
+        <button
+          type="button"
+          aria-label="清除搜尋"
+          className="absolute top-[25px] right-3 w-8 h-8 py-1 text-[var(--input-text-color)] hover:text-[var(--active)] rounded-md"
+          onClick={() => {
+            if (inputRef.current) {
+              inputRef.current.value = "";
+            }
+            setKeyword("");
+            setData([]);
+            setSearchResult(undefined);
+          }}
+        >
+          <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+        </button>
       </label>
       <div className="w-full flex flex-col items-center justify-start">
         {isEmpty(keyword) && existingHistory.length === 0 && <h3>- 尚無搜尋紀錄 -</h3>}
@@ -125,15 +140,18 @@ function Search() {
               <button type="button" className="py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md">用戶</button>
               <button type="button" className="py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md">群組</button>
             </div>
-            {data.map((item) => (
-              <UserItem
-                key={item.uid}
-                userName={item.userName}
-                avatarUrl={item.avatarUrl}
-                userAccount={item.userAccount}
-                showAddButton={item.uid !== userData?.uid}
-              />
-            ))}
+            {data.map((item) => {
+              if (item.uid === userData?.uid) return null;
+              return (
+                <UserItem
+                  key={item.uid}
+                  userName={item.userName}
+                  avatarUrl={item.avatarUrl}
+                  userAccount={item.userAccount}
+                  showAddButton={item.uid !== userData?.uid}
+                />
+              );
+            })}
           </>
         )}
       </div>

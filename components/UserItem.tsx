@@ -33,7 +33,7 @@ function UserItem({
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{userAccount}</p>
       </div>
       {showAddButton && (
-        <div className="flexjustify-center items-center">
+        <div className="flexjustify-center items-center hover:text-[var(--active)]">
           <FontAwesomeIcon icon={faUserPlus} className="w-8 h-5" />
         </div>
       )}
