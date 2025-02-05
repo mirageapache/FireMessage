@@ -145,10 +145,11 @@ function Search() {
               return (
                 <UserItem
                   key={item.uid}
+                  uid={item.uid}
                   userName={item.userName}
                   avatarUrl={item.avatarUrl}
                   userAccount={item.userAccount}
-                  showAddButton={item.uid !== userData?.uid}
+                  status={item.friendStatus}
                 />
               );
             })}

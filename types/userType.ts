@@ -16,6 +16,7 @@ export type userDataType = Omit<User, 'providerData'> & {
   loginType: string;
   userType: string;
   emailVerified: boolean;
+  friendStatus: number;
 };
 
 /** 使用者設定 */
@@ -24,4 +25,11 @@ export type userSettingsType = {
   toastifyPosition: string;
   themeMode: string;
   language: string;
+};
+
+/** 好友資料 */
+export type friendDataType = {
+  uid: string;
+  status: number;
+  createdAt: string;
 };

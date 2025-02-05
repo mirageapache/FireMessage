@@ -27,10 +27,13 @@
     --brand-secondary-color: #ff7700;
     --brand-third-color: #ffc300;
     --primary: #3b82f6;
+    --primary-hover: #2563eb;
     --secondary: #6c757d;
     --success: #22c55e;
+    --success-hover: #16a34a;
     --warning: #ffc542;
     --error: #fc5a5a;
+    --error-hover: #f43f5e;
     --disable: #6c757d; /* (選項)停用 */
     --active: #f97316; /* (選項)作用中 */
     --background: #eaebee;

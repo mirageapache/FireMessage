@@ -12,22 +12,33 @@ import { Button } from "@/components/ui/button";
 import Avatar from "@/components/Avatar";
 import { getUserData } from "@/lib/user";
 import { userDataType } from "@/types/userType";
+import { useAppSelector } from "@/store/hooks";
+import { createFriendRequest } from "@/lib/friend";
+import { toast } from "react-toastify";
 
 function UserProfile({ params }: { params: { uid: string } }) {
+  const currentUid = useAppSelector((state) => state.user.userData?.uid); // 當前使用者
+  const router = useRouter();
+  if (currentUid === params.uid) router.push(`/profile/${currentUid}`);
+
   const [userData, setUserData] = useState<userDataType>();
   const listItemStyle = "flex justify-between items-center";
-  const router = useRouter();
+
+  /** 取得用戶資料 */
+  const handleGetUserData = async () => {
+    const result = await getUserData(params.uid, currentUid!) as unknown as userDataType;
+    setUserData(result);
+  };
 
   useEffect(() => {
-    const result = getUserData(params.uid) as unknown as userDataType;
-    setUserData(result);
+    handleGetUserData();
   }, []);
 
   return (
     <>
       {/* 封面 */}
       <section className="relative h-[200px] bg-[var(--card-bg-color)]">
-        {(userData?.coverUrl || userData?.coverUrl !== "") && (
+        {(userData && userData?.coverUrl && userData?.coverUrl !== "") && (
           <Image
             src={userData?.coverUrl || ""}
             alt="cover"
@@ -71,6 +82,44 @@ function UserProfile({ params }: { params: { uid: string } }) {
             </p>
           )}
         </div>
+        <div className="text-right">
+          {userData?.friendStatus === 0 && (
+            <Button
+              type="button"
+              aria-label="發送好友邀請"
+              className="w-full sm:w-auto bg-[var(--success)] hover:bg-[var(--success-hover)]"
+              onClick={async () => {
+                const reuslt = await createFriendRequest(currentUid || "", params.uid);
+                console.log(reuslt.error);
+                if (reuslt.code === "SUCCESS") {
+                  toast.success(reuslt.message);
+                } else {
+                  toast.error(reuslt.message);
+                }
+              }}
+            >
+              發送好友邀請
+            </Button>
+          )}
+          {userData?.friendStatus === 1 && (
+            <Button
+              type="button"
+              disabled
+              className="w-full sm:w-auto bg-[var(--disable)]"
+            >
+              已發送好友邀請
+            </Button>
+          )}
+          {userData?.friendStatus === 2 && (
+            <Button
+              type="button"
+              aria-label="好友管理"
+              className="w-full sm:w-auto bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+            >
+              好友管理
+            </Button>
+          )}
+        </div>
       </section>
 
       {/* 詳細資訊 */}
@@ -81,8 +130,8 @@ function UserProfile({ params }: { params: { uid: string } }) {
           <p>{userData?.email}</p>
         </div>
         <div className={cn(listItemStyle)}>
-          <p>註冊日期</p>
-          <p>{moment(userData?.createdAt).format("YYYY/MM/DD")}</p>
+          <p>加入日期</p>
+          <p>{moment(userData?.createdAt.toDate().toISOString()).format("YYYY/MM/DD")}</p>
         </div>
       </section>
 

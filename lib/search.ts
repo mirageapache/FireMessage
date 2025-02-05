@@ -1,7 +1,9 @@
 import { db } from "@/firebase";
+import { friendDataType } from "@/types/userType";
 import {
   collection, getDocs, query, where,
 } from "firebase/firestore";
+import { get, isEmpty } from "lodash";
 
 /** 搜尋用戶 */
 export const searchUser = async (keyword: string, uid: string) => {
@@ -28,16 +30,31 @@ export const searchUser = async (keyword: string, uid: string) => {
       return { code: "NOT_FOUND", count: 0 };
     }
 
+    const friendRef = collection(db, "friends");
+    const friendQuery = query(friendRef, where("uid", "==", uid));
+    const friendSnapshot = await getDocs(friendQuery);
+    let friendList = [];
+    if (!friendSnapshot.empty) friendList = get(friendSnapshot.docs[0].data(), "friendList", []);
+
     // 合併結果並去重複及排除自己
     const results = [...userNameSnapshot.docs, ...userAccountSnapshot.docs]
       .map((doc) => {
         const data = doc.data();
+        let friendStatus = 0;
+        if (friendList) {
+          friendStatus = friendList.find((item: friendDataType) => {
+            if (item.uid === data.uid) return item.status;
+            return 0;
+          });
+        }
+
         return {
           uid: data.uid,
           userName: data.userName,
           userAccount: data.userAccount,
           avatarUrl: data.avatarUrl,
           bgColor: data.bgColor,
+          friendStatus,
         };
       })
       .filter(
@@ -49,6 +66,7 @@ export const searchUser = async (keyword: string, uid: string) => {
 
     return { code: "SUCCESS", count: results.length, data: results };
   } catch (error) {
+    console.log(error);
     return { code: "ERROR", error };
   }
 };

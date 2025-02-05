@@ -20,7 +20,7 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        const userData = await getUserData(currentUser.uid) as userDataType;
+        const userData = await getUserData(currentUser.uid, "") as userDataType;
         dispatch(setUser({
           ...userData,
           // firestore的日期格式是Timestamp，需轉換成ISO字串再寫入redux
