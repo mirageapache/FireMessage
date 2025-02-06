@@ -121,7 +121,7 @@ function Profile({ params }: { params: { uid: string } }) {
   return (
     <>
       {/* 封面 */}
-      <section className="relative h-[200px] bg-[var(--card-bg-color)]">
+      <section className="relative h-[200px] bg-[var(--modal-bg-color)]">
         {(cover || cover !== "") && (
           <Image
             src={cover}
@@ -147,7 +147,7 @@ function Profile({ params }: { params: { uid: string } }) {
                 <FontAwesomeIcon
                   icon={faImage}
                   size="lg"
-                  className="text-[var(--secondary-text-color)] hover:text-[var(--active)]"
+                  className="text-[var(--brand-secondary-color)]"
                 />
               </button>
             </div>
@@ -179,7 +179,7 @@ function Profile({ params }: { params: { uid: string } }) {
                 <FontAwesomeIcon
                   icon={faImage}
                   size="lg"
-                  className="text-[var(--secondary-text-color)] hover:text-[var(--active)]"
+                  className="text-[var(--brand-secondary-color)]"
                 />
               </button>
             )}
@@ -304,7 +304,7 @@ function Profile({ params }: { params: { uid: string } }) {
       {/* 修改封面modal */}
       {showCoverModal && (
         <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
-          <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] text-white p-5 rounded-lg shadow-lg z-20">
+          <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] p-5 rounded-lg shadow-lg z-20">
             <div className="relative w-full flex justify-center items-center">
               <h4 className="text-lg">編輯封面</h4>
               <button type="button" aria-label="關閉封面選單" className="absolute top-0 right-0" onClick={() => setShowCoverModal(false)}>
@@ -317,11 +317,11 @@ function Profile({ params }: { params: { uid: string } }) {
               className="hidden"
               onChange={(e) => handleUploadImage(e, "cover", userData?.coverPublicId || "")}
             />
-            <label aria-label="上傳封面" htmlFor="coverInput" className="w-full text-center text-lg bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳封面</label>
+            <label aria-label="上傳封面" htmlFor="coverInput" className="w-full text-center text-lg text-white bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳封面</label>
             <button
               aria-label="刪除封面"
               type="button"
-              className="w-full text-center text-lg bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
+              className="w-full text-center text-lg text-white bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
               onClick={() => handleDeleteImage("cover", userData?.coverPublicId || "")}
             >
               刪除封面
@@ -351,11 +351,11 @@ function Profile({ params }: { params: { uid: string } }) {
               className="hidden"
               onChange={(e) => handleUploadImage(e, "avatar", userData?.avatarPublicId || "")}
             />
-            <label aria-label="上傳頭貼" htmlFor="avatarInput" className="w-full text-center text-lg bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳頭貼</label>
+            <label aria-label="上傳頭貼" htmlFor="avatarInput" className="w-full text-center text-lg text-white bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳頭貼</label>
             <button
               aria-label="刪除頭貼"
               type="button"
-              className="w-full text-center text-lg bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
+              className="w-full text-center text-lg text-white bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
               onClick={() => handleDeleteImage("avatar", userData?.avatarPublicId || "")}
             >
               刪除頭貼

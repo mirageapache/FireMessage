@@ -19,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { RootState } from "@/store";
 import { setDarkMode } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { notificationDataType, notificationResponseType } from "@/types/notificationType";
+import { getNotification } from "@/lib/notification";
 import Avatar from "./Avatar";
 
 function Header() {
@@ -31,6 +33,21 @@ function Header() {
   const navItemStyle = "rounded-full p-[5px]";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
+
+  const handleGetNotification = async () => {
+    const res = await getNotification(userData?.uid || "") as notificationResponseType;
+    console.log(res);
+    if (res.code === "SUCCESS") {
+      setNotificationCount(res.count);
+      setNotificationData(res.data);
+    }
+  };
+
+  useEffect(() => {
+    handleGetNotification();
+  }, [userData?.uid]);
 
   // 監聽螢幕 resize
   useEffect(() => {
@@ -91,9 +108,12 @@ function Header() {
               {/* 通知 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative  w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
                 aria-label="通知"
               >
+                {notificationCount > 0 && (
+                  <span className="absolute top-0 right-1 w-3 h-3 bg-[var(--brand-secondary-color)] rounded-full" />
+                )}
                 <FontAwesomeIcon icon={faBell} size="lg" />
               </button>
 

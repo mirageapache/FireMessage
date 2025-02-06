@@ -3,7 +3,7 @@ import { friendDataType } from "@/types/userType";
 import {
   collection, getDocs, query, where,
 } from "firebase/firestore";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 
 /** 搜尋用戶 */
 export const searchUser = async (keyword: string, uid: string) => {
