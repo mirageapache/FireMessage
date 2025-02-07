@@ -23,8 +23,6 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
         const userData = await getUserData(currentUser.uid, "") as userDataType;
         dispatch(setUser({
           ...userData,
-          // firestore的日期格式是Timestamp，需轉換成ISO字串再寫入redux
-          createdAt: userData.createdAt.toDate().toISOString(),
           emailVerified: currentUser.emailVerified,
         }));
         const userSettings = await getUserSettings(currentUser.uid) as userSettingsType;

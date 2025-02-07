@@ -22,12 +22,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { notificationDataType, notificationResponseType } from "@/types/notificationType";
 import { getNotification } from "@/lib/notification";
 import Avatar from "./Avatar";
+import NotifyTip from "./NotifyTip";
+import NotificationModal from "./NotificationModal";
 
 function Header() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cookies = new Cookies();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const navItemStyle = "rounded-full p-[5px]";
@@ -37,7 +40,7 @@ function Header() {
   const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
 
   const handleGetNotification = async () => {
-    const res = await getNotification(userData?.uid || "") as notificationResponseType;
+    const res = await getNotification(userData?.uid || "", 5) as unknown as notificationResponseType;
     console.log(res);
     if (res.code === "SUCCESS") {
       setNotificationCount(res.count);
@@ -53,10 +56,11 @@ function Header() {
   useEffect(() => {
     const handleResize = () => {
       if (showDropdown) setShowDropdown(false);
+      if (showNotificationModal) setShowNotificationModal(false);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize); // 清理監聽
-  }, [showDropdown]);
+  }, [showDropdown, showNotificationModal]);
 
   return (
     <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
@@ -108,13 +112,14 @@ function Header() {
               {/* 通知 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "relative  w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
                 aria-label="通知"
+                onClick={() => setShowNotificationModal(true)}
               >
-                {notificationCount > 0 && (
-                  <span className="absolute top-0 right-1 w-3 h-3 bg-[var(--brand-secondary-color)] rounded-full" />
-                )}
                 <FontAwesomeIcon icon={faBell} size="lg" />
+                <span className="absolute top-2 right-6">
+                  {notificationCount > 0 && <NotifyTip amount={notificationCount} /> }
+                </span>
               </button>
 
               {/* 使用者選單 */}
@@ -176,12 +181,27 @@ function Header() {
                 </div>
               </div>
             )}
+
+            {/* 通知彈窗 */}
+            {showNotificationModal && (
+              <div className="w-[450px] absolute top-[50px] right-12 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-5 shadow-lg z-50">
+                <NotificationModal data={notificationData} />
+              </div>
+            )}
           </>
         )}
       </nav>
-      {showDropdown
+      {(showDropdown || showNotificationModal)
         && (
-          <button aria-label="關閉使用者選單" type="button" className="fixed top-[50px] left-0 w-screen h-[calc(100vh-50px)] cursor-default" onClick={() => setShowDropdown(false)} />
+          <button
+            aria-label="關閉選單"
+            type="button"
+            className="fixed top-0 left-0 w-screen h-screen cursor-default"
+            onClick={() => {
+              setShowDropdown(false);
+              setShowNotificationModal(false);
+            }}
+          />
         )}
     </header>
   );

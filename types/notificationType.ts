@@ -1,3 +1,5 @@
+import { userDataType } from "./userType";
+
 export type notificationDataType = {
   uid: string;
   isRead: boolean;
@@ -5,10 +7,12 @@ export type notificationDataType = {
   type: string;
   content: string;
   link: string;
+  sourceUserData: userDataType;
 };
 
 export type notificationResponseType = {
   code: string;
   count: number;
   data: notificationDataType[];
+  error: unknown;
 };

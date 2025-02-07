@@ -90,7 +90,6 @@ function UserProfile({ params }: { params: { uid: string } }) {
               className="w-full sm:w-auto bg-[var(--success)] hover:bg-[var(--success-hover)]"
               onClick={async () => {
                 const reuslt = await createFriendRequest(currentUid || "", params.uid);
-                console.log(reuslt.error);
                 if (reuslt.code === "SUCCESS") {
                   toast.success(reuslt.message);
                 } else {
@@ -131,7 +130,7 @@ function UserProfile({ params }: { params: { uid: string } }) {
         </div>
         <div className={cn(listItemStyle)}>
           <p>加入日期</p>
-          <p>{moment(userData?.createdAt.toDate().toISOString()).format("YYYY/MM/DD")}</p>
+          <p>{moment(userData?.createdAt).format("YYYY/MM/DD")}</p>
         </div>
       </section>
 
