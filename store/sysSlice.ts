@@ -40,6 +40,10 @@ const sysSlice = createSlice({
     setLanguage: (state, action: PayloadAction<string>) => {
       state.userSettings.language = action.payload;
     },
+    // 清除userSettings
+    clearUserSettings: (state) => {
+      state.userSettings = initialState.userSettings;
+    },
   },
 });
 
@@ -49,5 +53,6 @@ export const {
   setToastifyPosition,
   setThemeMode,
   setLanguage,
+  clearUserSettings,
 } = sysSlice.actions;
 export default sysSlice.reducer;

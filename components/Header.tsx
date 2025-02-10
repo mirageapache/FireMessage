@@ -49,8 +49,8 @@ function Header() {
   };
 
   useEffect(() => {
-    handleGetNotification();
-  }, [userData?.uid]);
+    if (isLogin) handleGetNotification();
+  }, [userData?.uid, isLogin]);
 
   // 監聽螢幕 resize
   useEffect(() => {

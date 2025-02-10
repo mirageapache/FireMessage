@@ -7,7 +7,6 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
   User,
   UserCredential,
 } from "firebase/auth";
@@ -23,6 +22,7 @@ import {
 import Cookies from "universal-cookie";
 import { store } from "@/store";
 import { clearUser, setUser } from "@/store/userSlice";
+import { clearUserSettings } from "@/store/sysSlice";
 import { userDataType } from "@/types/userType";
 import { getRandomColor } from "./utils";
 import { auth, db } from "../firebase";
@@ -171,11 +171,12 @@ export const loginOAuth = async (source: string) => {
 /** 登出 */
 export const logout = async () => {
   try {
-    await signOut(auth);
     localStorage.clear();
     store.dispatch(clearUser());
+    store.dispatch(clearUserSettings());
     window.indexedDB.deleteDatabase('firebaseLocalStorage');
     cookies.remove("UAT");
+    await auth.signOut();
     return { code: "SUCCESS", message: "登出成功" };
   } catch (error) {
     return error;
