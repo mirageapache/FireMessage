@@ -41,7 +41,6 @@ function Header() {
 
   const handleGetNotification = async () => {
     const res = await getNotification(userData?.uid || "", 5) as unknown as notificationResponseType;
-    console.log(res);
     if (res.code === "SUCCESS") {
       setNotificationCount(res.count);
       setNotificationData(res.data);
@@ -185,7 +184,10 @@ function Header() {
             {/* 通知彈窗 */}
             {showNotificationModal && (
               <div className="w-[450px] absolute top-[50px] right-12 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-5 shadow-lg z-50">
-                <NotificationModal data={notificationData} />
+                <NotificationModal
+                  data={notificationData}
+                  setShowNotificationModal={setShowNotificationModal}
+                />
               </div>
             )}
           </>

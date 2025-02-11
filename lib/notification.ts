@@ -4,7 +4,6 @@ import { db } from "@/firebase";
 import {
   collection, getDocs, limit, query, where, QueryConstraint,
 } from "firebase/firestore";
-import { isEmpty } from "lodash";
 import { getSimpleUserData } from "./user";
 
 /** 取得通知 */
@@ -31,13 +30,12 @@ export const getNotification = async (uid: string, limitCount?: number) => {
 
     const notificationPromises = notificationSnapshot.docs.map(async (doc) => {
       const data = doc.data();
-      let userData = {};
-      if (!isEmpty(data.sourceUid)) userData = await getSimpleUserData(data.sourceUid);
+      const sourceUserData = await getSimpleUserData(data.sourceId);
 
       return {
         ...data,
         createdAt: data.createdAt.toDate(),
-        sourceUserData: userData,
+        sourceUserData: sourceUserData || {},
       };
     });
 

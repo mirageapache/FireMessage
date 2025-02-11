@@ -22,7 +22,7 @@ import { userDataType } from "@/types/userType";
 import Spinner from "@/components/Spinner";
 import EditProfileModal from "@/components/EditProfileModal";
 
-function Profile({ params }: { params: { uid: string } }) {
+function Profile() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const listItemStyle = "flex justify-between items-center";
   const [editmode, setEditmode] = useState(false);
@@ -57,7 +57,7 @@ function Profile({ params }: { params: { uid: string } }) {
     const fileList = event.target.files;
     if (!isEmpty(fileList) && fileList?.length) {
       const file = fileList[0];
-      const result = await uploadImage(params.uid, type, publicId, file);
+      const result = await uploadImage(userData?.uid || "", type, publicId, file);
       if (result.code === "ERROR") {
         toast.error(result.error || "上傳失敗");
       } else {
@@ -93,7 +93,7 @@ function Profile({ params }: { params: { uid: string } }) {
       setShowAvatarModal(false);
     }
 
-    const res = await deleteUserImage(params.uid, type, publicId);
+    const res = await deleteUserImage(userData?.uid || "", type, publicId);
     if (res.code === "ERROR") {
       toast.error(res.error || "刪除失敗，請稍後再試");
     } else {
