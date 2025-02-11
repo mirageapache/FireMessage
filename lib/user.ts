@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { db } from "@/firebase";
 import {
   collection, query, where, getDocs,

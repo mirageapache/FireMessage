@@ -1,5 +1,5 @@
 import { db } from "@/firebase";
-import { friendDataType } from "@/types/userType";
+import { friendStatusDataType } from "@/types/userType";
 import {
   collection, getDocs, query, where,
 } from "firebase/firestore";
@@ -42,7 +42,7 @@ export const searchUser = async (keyword: string, uid: string) => {
         const data = doc.data();
         let friendStatus = 0;
         if (friendList) {
-          friendStatus = friendList.find((item: friendDataType) => {
+          friendStatus = friendList.find((item: friendStatusDataType) => {
             if (item.uid === data.uid) return item.status;
             return 0;
           });
