@@ -122,11 +122,15 @@ export const updateBothFriendStatus = async (uid: string, friendUid: string, sta
     await Promise.all([
       updateFriendStatus(uid, friendUid, status),
       updateFriendStatus(friendUid, uid, status),
-    ]);
+    ]).then(async () => {
+      if (status === 5) {
+        await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
+        await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
+      }
+    });
 
     return { code: 'SUCCESS', message: "更新成功" };
   } catch (error) {
-    console.error('更新好友狀態失敗:', error);
     return { code: 'ERROR', message: "更新失敗", error };
   }
 };

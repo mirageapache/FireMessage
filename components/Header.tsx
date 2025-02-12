@@ -17,10 +17,10 @@ import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
 import { RootState } from "@/store";
-import { setDarkMode } from "@/store/sysSlice";
+import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { notificationDataType, notificationResponseType } from "@/types/notificationType";
-import { getNotification } from "@/lib/notification";
+import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -39,12 +39,21 @@ function Header() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
 
+  /** 取得通知訊息 */
   const handleGetNotification = async () => {
-    const res = await getNotification(userData?.uid || "", 5) as unknown as notificationResponseType;
+    const res = await getNotification(userData?.uid || "", 10) as unknown as notificationResponseType;
     if (res.code === "SUCCESS") {
-      setNotificationCount(res.count);
+      setNotificationCount(res.unCheckedCount);
       setNotificationData(res.data);
+      dispatch(setUnCheckedNotiCount(res.unCheckedCount));
     }
+  };
+
+  /** 處理開啟通知行為 */
+  const handleOpenNotification = async () => {
+    const result = await updateNotificationIsChecked(userData?.uid || "");
+    if (result.code === "SUCCESS") handleGetNotification();
+    setShowNotificationModal(true);
   };
 
   useEffect(() => {
@@ -113,11 +122,11 @@ function Header() {
                 type="button"
                 className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
                 aria-label="通知"
-                onClick={() => setShowNotificationModal(true)}
+                onClick={() => handleOpenNotification()}
               >
                 <FontAwesomeIcon icon={faBell} size="lg" />
                 <span className="absolute top-2 right-6">
-                  {notificationCount > 0 && <NotifyTip amount={notificationCount} /> }
+                  <NotifyTip amount={notificationCount} />
                 </span>
               </button>
 
@@ -142,7 +151,7 @@ function Header() {
             {showDropdown && (
               <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-50">
                 <Link
-                  href={`/profile/${userData?.uid}`}
+                  href="/profile"
                   className={cn(dropdownItemStyle, "flex justify-start items-center gap-2 px-2 hover:text-[var(--text-color)]")}
                   onClick={() => setShowDropdown(false)}
                 >

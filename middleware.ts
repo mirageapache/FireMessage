@@ -26,6 +26,10 @@ export const config = {
     '/login',
     '/register',
     '/dashboard/:path*',
-    '/profile/:path*',
+    '/profile',
+    '/friend',
+    '/search',
+    '/setting',
+    '/notification',
   ],
 };

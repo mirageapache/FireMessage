@@ -38,14 +38,8 @@ function Friend() {
 
   /** 更新好友狀態 */
   const handleUpdateFriendStatus = async (uid: string, friendUid: string, status: number) => {
-    // const userUpdateResult = await updateFriendStatus(uid, friendUid, status);
-    // const friendUpdateResult = await updateFriendStatus(friendUid, uid, status);
-    // console.log(userUpdateResult, friendUpdateResult);
-
     const result = await updateBothFriendStatus(uid, friendUid, status);
-
     if (result.code === "SUCCESS") {
-      // await updateNotification(friendUid, "friend", "邀請已接受", "已成為好友！");
       if (status === 5) {
         handleGetFriendRequestList();
         handleGetFriendList();

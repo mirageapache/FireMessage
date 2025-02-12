@@ -25,13 +25,12 @@ function NotificationModal({
       </div>
       <div className="flex flex-col gap-2 mt-2">
         {isEmpty(data) ? (
-          <h5 className="py-4">- 尚無通知 -</h5>
+          <h5 className="py-4">-尚無通知-</h5>
         ) : (
           <div>
             {notifiItem}
           </div>
         )}
-
       </div>
     </div>
   );

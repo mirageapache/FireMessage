@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 function UserProfile({ params }: { params: { uid: string } }) {
   const currentUid = useAppSelector((state) => state.user.userData?.uid); // 當前使用者
   const router = useRouter();
-  if (currentUid === params.uid) router.push(`/profile/${currentUid}`);
+  if (currentUid === params.uid) router.push("/profile");
 
   const [userData, setUserData] = useState<userDataType>();
   const listItemStyle = "flex justify-between items-center";

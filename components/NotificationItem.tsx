@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import Link from 'next/link';
 import { notificationDataType } from '@/types/notificationType';
+import { updateNotificationIsRead } from '@/lib/notification';
 import Avatar from './Avatar';
 
 function NotificationItem({
@@ -15,7 +16,8 @@ function NotificationItem({
     <Link
       href="/friend"
       className="flex justify-between items-center gap-2 hover:bg-[var(--hover-bg-color)] p-2 rounded-lg cursor-pointer"
-      onClick={() => {
+      onClick={async () => {
+        await updateNotificationIsRead(item.id);
         setShowNotificationModal(false);
       }}
     >
@@ -31,9 +33,12 @@ function NotificationItem({
           <strong>{item.sourceUserData.userName}</strong>
           {item.content}
         </p>
+        <p className="text-md text-[var(--secondary-text-color)]">{moment(item?.createdAt).format("MM/DD")}</p>
       </div>
-      <div className="">
-        <p>{moment(item?.createdAt).format("MM/DD")}</p>
+      <div className="relative p-2">
+        {!(item.isRead) && (
+          <span className="block w-2 h-2 bg-[var(--brand-color)] rounded-full" />
+        )}
       </div>
     </Link>
   );

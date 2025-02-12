@@ -18,8 +18,9 @@ import { RootState } from "@/store";
 import { useAppDispatch } from "@/store/hooks";
 import { setDarkMode } from "@/store/sysSlice";
 import { cn } from "@/lib/utils";
-import { authResponseType } from "@/types/authType";
 import { logout } from "@/lib/auth";
+import { updateNotificationIsChecked } from "@/lib/notification";
+import { authResponseType } from "@/types/authType";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import { Button } from "./ui/button";
@@ -28,10 +29,16 @@ function BottomNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const userData = useSelector((state: RootState) => state.user.userData);
+  const unCheckedNotiCount = useSelector((state: RootState) => state.system.unCheckedNotiCount);
   const dispatch = useAppDispatch();
   const path = usePathname();
   const currentPath = path?.slice(1);
   const basicItemStyle = "flex justify-center w-full";
+
+  /** 處理開啟通知行為 */
+  const handleOpenNotification = async () => {
+    await updateNotificationIsChecked(userData?.uid || "");
+  };
 
   // 監聽螢幕 resize
   useEffect(() => {
@@ -62,9 +69,10 @@ function BottomNavbar() {
         href="/notification"
         aria-label="通知"
         className={cn(currentPath === "notification" && "activeItem", basicItemStyle, "relative")}
+        onClick={() => handleOpenNotification()}
       >
         <FontAwesomeIcon icon={faBell} size="lg" />
-        <NotifyTip amount={11} />
+        <NotifyTip amount={unCheckedNotiCount} />
       </Link>
       <button aria-label="使用者選單" type="button" onClick={() => setIsOpen(true)} className={cn(basicItemStyle)}>
         <Avatar
@@ -93,7 +101,7 @@ function BottomNavbar() {
         </Button>
         <nav className="flex flex-col justify-between text-white h-full pt-12 z-50">
           <div className="flex flex-col gap-6 text-3xl">
-            <Link href={`/profile/${userData?.uid}`} className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
+            <Link href="/profile" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>個人資料</Link>
             <Link href="/friend" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>好友</Link>
             <Link href="/search" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>搜尋</Link>
             <Link href="/setting" className="hover:text-[var(--active)]" onClick={() => setIsOpen(false)}>設定</Link>
