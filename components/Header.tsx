@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faMoon,
+  faSearch,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "@/lib/auth";
@@ -15,30 +16,63 @@ import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
+import { useNotification } from "@/hooks/useNotification";
 import { RootState } from "@/store";
-import { setDarkMode } from "@/store/sysSlice";
+import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { notificationDataType, notificationResponseType } from "@/types/notificationType";
+import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
 import Avatar from "./Avatar";
+import NotifyTip from "./NotifyTip";
+import NotificationModal from "./NotificationModal";
 
 function Header() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cookies = new Cookies();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const navItemStyle = "rounded-full p-[5px]";
-  const navItemHoverStyle = " hover:bg-gray-200 dark:hover:bg-gray-600";
+  const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
+
+  /** 取得通知訊息 */
+  const handleGetNotification = async () => {
+    const res = await getNotification(userData?.uid || "", 10) as unknown as notificationResponseType;
+    if (res.code === "SUCCESS") {
+      setNotificationCount(res.unCheckedCount);
+      setNotificationData(res.data);
+      dispatch(setUnCheckedNotiCount(res.unCheckedCount));
+    }
+  };
+
+  /** 處理開啟通知行為 */
+  const handleOpenNotification = async () => {
+    const result = await updateNotificationIsChecked(userData?.uid || "");
+    if (result.code === "SUCCESS") handleGetNotification();
+    setShowNotificationModal(true);
+  };
+
+  // 監聽通知
+  useNotification(userData?.uid || "", handleGetNotification);
+
+  useEffect(() => {
+    if (isLogin) handleGetNotification();
+  }, [userData?.uid, isLogin]);
 
   // 監聽螢幕 resize
   useEffect(() => {
     const handleResize = () => {
       if (showDropdown) setShowDropdown(false);
+      if (showNotificationModal) setShowNotificationModal(false);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize); // 清理監聽
-  }, [showDropdown]);
+  }, [showDropdown, showNotificationModal]);
 
   return (
     <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
@@ -58,6 +92,17 @@ function Header() {
         {isLogin && (
           <>
             <div className="hidden sm:flex items-center gap-1">
+              {/* 搜尋 */}
+              <button
+                type="button"
+                aria-label="搜尋"
+                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                onClick={() => router.push("/search")}
+              >
+                <FontAwesomeIcon icon={faSearch} size="lg" />
+              </button>
+
+              {/* 深色模式 */}
               <button
                 type="button"
                 className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
@@ -75,13 +120,21 @@ function Header() {
                   className="absolute h-[21px] w-[21px] text-yellow-600 translate-y-5 opacity-0 transform duration-300 ease-linear dark:translate-y-0 dark:opacity-100"
                 />
               </button>
+
+              {/* 通知 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
                 aria-label="通知"
+                onClick={() => handleOpenNotification()}
               >
                 <FontAwesomeIcon icon={faBell} size="lg" />
+                <span className="absolute top-2 right-6">
+                  <NotifyTip amount={notificationCount} />
+                </span>
               </button>
+
+              {/* 使用者選單 */}
               <button
                 aria-label="使用者選單"
                 type="button"
@@ -98,11 +151,11 @@ function Header() {
               </button>
             </div>
 
-            {/* 使用者選單 */}
+            {/* 使用者下拉選單 */}
             {showDropdown && (
               <div className="w-[250px] absolute top-[50px] right-3 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-3 shadow-lg z-50">
                 <Link
-                  href={`/profile/${userData?.uid}`}
+                  href="/profile"
                   className={cn(dropdownItemStyle, "flex justify-start items-center gap-2 px-2 hover:text-[var(--text-color)]")}
                   onClick={() => setShowDropdown(false)}
                 >
@@ -140,12 +193,30 @@ function Header() {
                 </div>
               </div>
             )}
+
+            {/* 通知彈窗 */}
+            {showNotificationModal && (
+              <div className="w-[450px] absolute top-[50px] right-12 border border-[var(--divider-color)] rounded-lg bg-[var(--card-bg-color)] p-5 shadow-lg z-50">
+                <NotificationModal
+                  data={notificationData}
+                  setShowNotificationModal={setShowNotificationModal}
+                />
+              </div>
+            )}
           </>
         )}
       </nav>
-      {showDropdown
+      {(showDropdown || showNotificationModal)
         && (
-          <button aria-label="關閉使用者選單" type="button" className="fixed top-[50px] left-0 w-screen h-[calc(100vh-50px)] cursor-default" onClick={() => setShowDropdown(false)} />
+          <button
+            aria-label="關閉選單"
+            type="button"
+            className="fixed top-0 left-0 w-screen h-screen cursor-default"
+            onClick={() => {
+              setShowDropdown(false);
+              setShowNotificationModal(false);
+            }}
+          />
         )}
     </header>
   );

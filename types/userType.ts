@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from "next-auth";
 
 /** 使用者資料 */
@@ -16,6 +17,7 @@ export type userDataType = Omit<User, 'providerData'> & {
   loginType: string;
   userType: string;
   emailVerified: boolean;
+  friendStatus: number;
 };
 
 /** 使用者設定 */

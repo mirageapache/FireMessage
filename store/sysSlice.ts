@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface SysState {
   userSettings: userSettingsType;
+  unCheckedNotiCount: number;
 }
 
 const initialState: SysState = {
@@ -12,6 +13,7 @@ const initialState: SysState = {
     themeMode: "default",
     language: "zh-TW",
   },
+  unCheckedNotiCount: 0, // 未查看的通知數量
 };
 
 const sysSlice = createSlice({
@@ -40,6 +42,14 @@ const sysSlice = createSlice({
     setLanguage: (state, action: PayloadAction<string>) => {
       state.userSettings.language = action.payload;
     },
+    // 清除userSettings
+    clearUserSettings: (state) => {
+      state.userSettings = initialState.userSettings;
+    },
+    // 設定未查看的通知數量
+    setUnCheckedNotiCount: (state, action: PayloadAction<number>) => {
+      state.unCheckedNotiCount = action.payload;
+    },
   },
 });
 
@@ -49,5 +59,7 @@ export const {
   setToastifyPosition,
   setThemeMode,
   setLanguage,
+  clearUserSettings,
+  setUnCheckedNotiCount,
 } = sysSlice.actions;
 export default sysSlice.reducer;

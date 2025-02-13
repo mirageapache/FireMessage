@@ -1,16 +1,47 @@
+/* eslint-disable import/no-cycle */
 import { db } from "@/firebase";
 import {
   collection, query, where, getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { checkFriendStatus } from "./friend";
 
 /** 取得使用者資料 */
-export const getUserData = async (uid: string) => {
+export const getUserData = async (uid: string, currentUid: string) => {
   try {
     const usersRef = collection(db, "users");
     const usersQuery = query(usersRef, where("uid", "==", uid));
     const usersSnapshot = await getDocs(usersQuery);
-    return usersSnapshot.docs[0].data();
+    if (usersSnapshot.empty) return { code: "NOT_FOUND", message: "用戶不存在" };
+
+    const friendStatus = await checkFriendStatus(currentUid, uid);
+    const userData = {
+      ...usersSnapshot.docs[0].data(),
+      // createdAt在firestore的日期格式是Timestamp，需轉換成ISO字串再寫入redux才不會報錯
+      createdAt: usersSnapshot.docs[0].data().createdAt.toDate().toISOString(),
+      friendStatus,
+    };
+    return userData;
+  } catch (error) {
+    return { code: "ERROR", message: error };
+  }
+};
+
+/** 取得使用者(精簡)資料 */
+export const getSimpleUserData = async (uid: string) => {
+  try {
+    const usersRef = collection(db, "users");
+    const usersQuery = query(usersRef, where("uid", "==", uid));
+    const usersSnapshot = await getDocs(usersQuery);
+    if (usersSnapshot.empty) return { code: "NOT_FOUND", message: "用戶不存在" };
+
+    const userData = {
+      uid: usersSnapshot.docs[0].id,
+      userName: usersSnapshot.docs[0].data().userName,
+      avatarUrl: usersSnapshot.docs[0].data().avatarUrl,
+      bgColor: usersSnapshot.docs[0].data().bgColor,
+    };
+    return userData;
   } catch (error) {
     return { code: "ERROR", message: error };
   }
