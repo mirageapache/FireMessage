@@ -2,13 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-// import Image from 'next/image';
+import Link from "next/link";
 
 function HomeAuthSection() {
-  const router = useRouter();
-
   return (
     <section className="flex flex-col lg:flex-row justify-center w-screen h-screen lg:px-8">
       <div className="flex justify-center items-center">
@@ -30,18 +26,18 @@ function HomeAuthSection() {
           </span>
         </div>
         <div className="flex flex-col justify-center items-center lg:justify-start w-full sm:w-1/2 h-full">
-          <Button
+          <Link
+            href="/login"
             className="btn mb-5 bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
-            onClick={() => router.push("/login")}
           >
             登入
-          </Button>
-          <Button
+          </Link>
+          <Link
+            href="/register"
             className="btn bg-white hover:bg-white text-[var(--brand-secondary-color)]"
-            onClick={() => router.push("/register")}
           >
             註冊
-          </Button>
+          </Link>
         </div>
       </div>
     </section>

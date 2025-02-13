@@ -117,7 +117,7 @@
 @layer utilities {
   /* Common Styles */
   .btn {
-    @apply w-80 h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
+    @apply flex justify-center items-center w-80 h-[50px] text-2xl sm:text-xl rounded-full hover:drop-shadow-lg;
   }
 
   .formInput {

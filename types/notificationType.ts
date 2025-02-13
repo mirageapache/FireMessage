@@ -19,6 +19,7 @@ export type immediateNotiDataType = {
   message: string;
   timestamp: string;
   type: string;
+  isRead: boolean;
 };
 
 /** 通知資料 Response Type */

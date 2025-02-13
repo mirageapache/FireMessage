@@ -76,6 +76,7 @@ export const createFriendRequest = async (uid: string, friendUid: string) => {
       message: `${senderData.userName} 向您發送了好友邀請`,
       fromUid: uid,
       timestamp: serverTimestamp(),
+      isRead: false,
     });
 
     return { code: 'SUCCESS', message: "已發送好友邀請" };

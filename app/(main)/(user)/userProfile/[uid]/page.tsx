@@ -92,6 +92,7 @@ function UserProfile({ params }: { params: { uid: string } }) {
                 const reuslt = await createFriendRequest(currentUid || "", params.uid);
                 if (reuslt.code === "SUCCESS") {
                   toast.success(reuslt.message);
+                  handleGetUserData();
                 } else {
                   toast.error(reuslt.message);
                 }
