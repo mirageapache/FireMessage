@@ -1,5 +1,5 @@
 import { userDataType } from "./userType";
-
+/** 通知資料 */
 export type notificationDataType = {
   id: string;
   uid: string;
@@ -10,6 +10,14 @@ export type notificationDataType = {
   link: string;
   sourceUserData: userDataType;
   isChecked: boolean;
+};
+
+/** 即時通知資料 */
+export type immediateNotiDataType = {
+  fromuid: string;
+  message: string;
+  timestamp: string;
+  type: string;
 };
 
 export type notificationResponseType = {

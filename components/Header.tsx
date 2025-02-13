@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
+import { useNotification } from "@/hooks/useNotification";
 import { RootState } from "@/store";
 import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -55,6 +56,9 @@ function Header() {
     if (result.code === "SUCCESS") handleGetNotification();
     setShowNotificationModal(true);
   };
+
+  // 監聽通知
+  useNotification(userData?.uid || "", handleGetNotification);
 
   useEffect(() => {
     if (isLogin) handleGetNotification();

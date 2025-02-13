@@ -1,14 +1,15 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable max-len */
 
-import { db } from "@/firebase";
-import { friendStatusDataType } from "@/types/userType";
+import { db, realtimeDb } from "@/firebase";
+import { friendStatusDataType, userDataType } from "@/types/userType";
 import {
   collection, query, where, getDocs,
   setDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
+import { ref, push, serverTimestamp } from "firebase/database";
 import { getSimpleUserData } from "./user";
 import { createNotification } from "./notification";
 
@@ -64,7 +65,19 @@ export const createFriendRequest = async (uid: string, friendUid: string) => {
     await createFriend(uid, friendUid, 1);
     await createFriend(friendUid, uid, 2);
     await createNotification(friendUid, "friendRequest", "已發送好友邀請給你", uid);
-    return { code: 'SUCCESS', message: "發送好友邀請成功" };
+
+    // 取得發送者的資料
+    const senderData = await getSimpleUserData(uid) as unknown as userDataType;
+    // 在 Realtime Database 中建立通知
+    const notificationRef = ref(realtimeDb, `notifications/${friendUid}`);
+    await push(notificationRef, {
+      type: 'friendRequest',
+      message: `${senderData.userName} 向您發送了好友邀請`,
+      fromUid: uid,
+      timestamp: serverTimestamp(),
+    });
+
+    return { code: 'SUCCESS', message: "已發送好友邀請" };
   } catch (error) {
     return { code: 'ERROR', message: "發送好友邀請失敗", error };
   }

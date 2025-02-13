@@ -8,6 +8,7 @@ import {
   updateDoc,
   addDoc,
   writeBatch,
+  orderBy,
 } from "firebase/firestore";
 import { getSimpleUserData } from "./user";
 
@@ -17,6 +18,7 @@ export const getNotification = async (uid: string, limitCount?: number) => {
     const notificationRef = collection(db, "notifications");
     const queryConditions: QueryConstraint[] = [
       where("uid", "==", uid),
+      orderBy("createdAt", "desc"),
     ];
 
     if (limitCount) queryConditions.push(limit(limitCount));
