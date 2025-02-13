@@ -46,19 +46,25 @@ function Dashboard() {
           <h4 className="text-left mb-2">推薦好友</h4>
           <div className={sectionStyle}>
             <UserItem
+              uid="Test_1"
               userName="Test"
               avatarUrl=""
               userAccount="Test_1"
+              bgColor="#3b82f6"
             />
             <UserItem
+              uid="Test_2"
               userName="Test"
               avatarUrl=""
               userAccount="Test_2"
+              bgColor="#3b82f6"
             />
             <UserItem
+              uid="Test_3"
               userName="Test"
               avatarUrl=""
               userAccount="Test_3"
+              bgColor="#3b82f6"
             />
           </div>
         </section>

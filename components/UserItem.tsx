@@ -12,6 +12,7 @@ interface UserItemProps {
   avatarUrl: string;
   userAccount: string;
   status?: number;
+  bgColor: string;
 }
 
 function UserItem({
@@ -20,6 +21,7 @@ function UserItem({
   avatarUrl,
   userAccount,
   status,
+  bgColor,
 }: UserItemProps) {
   return (
     <Link href={`/userProfile/${uid}`} className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg">
@@ -29,7 +31,7 @@ function UserItem({
           avatarUrl={avatarUrl}
           classname="w-10 h-10"
           textSize="text-sm"
-          bgColor="#3b82f6"
+          bgColor={bgColor}
         />
       </div>
       <div className="w-full px-2">

@@ -31,8 +31,8 @@ function UserProfile({ params }: { params: { uid: string } }) {
   };
 
   useEffect(() => {
-    handleGetUserData();
-  }, []);
+    if (currentUid) handleGetUserData();
+  }, [currentUid]);
 
   return (
     <>
@@ -109,7 +109,7 @@ function UserProfile({ params }: { params: { uid: string } }) {
               已發送好友邀請
             </Button>
           )}
-          {userData?.friendStatus === 2 && (
+          {userData?.friendStatus === 5 && (
             <Button
               type="button"
               aria-label="好友管理"

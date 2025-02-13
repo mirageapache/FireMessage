@@ -150,6 +150,7 @@ function Search() {
                   avatarUrl={item.avatarUrl}
                   userAccount={item.userAccount}
                   status={item.friendStatus}
+                  bgColor={item.bgColor}
                 />
               );
             })}

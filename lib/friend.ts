@@ -95,7 +95,7 @@ export const checkFriendStatus = async (uid: string, friendUid: string) => {
       if (item.uid === friendUid) return item.status;
       return 0;
     });
-    return friendStatus;
+    return friendStatus.status;
   }
   return 0;
 };
