@@ -1,5 +1,5 @@
 import { db } from "@/firebase";
-import { friendStatusDataType } from "@/types/userType";
+import { friendStatusDataType } from "@/types/friendType";
 import {
   collection, getDocs, query, where,
 } from "firebase/firestore";

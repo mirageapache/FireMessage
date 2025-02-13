@@ -4,16 +4,11 @@ import Avatar from '@/components/Avatar';
 import { getFriendList, updateBothFriendStatus } from '@/lib/friend';
 import { RootState } from '@/store';
 import { useAppSelector } from '@/store/hooks';
-import { apiResponseType } from '@/types/api';
-import { friendDataType } from '@/types/userType';
+import { friendDataType, friendResponseType } from '@/types/friendType';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-interface friendResponseType extends apiResponseType {
-  data: friendDataType[];
-}
 
 function Friend() {
   const userData = useAppSelector((state: RootState) => state.user.userData);

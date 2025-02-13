@@ -2,7 +2,8 @@
 /* eslint-disable max-len */
 
 import { db, realtimeDb } from "@/firebase";
-import { friendStatusDataType, userDataType } from "@/types/userType";
+import { userDataType } from "@/types/userType";
+import { friendStatusDataType } from "@/types/friendType";
 import {
   collection, query, where, getDocs,
   setDoc,

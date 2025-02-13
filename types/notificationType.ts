@@ -1,3 +1,4 @@
+import { apiResponseType } from "./api";
 import { userDataType } from "./userType";
 /** 通知資料 */
 export type notificationDataType = {
@@ -20,9 +21,8 @@ export type immediateNotiDataType = {
   type: string;
 };
 
-export type notificationResponseType = {
-  code: string;
+/** 通知資料 Response Type */
+export interface notificationResponseType extends apiResponseType {
   unCheckedCount: number;
   data: notificationDataType[];
-  error: unknown;
-};
+}
