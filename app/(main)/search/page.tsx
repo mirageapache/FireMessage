@@ -92,7 +92,7 @@ function Search() {
         <button
           type="button"
           aria-label="清除搜尋"
-          className="absolute top-[25px] right-3 w-8 h-8 py-1 text-[var(--input-text-color)] hover:text-[var(--active)] rounded-md"
+          className="absolute top-[25px] right-3 w-8 h-8 py-1 text-[var(--input-text-color)] hover:text-[var(--active)] rounded-lg"
           onClick={() => {
             if (inputRef.current) {
               inputRef.current.value = "";
@@ -114,7 +114,7 @@ function Search() {
               {existingHistory.map((item: string) => (
                 <button
                   type="button"
-                  className="py-2 px-3 hover:bg-[var(--hover-bg-color)] w-full text-left text-xl rounded-md"
+                  className="py-2 px-3 hover:bg-[var(--hover-bg-color)] w-full text-left text-xl rounded-lg"
                   key={item}
                   onClick={() => handleHistoryClick(item)}
                 >
@@ -125,7 +125,7 @@ function Search() {
             <button
               type="button"
               aria-label="清除搜尋紀錄"
-              className="py-2 px-3 hover:bg-[var(--secondary)] text-left rounded-md"
+              className="py-2 px-3 hover:bg-[var(--secondary)] text-left rounded-lg"
               onClick={() => clearSearchHistory()}
             >
               清除紀錄

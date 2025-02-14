@@ -1,18 +1,18 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable max-len */
 
-import { db, realtimeDb } from "@/firebase";
+import { db } from "@/firebase";
 import { userDataType } from "@/types/userType";
-import { friendStatusDataType } from "@/types/friendType";
+import { friendDataType, friendStatusDataType } from "@/types/friendType";
 import {
   collection, query, where, getDocs,
   setDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { ref, push, serverTimestamp } from "firebase/database";
 import { getSimpleUserData } from "./user";
-import { createNotification } from "./notification";
+import { createNotification, sendImmediateNotification } from "./notification";
+import moment from "moment";
 
 /** 建立好友 */
 export const createFriend = async (uid: string, friendUid: string, status: number) => {
@@ -69,15 +69,12 @@ export const createFriendRequest = async (uid: string, friendUid: string) => {
 
     // 取得發送者的資料
     const senderData = await getSimpleUserData(uid) as unknown as userDataType;
-    // 在 Realtime Database 中建立通知
-    const notificationRef = ref(realtimeDb, `notifications/${friendUid}`);
-    await push(notificationRef, {
-      type: 'friendRequest',
-      message: `${senderData.userName} 向您發送了好友邀請`,
-      fromUid: uid,
-      timestamp: serverTimestamp(),
-      isRead: false,
-    });
+    await sendImmediateNotification(
+      uid,
+      friendUid,
+      "friendRequest",
+      `${senderData.userName} 向您發送了好友邀請`,
+    );
 
     return { code: 'SUCCESS', message: "已發送好友邀請" };
   } catch (error) {
@@ -117,7 +114,7 @@ export const getFriendList = async (uid: string, status: number) => {
         const sourceUserData = await getSimpleUserData(friendDoc.uid);
         return {
           ...friendDoc,
-          createdAt: friendDoc.createdAt.toDate().toISOString(),
+          createdAt: friendDoc.createdAt.toDate(),
           sourceUserData: sourceUserData || {},
         };
       });
@@ -141,6 +138,14 @@ export const updateBothFriendStatus = async (uid: string, friendUid: string, sta
       if (status === 5) {
         await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
         await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
+        // 發送即時通知
+        const senderData = await getSimpleUserData(uid) as unknown as userDataType; // 取得發送者的資料
+        await sendImmediateNotification(
+          uid,
+          friendUid,
+          "friendAccepted",
+          `您與${senderData.userName}已成為好友`,
+        );
       }
     });
 
@@ -174,4 +179,15 @@ export const rejectFriendRequest = async (uid: string, friendUid: string) => {
 export const unfriend = async (uid: string, friendUid: string) => {
   const result = await updateBothFriendStatus(uid, friendUid, 8);
   return { code: 'SUCCESS', result };
+};
+
+/** 檢查新好友(若有3天內的新好友則顯示在dashboard) */
+export const checkNewFriend = (friendList: friendDataType[] | null) => {
+  if (!friendList || !Array.isArray(friendList) || friendList.length === 0) return [];
+
+  const threeDaysAgo = moment().subtract(3, "days");  // 計算3天前的時間戳記
+  const newFriendList = friendList
+    .filter((friend) => moment(friend.createdAt).isAfter(threeDaysAgo))
+    .slice(0, 3); // 只取前3筆資料
+  return newFriendList;
 };

@@ -25,12 +25,12 @@ export const useNotification = (uid: string, handleGetNotification: () => void) 
       if (!notiData.isRead) {
         // 顯示即時通知
         toast(notiData.message);
-        // 更新通知已讀狀態
-        update(ref(realtimeDb), {
-          [`notifications/${uid}/${latestId}/isRead`]: true,
-        });
         // 更新通知資料
         handleGetNotification();
+        // 直接刪除已讀的通知
+        update(ref(realtimeDb), {
+          [`notifications/${uid}/${latestId}`]: null, // 設為 null 即可刪除該筆資料
+        });
       }
     });
   }, [uid]);

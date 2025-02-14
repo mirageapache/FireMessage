@@ -23,8 +23,20 @@ function UserItem({
   status,
   bgColor,
 }: UserItemProps) {
+  let linkString = "";
+  switch (status) {
+    case 0:
+      linkString = `/userProfile/${uid}`;
+      break;
+    case 5:
+      linkString = "/chat";
+      break;
+    default:
+      linkString = `/userProfile/${uid}`;
+  }
+
   return (
-    <Link href={`/userProfile/${uid}`} className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg">
+    <Link href={linkString} className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg">
       <div>
         <Avatar
           userName={userName}
@@ -38,7 +50,7 @@ function UserItem({
         <p>{userName}</p>
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{userAccount}</p>
       </div>
-      {(isEmpty(status) || status === 0) && (
+      {(status === 0) && (
         <div className="flexjustify-center items-center hover:text-[var(--active)]">
           <FontAwesomeIcon icon={faUserPlus} className="w-8 h-5" />
         </div>

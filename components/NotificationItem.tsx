@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notificationDataType } from '@/types/notificationType';
 import { updateNotificationIsRead } from '@/lib/notification';
 import Avatar from './Avatar';
+import { formatDateTime } from '@/lib/utils';
 
 function NotificationItem({
   item,
@@ -33,7 +34,7 @@ function NotificationItem({
           <strong>{item.sourceUserData.userName}</strong>
           {item.content}
         </p>
-        <p className="text-md text-[var(--secondary-text-color)]">{moment(item?.createdAt).format("MM/DD")}</p>
+        <p className="text-md text-[var(--secondary-text-color)]">{formatDateTime(item?.createdAt)}</p>
       </div>
       <div className="relative p-2">
         {!(item.isRead) && (

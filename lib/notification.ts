@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable max-len */
 
-import { db } from "@/firebase";
+import { db, realtimeDb } from "@/firebase";
 import {
   collection, getDocs, limit, query, where, QueryConstraint,
   doc,
@@ -9,7 +9,9 @@ import {
   addDoc,
   writeBatch,
   orderBy,
+  serverTimestamp,
 } from "firebase/firestore";
+import { push, ref } from "firebase/database";
 import { getSimpleUserData } from "./user";
 
 /** 取得通知訊息 */
@@ -38,7 +40,7 @@ export const getNotification = async (uid: string, limitCount?: number) => {
       return {
         ...data,
         id: docItem.id,
-        createdAt: data.createdAt.toDate().toISOString(),
+        createdAt: data.createdAt.toDate(),
         sourceUserData: sourceUserData || {},
         isChecked: data.isChecked,
       };
@@ -111,5 +113,18 @@ export const updateNotificationIsRead = async (notificationId: string) => {
   const notificationRef = collection(db, "notifications");
   await updateDoc(doc(notificationRef, notificationId), {
     isRead: true,
+  });
+};
+
+/** 發送即時通知 */
+export const sendImmediateNotification = async (uid: string, friendUid: string, type: string, message: string) => {
+  // 在 Realtime Database 中建立通知
+  const notificationRef = ref(realtimeDb, `notifications/${friendUid}`);
+  await push(notificationRef, {
+    type,
+    message,
+    fromUid: uid,
+    timestamp: serverTimestamp(),
+    isRead: false,
   });
 };
