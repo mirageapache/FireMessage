@@ -12,6 +12,9 @@ import { userDataType, userSettingsType } from "@/types/userType";
 import { getUserData, getUserSettings } from "@/lib/user";
 import { setInitSetting } from "@/store/sysSlice";
 import ThemeProvider from '@/components/ThemeProvider';
+import { getFriendList } from "@/lib/friend";
+import { friendResponseType } from "@/types/friendType";
+import { setFriendList } from "@/store/friendSlice";
 
 // 監聽 Firebase 認證狀態
 function AuthStateListener({ children }: { children: React.ReactNode }) {
@@ -27,6 +30,8 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
         }));
         const userSettings = await getUserSettings(currentUser.uid) as userSettingsType;
         if (userSettings) dispatch(setInitSetting(userSettings));
+        const friendList = await getFriendList(currentUser.uid, 5) as friendResponseType;
+        if (friendList) dispatch(setFriendList(friendList.data));
       }
       dispatch(setLoading(false));
     });
