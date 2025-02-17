@@ -7,11 +7,12 @@ import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { setFriendList } from '@/store/friendSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setOpenChatRoomId } from '@/store/sysSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -107,7 +108,11 @@ function Friend() {
 
   /** 好友列表 */
   const FriendList = (isEmpty(friendData)) ? <p>-尚無好友-</p> : friendData!.map((item) => (
-    <div key={item.uid} className="flex justify-between items-center gap-2 hover:bg-[var(--hover-bg-color)] p-2 rounded-lg cursor-pointer">
+    <Link
+      key={item.uid}
+      href={`/userProfile/${item.uid}`}
+      className="flex justify-between items-center gap-2 hover:bg-[var(--hover-bg-color)] p-2 rounded-lg cursor-pointer"
+    >
       <div className="flex items-center gap-2">
         <Avatar
           userName={item.sourceUserData.userName}
@@ -120,25 +125,39 @@ function Friend() {
           <strong>{item.sourceUserData.userName}</strong>
         </p>
       </div>
-      {openDropdownUid === item.uid && (
-        <div className="relative flex justify-center items-center gap-2">
-          <button type="button" className="mr-2 hover:bg-gray-500 dark:hover:bg-gray-800 rounded-lg p-1 text-[var(--secondary-text-color)] hover:text-[var(--active)]">
-            <FontAwesomeIcon icon={faEllipsis} className='w-6 h-5 translate-y-[2px]'/>
-          </button>
-          <div className="absolute top-10 right-0 w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2">
-            <button type='button' className={cn(dropdownItemStyle)}>聊天</button>
-            <button type='button' className={cn(dropdownItemStyle)}>查看好友資訊</button>
+      <div className="relative flex justify-center items-center gap-2">
+        <button
+          type="button"
+          className="mr-2 hover:bg-gray-500 dark:hover:bg-gray-800 rounded-lg p-1 text-[var(--secondary-text-color)] hover:text-[var(--active)]"
+          onClick={() => {
+            setOpenDropdownUid(item.uid);
+          }}
+        >
+          <FontAwesomeIcon icon={faEllipsis} className="w-6 h-5 translate-y-[2px]" />
+        </button>
+        {openDropdownUid === item.uid && (
+          <div className="absolute top-10 right-0 w-4/5 sm:w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2">
+            <Link
+              href="/chat"
+              className={cn(dropdownItemStyle)}
+              onClick={() => {
+                dispatch(setOpenChatRoomId(item.uid));
+              }}
+            >
+              聊天
+            </Link>
+            <Link href={`/userProfile/${item.uid}`} className={cn(dropdownItemStyle)}>查看好友資訊</Link>
             <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
-            <button type='button' className={cn(dropdownItemStyle)}>封鎖</button>
-            <button type='button' className={cn(dropdownItemStyle)}>刪除</button>
+            <button type="button" className={cn(dropdownItemStyle)}>封鎖</button>
+            <button type="button" className={cn(dropdownItemStyle)}>刪除</button>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Link>
   ));
 
   return (
-    <div>
+    <div className="relative">
       {!isEmpty(RequestList) && (
         <div className="my-2 border-b border-[var(--divider-color)] pb-2">
           <h4>好友邀請</h4>
@@ -151,10 +170,16 @@ function Friend() {
           <div className="my-2">
             <Spinner />
           </div>
-        ):
-          FriendList        
-        }
+        ) : (
+          FriendList
+        )}
       </div>
+      <button
+        aria-label="關閉選單"
+        type="button"
+        className="fixed top-0 left-0 w-screen h-screen cursor-default z-10"
+        onClick={() => setOpenDropdownUid("")}
+      />
     </div>
   );
 }

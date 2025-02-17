@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface SysState {
   userSettings: userSettingsType;
   unCheckedNotiCount: number;
+  openChatRoomId: string;
 }
 
 const initialState: SysState = {
@@ -14,6 +15,7 @@ const initialState: SysState = {
     language: "zh-TW",
   },
   unCheckedNotiCount: 0, // 未查看的通知數量
+  openChatRoomId: "", // 開啟的聊天室ID
 };
 
 const sysSlice = createSlice({
@@ -50,6 +52,10 @@ const sysSlice = createSlice({
     setUnCheckedNotiCount: (state, action: PayloadAction<number>) => {
       state.unCheckedNotiCount = action.payload;
     },
+    // 設定開啟的聊天室ID
+    setOpenChatRoomId: (state, action: PayloadAction<string>) => {
+      state.openChatRoomId = action.payload;
+    },
   },
 });
 
@@ -61,5 +67,6 @@ export const {
   setLanguage,
   clearUserSettings,
   setUnCheckedNotiCount,
+  setOpenChatRoomId,
 } = sysSlice.actions;
 export default sysSlice.reducer;
