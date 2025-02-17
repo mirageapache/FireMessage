@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { setFriendList } from '@/store/friendSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setOpenChatRoomId } from '@/store/sysSlice';
+import { setActiveChatRoomId } from '@/store/sysSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -141,7 +141,7 @@ function Friend() {
               href="/chat"
               className={cn(dropdownItemStyle)}
               onClick={() => {
-                dispatch(setOpenChatRoomId(item.uid));
+                dispatch(setActiveChatRoomId(item.uid));
               }}
             >
               聊天
