@@ -108,12 +108,15 @@ function Friend() {
 
   /** 好友列表 */
   const FriendList = (isEmpty(friendData)) ? <p>-尚無好友-</p> : friendData!.map((item) => (
-    <Link
+    <div
       key={item.uid}
-      href={`/userProfile/${item.uid}`}
-      className="flex justify-between items-center gap-2 hover:bg-[var(--hover-bg-color)] p-2 rounded-lg cursor-pointer"
+      className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
     >
-      <div className="flex items-center gap-2">
+      <Link
+        href="/chat"
+        className="flex items-center gap-2 w-full p-2"
+        onClick={() => dispatch(setActiveChatRoomId(item.uid))}
+      >
         <Avatar
           userName={item.sourceUserData.userName}
           avatarUrl={item.sourceUserData.avatarUrl}
@@ -124,14 +127,12 @@ function Friend() {
         <p>
           <strong>{item.sourceUserData.userName}</strong>
         </p>
-      </div>
-      <div className="relative flex justify-center items-center gap-2">
+      </Link>
+      <div className="relative flex justify-center items-center gap-2 z-20">
         <button
           type="button"
           className="mr-2 hover:bg-gray-500 dark:hover:bg-gray-800 rounded-lg p-1 text-[var(--secondary-text-color)] hover:text-[var(--active)]"
-          onClick={() => {
-            setOpenDropdownUid(item.uid);
-          }}
+          onClick={() => setOpenDropdownUid(item.uid)}
         >
           <FontAwesomeIcon icon={faEllipsis} className="w-6 h-5 translate-y-[2px]" />
         </button>
@@ -140,9 +141,7 @@ function Friend() {
             <Link
               href="/chat"
               className={cn(dropdownItemStyle)}
-              onClick={() => {
-                dispatch(setActiveChatRoomId(item.uid));
-              }}
+              onClick={() => dispatch(setActiveChatRoomId(item.uid))}
             >
               聊天
             </Link>
@@ -153,19 +152,19 @@ function Friend() {
           </div>
         )}
       </div>
-    </Link>
+    </div>
   ));
 
   return (
     <div className="relative">
       {!isEmpty(RequestList) && (
         <div className="my-2 border-b border-[var(--divider-color)] pb-2">
-          <h4>好友邀請</h4>
+          <h4 className="my-1">好友邀請</h4>
           {RequestList}
         </div>
       )}
       <div className="my-2 border-b border-[var(--divider-color)] pb-2">
-        <h4>好友列表</h4>
+        <h4 className="my-1">好友列表</h4>
         {isLoading ? (
           <div className="my-2">
             <Spinner />
@@ -174,12 +173,14 @@ function Friend() {
           FriendList
         )}
       </div>
-      <button
-        aria-label="關閉選單"
-        type="button"
-        className="fixed top-0 left-0 w-screen h-screen cursor-default z-10"
-        onClick={() => setOpenDropdownUid("")}
-      />
+      {openDropdownUid.length > 0 && (
+        <button
+          aria-label="關閉選單"
+          type="button"
+          className="fixed top-0 left-0 w-screen h-screen cursor-default z-10"
+          onClick={() => setOpenDropdownUid("")}
+        />
+      )}
     </div>
   );
 }

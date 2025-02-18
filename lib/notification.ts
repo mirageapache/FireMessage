@@ -40,7 +40,7 @@ export const getNotification = async (uid: string, limitCount?: number) => {
       return {
         ...data,
         id: docItem.id,
-        createdAt: data.createdAt.toDate(),
+        createdAt: data.createdAt.toDate().toISOString(),
         sourceUserData: sourceUserData || {},
         isChecked: data.isChecked,
       };

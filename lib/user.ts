@@ -18,7 +18,7 @@ export const getUserData = async (uid: string, currentUid: string) => {
     const userData = {
       ...usersSnapshot.docs[0].data(),
       // createdAt在firestore的日期格式是Timestamp，需轉換成ISO字串再寫入redux才不會報錯
-      createdAt: usersSnapshot.docs[0].data().createdAt.toDate(),
+      createdAt: usersSnapshot.docs[0].data().createdAt.toDate().toISOString(),
       friendStatus,
     };
     return userData;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RootState } from '@/store';
 import { useAppSelector } from '@/store/hooks';
 import { Textarea } from './ui/textarea';
@@ -9,6 +9,11 @@ import Spinner from './Spinner';
 function ChatRoom() {
   const roomId = useAppSelector((state: RootState) => state.system.activeChatRoomId);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // 取得聊天室資料
+    setIsLoading(false);
+  }, [roomId]);
 
   if (roomId === "") {
     return (

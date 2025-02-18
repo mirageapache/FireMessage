@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 
 import { db } from "@/firebase";
+import moment from "moment";
 import { userDataType } from "@/types/userType";
 import { friendDataType, friendStatusDataType } from "@/types/friendType";
 import {
@@ -12,7 +13,6 @@ import {
 } from "firebase/firestore";
 import { getSimpleUserData } from "./user";
 import { createNotification, sendImmediateNotification } from "./notification";
-import moment from "moment";
 
 /** 建立好友 */
 export const createFriend = async (uid: string, friendUid: string, status: number) => {
@@ -114,7 +114,7 @@ export const getFriendList = async (uid: string, status: number) => {
         const sourceUserData = await getSimpleUserData(friendDoc.uid);
         return {
           ...friendDoc,
-          createdAt: friendDoc.createdAt.toDate(),
+          createdAt: friendDoc.createdAt.toDate().toISOString(),
           sourceUserData: sourceUserData || {},
         };
       });
@@ -185,7 +185,7 @@ export const unfriend = async (uid: string, friendUid: string) => {
 export const checkNewFriend = (friendList: friendDataType[] | null) => {
   if (!friendList || !Array.isArray(friendList) || friendList.length === 0) return [];
 
-  const threeDaysAgo = moment().subtract(3, "days");  // 計算3天前的時間戳記
+  const threeDaysAgo = moment().subtract(3, "days"); // 計算3天前的時間戳記
   const newFriendList = friendList
     .filter((friend) => moment(friend.createdAt).isAfter(threeDaysAgo))
     .slice(0, 3); // 只取前3筆資料
