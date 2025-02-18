@@ -2,26 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { friendDataType } from "@/types/friendType";
-import { getFriendList } from "@/lib/friend";
+// import { getFriendList } from "@/lib/friend";
 import { useAppSelector } from "@/store/hooks";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 
 function ChatList() {
-  const userData = useAppSelector((state) => state.user.userData);
+  // const userData = useAppSelector((state) => state.user.userData);
+  const FriendListData = useAppSelector((state) => state.friend.friendList);
   const [activeTab, setActiveTab] = useState("chatroom");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
 
+  console.log(friendList);
+
   /** 取得好友列表 */
-  const handleGetFriendList = async () => {
-    const result = await getFriendList(userData?.uid || "", 5) as unknown as friendDataType[];
-    setFriendList(result);
-  };
+  // const handleGetFriendList = async () => {
+  //   const result = await getFriendList(userData?.uid || "", 5) as unknown as friendDataType[];
+  //   setFriendList(result);
+  // };
 
   useEffect(() => {
-    handleGetFriendList();
-  }, []);
+    setFriendList(FriendListData!);
+  }, [FriendListData]);
 
   useEffect(() => {
     switch (activeTab) {
@@ -92,7 +95,7 @@ function ChatList() {
         {/* 好友 */}
         {activeTab === "friend" && (
           <div>
-            {friendList.map((item) => (
+            {friendList!.map((item) => (
               <UserItem
                 key={item.uid}
                 uid={item.uid}

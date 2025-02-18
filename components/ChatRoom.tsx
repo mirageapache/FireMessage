@@ -1,6 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import {
+  Panel,
+  PanelGroup,
+  PanelResizeHandle,
+} from "react-resizable-panels";
 import { RootState } from '@/store';
 import { useAppSelector } from '@/store/hooks';
 import { Textarea } from './ui/textarea';
@@ -15,39 +20,46 @@ function ChatRoom() {
     setIsLoading(false);
   }, [roomId]);
 
-  if (roomId === "") {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <p className="text-2xl">開始聊天吧！</p>
-      </div>
-    );
-  }
+  // if (roomId === "") {
+  //   return (
+  //     <div className="flex justify-center items-center h-full">
+  //       <p className="text-2xl">開始聊天吧！</p>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div>
+    <div className="w-full h-full">
       {isLoading ? (
         <Spinner />
       ) : (
-        <div>
-          {/* 訊息顯示區塊 message panel */}
-          <div className="flex justify-center items-center flex-col gap-2">
-            <div className="flex justify-start items-center w-full">
-              <p className="border rounded-lg p-2">訊息內容1</p>
-            </div>
-            <div className="flex justify-end items-center w-full">
-              <p className="border rounded-lg p-2">訊息內容2</p>
-            </div>
-          </div>
+        <div className="h-full">
+          <PanelGroup direction="vertical">
+            {/* 訊息顯示區塊 message panel */}
+            <Panel defaultSize={85} minSize={60}>
+              <div className="flex justify-center items-center flex-col gap-2 h-full overflow-y-auto">
+                <div className="flex justify-start items-center w-full">
+                  <p className="border rounded-lg p-2">訊息內容1</p>
+                </div>
+                <div className="flex justify-end items-center w-full">
+                  <p className="border rounded-lg p-2">訊息內容2</p>
+                </div>
+              </div>
+            </Panel>
 
-          {/* 訊息輸入區塊 input panel */}
-          <div className="w-full border-t border-[var(--divider-color)]">
-            <Textarea
-              className="formInput resize-none w-full min-h-[100px]"
-              maxLength={500}
-              cols={10}
-              placeholder="輸入訊息..."
-            />
-          </div>
+            <PanelResizeHandle />
+
+            {/* 訊息輸入區塊 input panel */}
+            <Panel defaultSize={15} minSize={15}>
+              <div className="w-full h-full border-t border-[var(--divider-color)]">
+                <Textarea
+                  className="formInput resize-none w-full h-full"
+                  maxLength={500}
+                  placeholder="輸入訊息..."
+                />
+              </div>
+            </Panel>
+          </PanelGroup>
         </div>
       )}
     </div>
