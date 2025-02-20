@@ -5,15 +5,21 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { ToastContainer } from "react-toastify";
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
+export default function ThemeProvider({
+  darkMode, children,
+}: {
+  darkMode: string, children: React.ReactNode
+}) {
+  const reduxDarkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
+  const templateDarkMode = darkMode === reduxDarkMode ? darkMode : reduxDarkMode;
+
   useEffect(() => {
-    if (darkMode === 'dark') {
+    if (templateDarkMode === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, [darkMode]);
+  }, [templateDarkMode]);
 
   return (
     <div className="text-[var(--text-color)]">

@@ -4,6 +4,7 @@ import {
   collection, query, where, getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { userSettingsType } from "@/types/userType";
 import { checkFriendStatus } from "./friend";
 
 /** 取得使用者資料 */
@@ -87,6 +88,21 @@ export const getUserSettings = async (uid: string) => {
     const userSettingsQuery = query(userSettingsRef, where("uid", "==", uid));
     const userSettingsSnapshot = await getDocs(userSettingsQuery);
     return userSettingsSnapshot.docs[0].data();
+  } catch (error) {
+    return { code: "ERROR", message: error };
+  }
+};
+
+/** 更新使用者設定檔 */
+export const updateUserSettings = async (uid: string, settings: userSettingsType) => {
+  try {
+    const userSettingsRef = collection(db, "userSettings");
+    const userSettingsQuery = query(userSettingsRef, where("uid", "==", uid));
+    const userSettingsSnapshot = await getDocs(userSettingsQuery);
+
+    // 更新使用者資料
+    await updateDoc(userSettingsSnapshot.docs[0].ref, settings);
+    return { code: "SUCCESS", message: "更新成功" };
   } catch (error) {
     return { code: "ERROR", message: error };
   }

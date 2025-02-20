@@ -37,7 +37,7 @@ function ChatRoom() {
           <PanelGroup direction="vertical">
             {/* 訊息顯示區塊 message panel */}
             <Panel defaultSize={85} minSize={60}>
-              <div className="flex justify-center items-center flex-col gap-2 h-full overflow-y-auto">
+              <div className="flex justify-end items-center flex-col gap-2 h-full overflow-y-auto p-5">
                 <div className="flex justify-start items-center w-full">
                   <p className="border rounded-lg p-2">訊息內容1</p>
                 </div>
@@ -53,7 +53,7 @@ function ChatRoom() {
             <Panel defaultSize={15} minSize={15}>
               <div className="w-full h-full border-t border-[var(--divider-color)]">
                 <Textarea
-                  className="formInput resize-none w-full h-full"
+                  className="resize-none w-full h-full text-lg placeholder-gray-500 dark:placeholder-gray-400 border"
                   maxLength={500}
                   placeholder="輸入訊息..."
                 />

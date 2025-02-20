@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
+  faMessage,
   faMoon,
   faSearch,
   faSun,
@@ -22,6 +23,7 @@ import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { notificationDataType, notificationResponseType } from "@/types/notificationType";
 import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
+import { updateUserSettings } from "@/lib/user";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -34,6 +36,7 @@ function Header() {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
+  const userSettings = useAppSelector((state: RootState) => state.system.userSettings);
   const navItemStyle = "rounded-full p-[5px]";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
@@ -107,7 +110,13 @@ function Header() {
                 type="button"
                 className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
                 aria-label="切換深色模式"
-                onClick={() => dispatch(setDarkMode())}
+                onClick={() => {
+                  dispatch(setDarkMode());
+                  updateUserSettings(userData?.uid || "", {
+                    ...userSettings,
+                    darkMode: userSettings.darkMode === "dark" ? "" : "dark",
+                  });
+                }}
               >
                 <FontAwesomeIcon
                   icon={faSun}
@@ -120,6 +129,16 @@ function Header() {
                   className="absolute h-[21px] w-[21px] text-yellow-600 translate-y-5 opacity-0 transform duration-300 ease-linear dark:translate-y-0 dark:opacity-100"
                 />
               </button>
+
+              {/* 聊天 */}
+              <Link
+                href="/chat"
+                aria-label="聊天"
+                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 text-gray-400 hover:text-[var(--active)]")}
+              >
+                <FontAwesomeIcon icon={faMessage} size="lg" className="w-[18px] h-[18px] ml-1 mt=[1px]" />
+                <NotifyTip amount={0} />
+              </Link>
 
               {/* 通知 */}
               <button

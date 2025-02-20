@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/store";
@@ -17,9 +17,12 @@ import { friendResponseType } from "@/types/friendType";
 import { setFriendList } from "@/store/friendSlice";
 
 // 監聽 Firebase 認證狀態
-function AuthStateListener({ children }: { children: React.ReactNode }) {
+function AuthStateListener({
+  setDarkMode, children,
+}: {
+  setDarkMode: (darkMode: string) => void, children: React.ReactNode
+}) {
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
@@ -29,6 +32,7 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
           emailVerified: currentUser.emailVerified,
         }));
         const userSettings = await getUserSettings(currentUser.uid) as userSettingsType;
+        setDarkMode(userSettings.darkMode);
         if (userSettings) dispatch(setInitSetting(userSettings));
         const friendList = await getFriendList(currentUser.uid, 5) as friendResponseType;
         if (friendList) dispatch(setFriendList(friendList.data));
@@ -42,11 +46,13 @@ function AuthStateListener({ children }: { children: React.ReactNode }) {
 
 // Providers 元件
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [darkMode, setDarkMode] = useState("");
+  console.log(darkMode);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider>
-          <AuthStateListener>{children}</AuthStateListener>
+        <ThemeProvider darkMode={darkMode}>
+          <AuthStateListener setDarkMode={setDarkMode}>{children}</AuthStateListener>
         </ThemeProvider>
       </PersistGate>
     </Provider>
