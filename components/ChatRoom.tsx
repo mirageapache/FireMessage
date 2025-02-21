@@ -8,11 +8,15 @@ import {
 } from "react-resizable-panels";
 import { RootState } from '@/store';
 import { useAppSelector } from '@/store/hooks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '@/lib/utils';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 
 function ChatRoom() {
   const roomId = useAppSelector((state: RootState) => state.system.activeChatRoomId);
+  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -27,6 +31,11 @@ function ChatRoom() {
   //     </div>
   //   );
   // }
+
+  /** 傳送訊息 */
+  const handleSendMessage = () => {
+    console.log("send message");
+  };
 
   return (
     <div className="w-full h-full">
@@ -51,12 +60,20 @@ function ChatRoom() {
 
             {/* 訊息輸入區塊 input panel */}
             <Panel defaultSize={15} minSize={15}>
-              <div className="w-full h-full border-t border-[var(--divider-color)]">
+              <div className="flex justify-between items-center w-full h-full border-t border-[var(--divider-color)]">
                 <Textarea
                   className="resize-none w-full h-full text-lg placeholder-gray-500 dark:placeholder-gray-400 border"
                   maxLength={500}
                   placeholder="輸入訊息..."
+                  onChange={(e) => setMessage(e.target.value)}
                 />
+                <button type="button" className="p-2" disabled={message.length === 0} onClick={handleSendMessage}>
+                  <FontAwesomeIcon
+                    icon={faPaperPlane}
+                    size="lg"
+                    className={cn(message.length > 0 ? "text-[var(--brand-color)] hover:text-[var(--active)]" : "text-[var(--disable-text-color)]")}
+                  />
+                </button>
               </div>
             </Panel>
           </PanelGroup>

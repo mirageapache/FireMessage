@@ -35,16 +35,16 @@ function Notification() {
   ));
 
   return (
-    <div>
-      <div className="border-b border-[var(--divider-color)] pb-2">
-        <h4 className="text-left">通知</h4>
+    <div className="relative pt-3 sm:px-5">
+      <div className="m-2">
+        <h4 className="my-1">通知</h4>
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-full">
           <Spinner />
         </div>
       ) : (
-        <div className="flex flex-col gap-2 mt-2">
+        <div className="flex flex-col gap-2 m-2">
           {isEmpty(notificationData) ? (
             <h5 className="py-4">-尚無通知-</h5>
           ) : (

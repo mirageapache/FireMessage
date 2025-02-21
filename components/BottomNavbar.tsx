@@ -33,7 +33,7 @@ function BottomNavbar() {
   const dispatch = useAppDispatch();
   const path = usePathname();
   const currentPath = path?.slice(1);
-  const basicItemStyle = "flex justify-center w-full";
+  const basicItemStyle = "flex justify-center w-full text-gray-400";
 
   /** 處理開啟通知行為 */
   const handleOpenNotification = async () => {

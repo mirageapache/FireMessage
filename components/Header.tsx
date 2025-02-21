@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -37,7 +39,7 @@ function Header() {
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const userSettings = useAppSelector((state: RootState) => state.system.userSettings);
-  const navItemStyle = "rounded-full p-[5px]";
+  const navItemStyle = "w-9 h-9 rounded-full p-[5px] text-gray-400";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
   const [notificationCount, setNotificationCount] = useState(0);
@@ -99,7 +101,7 @@ function Header() {
               <button
                 type="button"
                 aria-label="搜尋"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative flex justify-center items-center mt-[2px]")}
                 onClick={() => router.push("/search")}
               >
                 <FontAwesomeIcon icon={faSearch} size="lg" />
@@ -108,7 +110,7 @@ function Header() {
               {/* 深色模式 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative flex justify-center items-center mt-[2px]")}
                 aria-label="切換深色模式"
                 onClick={() => {
                   dispatch(setDarkMode());
@@ -134,16 +136,18 @@ function Header() {
               <Link
                 href="/chat"
                 aria-label="聊天"
-                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative hover:text-[var(--active)]")}
               >
                 <FontAwesomeIcon icon={faMessage} size="lg" className="w-[18px] h-[18px] ml-1 mt=[1px]" />
-                <NotifyTip amount={0} />
+                <span className="absolute top-2 right-6">
+                  <NotifyTip amount={0} />
+                </span>
               </Link>
 
               {/* 通知 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative mr-1 hover:text-[var(--active)]")}
                 aria-label="通知"
                 onClick={() => handleOpenNotification()}
               >
@@ -157,7 +161,7 @@ function Header() {
               <button
                 aria-label="使用者選單"
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "hidden sm:flex justify-center items-center mt-[2px]")}
+                className={cn(navItemStyle, navItemHoverStyle, "flex justify-center items-center mt-[2px]")}
                 onClick={() => setShowDropdown(!showDropdown)}
               >
                 <Avatar

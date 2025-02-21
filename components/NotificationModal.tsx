@@ -1,6 +1,7 @@
+import React from 'react';
+import Link from 'next/link';
 import { notificationDataType } from '@/types/notificationType';
 import { isEmpty } from 'lodash';
-import React from 'react';
 import NotificationItem from './NotificationItem';
 
 function NotificationModal({
@@ -31,6 +32,15 @@ function NotificationModal({
             {notifiItem}
           </div>
         )}
+      </div>
+      <div className="mt-2 border-t border-[var(--divider-color)] text-right">
+        <Link
+          href="/notification"
+          className="pt-2 text-[var(--secondary-text-color)] hover:text-[var(--active)] text-sm"
+          onClick={() => setShowNotificationModal(false)}
+        >
+          查看所有通知
+        </Link>
       </div>
     </div>
   );

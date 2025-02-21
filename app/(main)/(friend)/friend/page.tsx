@@ -156,14 +156,14 @@ function Friend() {
   ));
 
   return (
-    <div className="relative">
+    <div className="relative pt-3 sm:px-5">
       {!isEmpty(RequestList) && (
-        <div className="my-2 border-b border-[var(--divider-color)] pb-2">
+        <div className="m-2 border-b border-[var(--divider-color)]">
           <h4 className="my-1">好友邀請</h4>
           {RequestList}
         </div>
       )}
-      <div className="my-2 border-b border-[var(--divider-color)] pb-2">
+      <div className="m-2 border-b border-[var(--divider-color)]">
         <h4 className="my-1">好友列表</h4>
         {isLoading ? (
           <div className="my-2">

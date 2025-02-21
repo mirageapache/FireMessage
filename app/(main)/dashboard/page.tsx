@@ -14,8 +14,8 @@ function Dashboard() {
   const newFriendList = checkNewFriend(friendList);
 
   return (
-    <div className="w-full py-5 md:p-0">
-      <section className={cn(sectionStyle, "my-4 px-6")}>
+    <div className="w-full p-5">
+      <section className={cn(sectionStyle, "mb-5 px-6")}>
         <ProfileCard />
       </section>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 content-start w-full">

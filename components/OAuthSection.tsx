@@ -28,7 +28,7 @@ function OAuthSection() {
 
   return (
     <div className="relative">
-      <span className="flex justify-center my-[10px] before:[''] before:absolute before:w-full before:h-[1px] before:bg-white before:top-3">
+      <span className="flex justify-center my-[10px] before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)] before:top-3">
         <span className="px-3 z-10 bg-[var(--background)]">or</span>
       </span>
       <h2 className="m-[15px]">快速登入</h2>
