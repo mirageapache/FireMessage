@@ -23,9 +23,10 @@ import Cookies from "universal-cookie";
 import { store } from "@/store";
 import { clearUser, setUser } from "@/store/userSlice";
 import { clearUserSettings } from "@/store/sysSlice";
-import { userDataType } from "@/types/userType";
+import { userDataType, userSettingsType } from "@/types/userType";
 import { getRandomColor } from "./utils";
 import { auth, db } from "../firebase";
+import { getUserSettings } from "./user";
 
 const cookies = new Cookies();
 
@@ -120,6 +121,8 @@ export const loginWithEmailAndPassword = async (
     );
     const { user } = userCredential;
 
+    const userSettings = await getUserSettings(user.uid) as userSettingsType;
+    localStorage.setItem("darkMode", userSettings.darkMode);
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };

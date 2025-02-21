@@ -9,7 +9,7 @@ interface SysState {
 
 const initialState: SysState = {
   userSettings: {
-    darkMode: "dark",
+    darkMode: localStorage.getItem("darkMode") as string,
     toastifyPosition: "top-center",
     themeMode: "default",
     language: "zh-TW",
@@ -31,6 +31,7 @@ const sysSlice = createSlice({
       let newState = "";
       if (state.userSettings.darkMode === "") newState = "dark";
       state.userSettings.darkMode = newState;
+      localStorage.setItem("darkMode", newState);
     },
     // 設定toastify位置
     setToastifyPosition: (state, action: PayloadAction<string>) => {
