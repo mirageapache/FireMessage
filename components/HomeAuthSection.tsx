@@ -18,7 +18,7 @@ function HomeAuthSection() {
         />
       </div>
       <div className="flex flex-col gap-[30px] justify-center items-center lg:w-1/2 z-10 bg-transparent">
-        <div className="flex flex-col justify-center items-center lg:justify-end w-full h-full text-white">
+        <div className="flex flex-col justify-center items-center lg:justify-end w-full h-full">
           <h1 className="text-3xl lg:text-5xl">歡迎來到FireMessage</h1>
           <span className="flex flex-col items-center justify-center mt-[10px]">
             <h5 className="lg:text-2xl">一起暢快聊天、消磨時間</h5>

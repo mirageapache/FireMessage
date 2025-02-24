@@ -53,10 +53,10 @@ function ChatRoom() {
             <Panel defaultSize={85} minSize={60}>
               <div className="flex justify-end items-center flex-col gap-2 h-full overflow-y-auto p-5">
                 <div className="flex justify-start items-center w-full">
-                  <p className="border rounded-lg p-2">訊息內容1</p>
+                  <p className="messageItem">訊息內容</p>
                 </div>
                 <div className="flex justify-end items-center w-full">
-                  <p className="border rounded-lg p-2">訊息內容2</p>
+                  <p className="messageItem">English content</p>
                 </div>
               </div>
             </Panel>
@@ -67,7 +67,7 @@ function ChatRoom() {
             <Panel defaultSize={15} minSize={15}>
               <div className="flex justify-between items-center w-full h-full border-t border-[var(--divider-color)]">
                 <Textarea
-                  className="resize-none w-full h-full text-lg placeholder-gray-500 dark:placeholder-gray-400 border"
+                  className="resize-none w-full h-full text-lg placeholder-gray-400 border-none"
                   maxLength={500}
                   placeholder="輸入訊息..."
                   onChange={(e) => setMessage(e.target.value)}

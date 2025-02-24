@@ -119,7 +119,7 @@ function Profile() {
   };
 
   return (
-    <>
+    <div className="bg-white dark:bg-[var(--background)]">
       {/* 封面 */}
       <section className="relative h-[200px] bg-[var(--modal-bg-color)]">
         {(cover || cover !== "") && (
@@ -369,7 +369,7 @@ function Profile() {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }
 

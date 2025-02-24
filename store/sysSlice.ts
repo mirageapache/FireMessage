@@ -9,7 +9,7 @@ interface SysState {
 
 const initialState: SysState = {
   userSettings: {
-    darkMode: localStorage.getItem("darkMode") as string,
+    darkMode: "",
     toastifyPosition: "top-center",
     themeMode: "default",
     language: "zh-TW",
