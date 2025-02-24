@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { getSimpleUserData } from "./user";
 import { createNotification, sendImmediateNotification } from "./notification";
+import { createChatRoom } from "./chat";
 
 /** 建立好友 */
 export const createFriend = async (uid: string, friendUid: string, status: number) => {
@@ -130,7 +131,6 @@ export const getFriendList = async (uid: string, status: number) => {
 /** 更新雙方好友狀態 */
 export const updateBothFriendStatus = async (uid: string, friendUid: string, status: number) => {
   try {
-    // 同時更新雙方狀態
     await Promise.all([
       updateFriendStatus(uid, friendUid, status),
       updateFriendStatus(friendUid, uid, status),
@@ -138,6 +138,8 @@ export const updateBothFriendStatus = async (uid: string, friendUid: string, sta
       if (status === 5) {
         await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
         await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
+        // 雙方確定好友身分則建立聊天室資訊
+        await createChatRoom([uid, friendUid]);
         // 發送即時通知
         const senderData = await getSimpleUserData(uid) as unknown as userDataType; // 取得發送者的資料
         await sendImmediateNotification(

@@ -1,9 +1,10 @@
 /* eslint-disable react/require-default-props */
 import React from "react";
-import { isEmpty } from "lodash";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
+import { setActiveChatRoomId } from "@/store/sysSlice";
+import { useAppDispatch } from "@/store/hooks";
 import Avatar from "./Avatar";
 
 interface UserItemProps {
@@ -13,6 +14,7 @@ interface UserItemProps {
   userAccount: string;
   status?: number;
   bgColor: string;
+  chatRoomId: string | null;
 }
 
 function UserItem({
@@ -22,21 +24,31 @@ function UserItem({
   userAccount,
   status,
   bgColor,
+  chatRoomId,
 }: UserItemProps) {
-  let linkString = "";
+  const dispatch = useAppDispatch();
+
+  let linkString = `/userProfile/${uid}`;
   switch (status) {
-    case 0:
-      linkString = `/userProfile/${uid}`;
-      break;
     case 5:
-      linkString = "/chat";
+      if (chatRoomId) {
+        linkString = "/chat"; // 是好友且有chatRoomId才導到聊天介面
+      }
       break;
     default:
       linkString = `/userProfile/${uid}`;
   }
 
   return (
-    <Link href={linkString} className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg">
+    <Link
+      href={linkString}
+      className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
+      onClick={() => {
+        if (status === 5 && chatRoomId) {
+          dispatch(setActiveChatRoomId(chatRoomId));
+        }
+      }}
+    >
       <div>
         <Avatar
           userName={userName}

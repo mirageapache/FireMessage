@@ -58,8 +58,8 @@ function Friend() {
   useEffect(() => {
     if (!isEmpty(FriendListData)) {
       setFriendData(FriendListData!);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }, [FriendListData]);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ function Friend() {
   ));
 
   /** 好友列表 */
-  const FriendList = (isEmpty(friendData)) ? <p>-尚無好友-</p> : friendData!.map((item) => (
+  const FriendList = (isEmpty(friendData)) ? <p className="text-center my-2">-尚無好友-</p> : friendData!.map((item) => (
     <div
       key={item.uid}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
@@ -115,7 +115,7 @@ function Friend() {
       <Link
         href="/chat"
         className="flex items-center gap-2 w-full p-2"
-        onClick={() => dispatch(setActiveChatRoomId(item.uid))}
+        onClick={() => dispatch(setActiveChatRoomId(item.chatRoomId))}
       >
         <Avatar
           userName={item.sourceUserData.userName}

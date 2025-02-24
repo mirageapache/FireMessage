@@ -2,25 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { friendDataType } from "@/types/friendType";
-// import { getFriendList } from "@/lib/friend";
 import { useAppSelector } from "@/store/hooks";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 
 function ChatList() {
-  // const userData = useAppSelector((state) => state.user.userData);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
-  const [activeTab, setActiveTab] = useState("chatroom");
+  const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
-
-  console.log(friendList);
-
-  /** 取得好友列表 */
-  // const handleGetFriendList = async () => {
-  //   const result = await getFriendList(userData?.uid || "", 5) as unknown as friendDataType[];
-  //   setFriendList(result);
-  // };
 
   useEffect(() => {
     setFriendList(FriendListData!);
@@ -28,7 +18,7 @@ function ChatList() {
 
   useEffect(() => {
     switch (activeTab) {
-      case "chatroom":
+      case "chat":
         setActiveUnderLine("translate-x-0");
         break;
       case "friend":
@@ -49,9 +39,9 @@ function ChatList() {
           <button
             type="button"
             className="w-full text-center p-2"
-            onClick={() => setActiveTab("chatroom")}
+            onClick={() => setActiveTab("chat")}
           >
-            聊天室
+            聊天
           </button>
           <button
             type="button"
@@ -83,7 +73,7 @@ function ChatList() {
       </div>
       <div>
         {/* 聊天室 */}
-        {activeTab === "chatroom" && (
+        {activeTab === "chat" && (
           <ChatItem
             userName="Test"
             avatarUrl=""
@@ -103,6 +93,7 @@ function ChatList() {
                 userAccount={item.userAccount}
                 avatarUrl={item.avatarUrl}
                 bgColor={item.bgColor}
+                chatRoomId={item.chatRoomId}
               />
             ))}
           </div>

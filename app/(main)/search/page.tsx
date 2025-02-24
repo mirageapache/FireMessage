@@ -151,6 +151,7 @@ function Search() {
                   userAccount={item.userAccount}
                   status={item.friendStatus}
                   bgColor={item.bgColor}
+                  chatRoomId=""
                 />
               );
             })}

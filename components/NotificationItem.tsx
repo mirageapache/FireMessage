@@ -1,10 +1,9 @@
 import React from 'react';
-import moment from 'moment';
 import Link from 'next/link';
 import { notificationDataType } from '@/types/notificationType';
 import { updateNotificationIsRead } from '@/lib/notification';
-import Avatar from './Avatar';
 import { formatDateTime } from '@/lib/utils';
+import Avatar from './Avatar';
 
 function NotificationItem({
   item,

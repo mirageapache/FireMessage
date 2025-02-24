@@ -9,6 +9,7 @@ import { isEmpty } from 'lodash';
 export const useNotification = (uid: string, handleGetNotification: () => void) => {
   useEffect(() => {
     if (!uid) return;
+    const lastNotiId = localStorage.getItem("lastNotiId");
     const notificationRef = ref(realtimeDb, `notifications/${uid}`);
     onValue(notificationRef, (snapshot) => { // 監聽資料變化的方法，當資料發生變化時會觸發回調函數
       const data = snapshot.val();
@@ -21,13 +22,11 @@ export const useNotification = (uid: string, handleGetNotification: () => void) 
       // 獲取最新的通知及其 ID
       const [latestId, latestData] = notificationEntries[notificationEntries.length - 1];
       const notiData = latestData as immediateNotiDataType;
-
-      if (!notiData.isRead) {
-        // 顯示即時通知
-        toast(notiData.message);
-        // 更新通知資料
-        handleGetNotification();
-        // 直接刪除已讀的通知
+      if (!notiData.isRead && (lastNotiId === null || latestId !== lastNotiId)) {
+        localStorage.setItem("lastNotiId", latestId); // 紀錄最新的即時通知ID(避免重複顯示)
+        toast.info(notiData.message); // 顯示即時通知
+        handleGetNotification(); // 更新通知資料
+        // 直接刪除已讀的即時通知
         update(ref(realtimeDb), {
           [`notifications/${uid}/${latestId}`]: null, // 設為 null 即可刪除該筆資料
         });

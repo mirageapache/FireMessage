@@ -19,6 +19,7 @@ export type friendDataType = {
   avatarUrl: string;
   bgColor: string;
   status: number;
+  chatRoomId: string;
   createdAt: string | any;
   sourceUserData: userDataType;
 };

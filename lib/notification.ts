@@ -9,9 +9,8 @@ import {
   addDoc,
   writeBatch,
   orderBy,
-  serverTimestamp,
 } from "firebase/firestore";
-import { push, ref } from "firebase/database";
+import { push, ref, serverTimestamp } from "firebase/database";
 import { getSimpleUserData } from "./user";
 
 /** 取得通知訊息 */
@@ -124,7 +123,7 @@ export const sendImmediateNotification = async (uid: string, friendUid: string, 
     type,
     message,
     fromUid: uid,
-    timestamp: serverTimestamp(),
+    createdAt: serverTimestamp(),
     isRead: false,
   });
 };

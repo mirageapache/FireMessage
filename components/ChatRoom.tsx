@@ -6,11 +6,11 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "react-resizable-panels";
+import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppSelector } from '@/store/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { cn } from '@/lib/utils';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 
@@ -18,6 +18,8 @@ function ChatRoom() {
   const roomId = useAppSelector((state: RootState) => state.system.activeChatRoomId);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  console.log(roomId);
 
   useEffect(() => {
     // 取得聊天室資料
@@ -33,8 +35,11 @@ function ChatRoom() {
   // }
 
   /** 傳送訊息 */
-  const handleSendMessage = () => {
-    console.log("send message");
+  const handleSendMessage = async () => {
+    if (message.length === 0) return;
+    console.log('send message');
+    // const result = await sendMessage(uid, friendUid, message);
+    // console.log(result);
   };
 
   return (

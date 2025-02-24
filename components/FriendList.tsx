@@ -26,7 +26,7 @@ function FriendList(friendData: friendDataType[]) {
       <Link
         href="/chat"
         className="flex items-center gap-2 w-full p-2"
-        onClick={() => dispatch(setActiveChatRoomId(item.uid))}
+        onClick={() => dispatch(setActiveChatRoomId(item.chatRoomId))}
       >
         <Avatar
           userName={item.sourceUserData.userName}

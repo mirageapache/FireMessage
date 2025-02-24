@@ -32,6 +32,7 @@ function Dashboard() {
                   userAccount=""
                   bgColor={friend.sourceUserData.bgColor}
                   status={5}
+                  chatRoomId={friend.chatRoomId}
                 />
               ))}
             </div>
