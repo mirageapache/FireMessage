@@ -68,7 +68,7 @@ function ChatList() {
         <input
           type="text"
           placeholder="搜尋"
-          className="formInput w-full p-1 rounded-lg"
+          className="formInput w-full p-1 rounded-lg pl-3"
         />
       </div>
       <div>

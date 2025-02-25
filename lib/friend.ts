@@ -153,6 +153,7 @@ export const updateBothFriendStatus = async (uid: string, friendUid: string, sta
 
     return { code: 'SUCCESS', message: "更新成功" };
   } catch (error) {
+    console.log(error);
     return { code: 'ERROR', message: "更新失敗", error };
   }
 };

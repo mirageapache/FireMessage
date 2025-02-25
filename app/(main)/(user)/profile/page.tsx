@@ -119,9 +119,9 @@ function Profile() {
   };
 
   return (
-    <div className="bg-white dark:bg-[var(--background)]">
+    <div>
       {/* 封面 */}
-      <section className="relative h-[200px] bg-[var(--modal-bg-color)]">
+      <section className="relative h-[200px] bg-[var(--image-bg-color)]">
         {(cover || cover !== "") && (
           <Image
             src={cover}

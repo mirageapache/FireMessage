@@ -35,9 +35,9 @@ function UserProfile({ params }: { params: { uid: string } }) {
   }, [currentUid]);
 
   return (
-    <>
+    <div>
       {/* 封面 */}
-      <section className="relative h-[200px] bg-[var(--card-bg-color)]">
+      <section className="relative h-[200px] bg-[var(--image-bg-color)]">
         {(userData && userData?.coverUrl && userData?.coverUrl !== "") && (
           <Image
             src={userData?.coverUrl || ""}
@@ -139,7 +139,7 @@ function UserProfile({ params }: { params: { uid: string } }) {
       <section className="flex justify-center items-center pb-5 px-4">
         <Button type="button" className="w-full sm:w-auto bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
       </section>
-    </>
+    </div>
   );
 }
 

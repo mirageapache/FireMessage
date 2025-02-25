@@ -38,7 +38,8 @@
     --active: #f97316; /* (選項)作用中 */
     --background: #eaebee;
     --card-bg-color: white;
-    --modal-bg-color: #ccc;
+    --modal-bg-color: white;
+    --image-bg-color: #ccc;
     --divider-color: #bbb;
     --hover-bg-color: #d5d7db;
     /* text style */
@@ -55,6 +56,7 @@
     --background: #213152;
     --card-bg-color: #4b5563;
     --modal-bg-color: #4b5563;
+    --image-bg-color: #4b5563;
     --divider-color: #6b7280;
     --hover-bg-color: #374151;;
     /* text style */
