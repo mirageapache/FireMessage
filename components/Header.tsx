@@ -26,6 +26,9 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { notificationDataType, notificationResponseType } from "@/types/notificationType";
 import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
 import { updateUserSettings } from "@/lib/user";
+import { getFriendList } from "@/lib/friend";
+import { friendResponseType } from "@/types/friendType";
+import { setFriendList } from "@/store/friendSlice";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -55,6 +58,14 @@ function Header() {
     }
   };
 
+  /** 更新好友資料 */
+  const handleUpdateFriend = async () => {
+    const res = await getFriendList(userData?.uid || "", 5) as friendResponseType;
+    if (res.code === "SUCCESS") {
+      dispatch(setFriendList(res.data));
+    }
+  };
+
   /** 處理開啟通知行為 */
   const handleOpenNotification = async () => {
     const result = await updateNotificationIsChecked(userData?.uid || "");
@@ -63,7 +74,7 @@ function Header() {
   };
 
   // 監聽通知
-  useNotification(userData?.uid || "", handleGetNotification);
+  useNotification(userData?.uid || "", handleGetNotification, handleUpdateFriend);
 
   useEffect(() => {
     if (isLogin) handleGetNotification();

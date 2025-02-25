@@ -6,7 +6,11 @@ import { realtimeDb } from '@/firebase';
 import { immediateNotiDataType } from '@/types/notificationType';
 import { isEmpty } from 'lodash';
 
-export const useNotification = (uid: string, handleGetNotification: () => void) => {
+export const useNotification = (
+  uid: string,
+  handleGetNotification: () => void,
+  handleUpdateFriend: () => void,
+) => {
   useEffect(() => {
     if (!uid) return;
     const lastNotiId = localStorage.getItem("lastNotiId");
@@ -26,6 +30,12 @@ export const useNotification = (uid: string, handleGetNotification: () => void) 
         localStorage.setItem("lastNotiId", latestId); // 紀錄最新的即時通知ID(避免重複顯示)
         toast.info(notiData.message); // 顯示即時通知
         handleGetNotification(); // 更新通知資料
+
+        // 更新好友資訊
+        if (notiData.type === "friendAccepted") {
+          handleUpdateFriend();
+        }
+
         // 直接刪除已讀的即時通知
         update(ref(realtimeDb), {
           [`notifications/${uid}/${latestId}`]: null, // 設為 null 即可刪除該筆資料
