@@ -15,6 +15,7 @@ export const createChatRoom = async (member: string[]) => {
     member,
     createdAt: new Date(),
   });
+  return chatRoomRef.id;
 };
 
 /** 建立(傳送)聊天訊息 */

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useEffect } from 'react';
 import { ref, onValue, update } from 'firebase/database';

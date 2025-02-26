@@ -41,7 +41,7 @@ export const createFriend = async (uid: string, friendUid: string, status: numbe
 };
 
 /** 更新好友狀態 */
-export const updateFriendStatus = async (uid: string, friendUid: string, status: number) => {
+export const updateFriendStatus = async (uid: string, friendUid: string, status: number, chatRoomId?: string) => {
   try {
     const friendRef = collection(db, "friends");
     const friendQuery = query(friendRef, where("uid", "==", uid));
@@ -49,9 +49,10 @@ export const updateFriendStatus = async (uid: string, friendUid: string, status:
     let friendList = [];
     if (!friendSnapshot.empty) friendList = friendSnapshot.docs[0].data().friendList;
 
+    const variable = chatRoomId ? { status, chatRoomId } : { status };
     await updateDoc(doc(db, "friends", uid), {
       friendList: friendList.map(
-        (item: friendStatusDataType) => (item.uid === friendUid ? { ...item, status, createdAt: new Date() } : item),
+        (item: friendStatusDataType) => (item.uid === friendUid ? { ...item, ...variable, createdAt: new Date() } : item),
       ),
     });
 
@@ -131,29 +132,34 @@ export const getFriendList = async (uid: string, status: number) => {
 /** 更新雙方好友狀態 */
 export const updateBothFriendStatus = async (uid: string, friendUid: string, status: number) => {
   try {
-    await Promise.all([
-      updateFriendStatus(uid, friendUid, status),
-      updateFriendStatus(friendUid, uid, status),
-    ]).then(async () => {
-      if (status === 5) {
-        await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
-        await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
-        // 雙方確定好友身分則建立聊天室資訊
-        await createChatRoom([uid, friendUid]);
-        // 發送即時通知
-        const senderData = await getSimpleUserData(uid) as unknown as userDataType; // 取得發送者的資料
-        await sendImmediateNotification(
-          uid,
-          friendUid,
-          "friendAccepted",
-          `您與${senderData.userName}已成為好友`,
-        );
-      }
-    });
+    if (status === 5) {
+      await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
+      await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
+      // 雙方確定好友身分則建立聊天室資訊
+      const chatRoomId = await createChatRoom([uid, friendUid]);
+      // 更新雙方好友資訊
+      await Promise.all([
+        updateFriendStatus(uid, friendUid, status, chatRoomId),
+        updateFriendStatus(friendUid, uid, status, chatRoomId),
+      ]);
+
+      // 發送即時通知
+      const senderData = await getSimpleUserData(uid) as unknown as userDataType; // 取得發送者的資料
+      await sendImmediateNotification(
+        uid,
+        friendUid,
+        "friendAccepted",
+        `您與${senderData.userName}已成為好友`,
+      );
+    } else {
+      await Promise.all([
+        updateFriendStatus(uid, friendUid, status),
+        updateFriendStatus(friendUid, uid, status),
+      ]);
+    }
 
     return { code: 'SUCCESS', message: "更新成功" };
   } catch (error) {
-    console.log(error);
     return { code: 'ERROR', message: "更新失敗", error };
   }
 };

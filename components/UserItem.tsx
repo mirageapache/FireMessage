@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { setActiveChatRoomId } from "@/store/sysSlice";
+import { setActiveChatRoomId } from "@/store/chatSlice";
 import { useAppDispatch } from "@/store/hooks";
 import Avatar from "./Avatar";
 

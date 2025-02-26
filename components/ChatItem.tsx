@@ -4,6 +4,7 @@ import Avatar from "./Avatar";
 interface ChatItemProps {
   userName: string;
   avatarUrl: string;
+  bgColor: string;
   lastMessage: string;
   lastMessageTime: string;
   unreadCount: number;
@@ -12,6 +13,7 @@ interface ChatItemProps {
 function ChatItem({
   userName,
   avatarUrl,
+  bgColor,
   lastMessage,
   lastMessageTime,
   unreadCount,
@@ -24,7 +26,7 @@ function ChatItem({
           avatarUrl={avatarUrl}
           classname="w-10 h-10"
           textSize="text-md"
-          bgColor="#3b82f6"
+          bgColor={bgColor}
         />
       </div>
       <div className="w-full px-2 leading-5">

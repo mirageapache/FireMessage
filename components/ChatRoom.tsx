@@ -8,31 +8,31 @@ import {
 } from "react-resizable-panels";
 import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { setActiveChatRoomId } from '@/store/chatSlice';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 
 function ChatRoom() {
-  const roomId = useAppSelector((state: RootState) => state.system.activeChatRoomId);
+  const roomId = useAppSelector((state: RootState) => state.chat.activeChatRoomId);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log(roomId);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // 取得聊天室資料
     setIsLoading(false);
   }, [roomId]);
 
-  // if (roomId === "") {
-  //   return (
-  //     <div className="flex justify-center items-center h-full">
-  //       <p className="text-2xl">開始聊天吧！</p>
-  //     </div>
-  //   );
-  // }
+  if (roomId === "") {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-2xl">開始聊天吧！</p>
+      </div>
+    );
+  }
 
   /** 傳送訊息 */
   const handleSendMessage = async () => {
@@ -47,16 +47,36 @@ function ChatRoom() {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className="h-full">
+        <div className="relative h-full">
           <PanelGroup direction="vertical">
-            {/* 訊息顯示區塊 message panel */}
             <Panel defaultSize={85} minSize={60}>
-              <div className="flex justify-end items-center flex-col gap-2 h-full overflow-y-auto p-5">
-                <div className="flex justify-start items-center w-full">
-                  <p className="messageItem">訊息內容</p>
-                </div>
-                <div className="flex justify-end items-center w-full">
-                  <p className="messageItem">English content</p>
+              {/* 頁首區塊 header */}
+              <div className="absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] rounded-tr-lg px-2 bg-[var(--card-bg-color)] z-20">
+                <button type="button" className="p-1" onClick={() => dispatch(setActiveChatRoomId(""))}>
+                  <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
+                </button>
+                <p className="text-lg w-full text-center text-xl">User Name</p>
+              </div>
+
+              {/* 訊息顯示區塊 message panel */}
+              <div className="h-[calc(100%-50px)] overflow-y-auto mt-[50px] p-5 flex flex-col-reverse">
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-start items-end w-full">
+                    <p className="messageItem right-radius max-w-[70%]">訊息內容2</p>
+                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">12:00</p>
+                  </div>
+                  <div className="flex justify-end items-end w-full">
+                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">12:00</p>
+                    <p className="messageItem left-radius max-w-[70%]">English content 2</p>
+                  </div>
+                  <div className="flex justify-start items-end w-full">
+                    <p className="messageItem right-radius max-w-[70%]">訊息內容1</p>
+                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">12:00</p>
+                  </div>
+                  <div className="flex justify-end items-end w-full">
+                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">12:00</p>
+                    <p className="messageItem left-radius max-w-[70%]">English content1</p>
+                  </div>
                 </div>
               </div>
             </Panel>
@@ -72,7 +92,7 @@ function ChatRoom() {
                   placeholder="輸入訊息..."
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <button type="button" className="p-2" disabled={message.length === 0} onClick={handleSendMessage}>
+                <button type="button" className="p-4" disabled={message.length === 0} onClick={handleSendMessage}>
                   <FontAwesomeIcon
                     icon={faPaperPlane}
                     size="lg"

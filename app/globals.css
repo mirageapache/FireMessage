@@ -21,6 +21,14 @@
   }
 }
 
+.left-radius {
+  border-radius: 8px 8px 0 8px; 
+}
+
+.right-radius {
+  border-radius: 8px 8px 8px 0; 
+}
+
 @layer base {
   :root {
     --brand-color: #ffa617;
@@ -112,6 +120,6 @@
   }
 
   .messageItem {
-    @apply bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-lg p-2
+    @apply bg-lime-300 dark:bg-lime-700 text-gray-700 dark:text-gray-300 p-2;
   }
 }
