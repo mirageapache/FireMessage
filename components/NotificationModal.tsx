@@ -13,7 +13,7 @@ function NotificationModal({
 }) {
   const notifiItem = data.map((item) => (
     <NotificationItem
-      key={item.uid}
+      key={item.id}
       item={item}
       setShowNotificationModal={setShowNotificationModal}
     />

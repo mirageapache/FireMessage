@@ -14,6 +14,7 @@ import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { setActiveChatRoomId } from '@/store/chatSlice';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
+import MessageItem from './MessageItem';
 
 function ChatRoom() {
   const roomId = useAppSelector((state: RootState) => state.chat.activeChatRoomId);
@@ -61,22 +62,7 @@ function ChatRoom() {
               {/* 訊息顯示區塊 message panel */}
               <div className="h-[calc(100%-50px)] overflow-y-auto mt-[50px] p-5 flex flex-col-reverse">
                 <div className="flex flex-col gap-2">
-                  <div className="flex justify-start items-end w-full">
-                    <p className="messageItem right-radius max-w-[70%]">訊息內容2</p>
-                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">12:00</p>
-                  </div>
-                  <div className="flex justify-end items-end w-full">
-                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">12:00</p>
-                    <p className="messageItem left-radius max-w-[70%]">English content 2</p>
-                  </div>
-                  <div className="flex justify-start items-end w-full">
-                    <p className="messageItem right-radius max-w-[70%]">訊息內容1</p>
-                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">12:00</p>
-                  </div>
-                  <div className="flex justify-end items-end w-full">
-                    <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">12:00</p>
-                    <p className="messageItem left-radius max-w-[70%]">English content1</p>
-                  </div>
+                  <MessageItem />
                 </div>
               </div>
             </Panel>

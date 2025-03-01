@@ -34,7 +34,7 @@ function HomeAuthSection() {
           </Link>
           <Link
             href="/register"
-            className="btn bg-white hover:bg-white text-[var(--brand-secondary-color)]"
+            className="btn bg-white hover:bg-white text-[var(--brand-secondary-color)] border border-[var(--brand-secondary-color)]"
           >
             註冊
           </Link>

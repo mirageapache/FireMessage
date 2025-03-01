@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { isEmpty } from 'lodash';
-import { setActiveChatRoomId } from '@/store/sysSlice';
+import { setActiveChatRoomId } from '@/store/chatSlice';
 import { friendDataType } from '@/types/friendType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
