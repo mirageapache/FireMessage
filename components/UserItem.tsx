@@ -45,7 +45,7 @@ function UserItem({
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={() => {
         if (status === 5 && chatRoomId) {
-          dispatch(setActiveChatRoomId(chatRoomId));
+          dispatch(setActiveChatRoomId({ chatRoomId, friendUid: uid }));
         }
       }}
     >

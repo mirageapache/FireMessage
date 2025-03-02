@@ -12,12 +12,16 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { setActiveChatRoomId } from '@/store/chatSlice';
+import { sendMessage } from '@/lib/chat';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 import MessageItem from './MessageItem';
 
 function ChatRoom() {
   const roomId = useAppSelector((state: RootState) => state.chat.activeChatRoomId);
+  const friendUid = useAppSelector((state: RootState) => state.chat.activeFriendUid);
+  const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
+
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -37,10 +41,12 @@ function ChatRoom() {
 
   /** 傳送訊息 */
   const handleSendMessage = async () => {
-    if (message.length === 0) return;
-    console.log('send message');
-    // const result = await sendMessage(uid, friendUid, message);
-    // console.log(result);
+    if (message.length < 1) return;
+    const result = await sendMessage(roomId, uid!, friendUid!, message);
+    if (result.code === "success") {
+      setMessage("");
+      // 更新聊天訊息
+    }
   };
 
   return (
@@ -53,7 +59,7 @@ function ChatRoom() {
             <Panel defaultSize={85} minSize={60}>
               {/* 頁首區塊 header */}
               <div className="absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] rounded-tr-lg px-2 bg-[var(--card-bg-color)] z-20">
-                <button type="button" className="p-1" onClick={() => dispatch(setActiveChatRoomId(""))}>
+                <button type="button" className="p-1" onClick={() => dispatch(setActiveChatRoomId({ chatRoomId: "", friendUid: "" }))}>
                   <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
                 </button>
                 <p className="text-lg w-full text-center text-xl">User Name</p>
@@ -77,6 +83,12 @@ function ChatRoom() {
                   maxLength={500}
                   placeholder="輸入訊息..."
                   onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+                      e.preventDefault(); // 防止預設的換行行為
+                      handleSendMessage();
+                    }
+                  }}
                 />
                 <button type="button" className="p-4" disabled={message.length === 0} onClick={handleSendMessage}>
                   <FontAwesomeIcon

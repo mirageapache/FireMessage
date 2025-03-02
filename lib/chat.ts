@@ -19,14 +19,19 @@ export const createChatRoom = async (member: string[]) => {
 };
 
 /** 建立(傳送)聊天訊息 */
-export const createMessage = async (chatRoomId: string, uid: string, content: string) => {
-  const messagesRef = collection(db, "messages");
+export const createMessage = async (
+  chatRoomId: string,
+  uid: string,
+  content: string,
+  type: string = 'text',
+) => {
+  const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
+
   await addDoc(messagesRef, {
-    chatRoomId,
     senderId: uid,
     content,
+    type,
     createdAt: new Date(),
-    isRead: false,
   });
 };
 
@@ -42,14 +47,28 @@ export const getMessages = async (chatRoomId: string) => {
 };
 
 /** 發送(即時)訊息 */
-export const sendMessage = async (uid: string, friendUid: string, message: string) => {
-  // await createMessage(chatRoomId, uid, message);
+export const sendMessage = async (
+  chatRoomId: string,
+  uid: string,
+  friendUid: string,
+  message: string,
+  type: string = 'sendMessage',
+) => {
+  try {
+    await createMessage(chatRoomId, uid, message, type);
 
-  const messageRef = ref(realtimeDb, `messages/${friendUid}`);
-  await push(messageRef, {
-    message,
-    fromUid: uid,
-    timestamp: serverTimestamp(),
-    isRead: false,
-  });
+    // 建立即時通知
+    const messageRef = ref(realtimeDb, `messages/${friendUid}`);
+    await push(messageRef, {
+      message,
+      fromUid: uid,
+      type,
+      createdAt: serverTimestamp(),
+      isRead: false,
+    });
+
+    return { code: "success", message: "訊息發送成功" };
+  } catch (error) {
+    return { code: "error", message: "訊息發送失敗", error };
+  }
 };

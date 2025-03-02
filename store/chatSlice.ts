@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface ChatState {
   chatData: chatDataType | null;
   activeChatRoomId: string;
+  activeFriendUid: string | null;
   chatRoomInfo: chatRoomInfoType | null;
 }
 
@@ -12,6 +13,7 @@ interface ChatState {
 const initialState: ChatState = {
   chatData: null,
   activeChatRoomId: "", // 開啟的聊天室ID
+  activeFriendUid: null, // 當前(聊天室)好友ID
   chatRoomInfo: null, // 聊天室資訊
 };
 
@@ -28,8 +30,12 @@ const chatSlice = createSlice({
       state.chatData = null;
     },
     // 設定開啟的聊天室ID
-    setActiveChatRoomId: (state, action: PayloadAction<string>) => {
-      state.activeChatRoomId = action.payload;
+    setActiveChatRoomId: (
+      state,
+      action: PayloadAction<{ chatRoomId: string, friendUid: string }>,
+    ) => {
+      state.activeChatRoomId = action.payload.chatRoomId;
+      state.activeFriendUid = action.payload.friendUid;
     },
   },
 });

@@ -115,7 +115,9 @@ function Friend() {
       <Link
         href="/chat"
         className="flex items-center gap-2 w-full p-2"
-        onClick={() => dispatch(setActiveChatRoomId(item.chatRoomId))}
+        onClick={() => {
+          dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+        }}
       >
         <Avatar
           userName={item.sourceUserData.userName}
@@ -141,7 +143,9 @@ function Friend() {
             <Link
               href="/chat"
               className={cn(dropdownItemStyle)}
-              onClick={() => dispatch(setActiveChatRoomId(item.uid))}
+              onClick={() => {
+                dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+              }}
             >
               聊天
             </Link>
