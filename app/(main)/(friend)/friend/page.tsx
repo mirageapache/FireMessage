@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { setFriendList } from '@/store/friendSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setActiveChatRoomId } from '@/store/chatSlice';
+import { setActiveChatRoom } from '@/store/chatSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -116,7 +116,19 @@ function Friend() {
         href="/chat"
         className="flex items-center gap-2 w-full p-2"
         onClick={() => {
-          dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+          dispatch(setActiveChatRoom({
+            chatRoom: {
+              chatRoomId: item.chatRoomId,
+              chatRoomName: item.userName,
+              member: [item.uid, userData?.uid || ""],
+              type: 0,
+              avatarUrl: item.avatarUrl,
+              bgColor: item.bgColor,
+              lastMessage: "",
+              lastMessageTime: "",
+              unreadCount: 0,
+            },
+          }));
         }}
       >
         <Avatar
@@ -144,7 +156,19 @@ function Friend() {
               href="/chat"
               className={cn(dropdownItemStyle)}
               onClick={() => {
-                dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+                dispatch(setActiveChatRoom({
+                  chatRoom: {
+                    chatRoomId: item.chatRoomId,
+                    chatRoomName: item.userName,
+                    member: [item.uid, userData?.uid || ""],
+                    type: 0,
+                    avatarUrl: item.avatarUrl,
+                    bgColor: item.bgColor,
+                    lastMessage: "",
+                    lastMessageTime: "",
+                    unreadCount: 0,
+                  },
+                }));
               }}
             >
               聊天

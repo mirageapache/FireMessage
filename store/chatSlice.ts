@@ -4,16 +4,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // 定義 State 型別
 interface ChatState {
   chatData: chatDataType | null;
-  activeChatRoomId: string;
-  activeFriendUid: string | null;
+  activeChatRoom: chatDataType | null;
   chatRoomInfo: chatRoomInfoType | null;
 }
 
 // 初始狀態
 const initialState: ChatState = {
   chatData: null,
-  activeChatRoomId: "", // 開啟的聊天室ID
-  activeFriendUid: null, // 當前(聊天室)好友ID
+  activeChatRoom: null, // 開啟的聊天室ID
   chatRoomInfo: null, // 聊天室資訊
 };
 
@@ -29,16 +27,24 @@ const chatSlice = createSlice({
     clearChatData: (state) => {
       state.chatData = null;
     },
-    // 設定開啟的聊天室ID
-    setActiveChatRoomId: (
+    // 設定開啟的聊天室資訊
+    setActiveChatRoom: (
       state,
-      action: PayloadAction<{ chatRoomId: string, friendUid: string }>,
+      action: PayloadAction<{ chatRoom: chatDataType }>,
     ) => {
-      state.activeChatRoomId = action.payload.chatRoomId;
-      state.activeFriendUid = action.payload.friendUid;
+      state.activeChatRoom = action.payload.chatRoom;
+    },
+    // 清除開啟的聊天室資訊
+    clearActiveChatRoom: (state) => {
+      state.activeChatRoom = null;
     },
   },
 });
 
-export const { setChatData, clearChatData, setActiveChatRoomId } = chatSlice.actions;
+export const {
+  setChatData,
+  clearChatData,
+  setActiveChatRoom,
+  clearActiveChatRoom,
+} = chatSlice.actions;
 export default chatSlice.reducer;

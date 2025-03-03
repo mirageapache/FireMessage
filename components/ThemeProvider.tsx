@@ -25,6 +25,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         position="top-center"
         theme={darkMode === 'dark' ? 'dark' : 'light'}
         autoClose={3000}
+        stacked
+        pauseOnFocusLoss={false}
       />
     </div>
   );

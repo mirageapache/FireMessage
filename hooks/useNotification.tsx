@@ -14,22 +14,18 @@ export const useNotification = (
 ) => {
   useEffect(() => {
     if (!uid) return;
-    const lastNotiId = localStorage.getItem("lastNotiId");
     const notificationRef = ref(realtimeDb, `notifications/${uid}`);
     onValue(notificationRef, (snapshot) => { // 監聽資料變化的方法，當資料發生變化時會觸發回調函數
       const data = snapshot.val();
       if (isEmpty(data)) return;
 
-      // 獲取所有通知的鍵值對
       const notificationEntries = Object.entries(data);
       if (notificationEntries.length === 0) return;
 
-      // 獲取最新的通知及其 ID
       const [latestId, latestData] = notificationEntries[notificationEntries.length - 1];
       const notiData = latestData as immediateNotiDataType;
-      if (!notiData.isRead && (lastNotiId === null || latestId !== lastNotiId)) {
-        localStorage.setItem("lastNotiId", latestId); // 紀錄最新的即時通知ID(避免重複顯示)
-        toast.info(notiData.message); // 顯示即時通知
+      if (!notiData.isRead) {
+        toast.info(notiData.message, { toastId: latestId }); // 顯示即時通知
         handleGetNotification(); // 更新通知資料
 
         // 更新好友資訊

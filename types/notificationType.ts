@@ -17,7 +17,7 @@ export type notificationDataType = {
 export type immediateNotiDataType = {
   fromuid: string;
   message: string;
-  timestamp: string;
+  createdAt: string;
   type: string;
   isRead: boolean;
 };

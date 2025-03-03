@@ -85,13 +85,16 @@ function ChatList() {
             ) : (
               chatList?.map((item) => (
                 <ChatItem
-                  key={item.uid}
-                  userName="Test"
+                  key={item.chatRoomId}
+                  chatRoomId={item.chatRoomId}
+                  member={[]}
+                  chatRoomName="Test"
                   avatarUrl=""
                   bgColor="#3b82f6"
                   lastMessage="Test"
                   lastMessageTime="12:00"
                   unreadCount={2}
+                  showCount
                 />
               ))
             )}

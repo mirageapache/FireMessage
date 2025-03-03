@@ -1,4 +1,5 @@
 import { db, realtimeDb } from "@/firebase";
+import { chatDataType } from "@/types/chatType";
 import { push, ref, serverTimestamp } from "firebase/database";
 import {
   addDoc,
@@ -48,23 +49,35 @@ export const getMessages = async (chatRoomId: string) => {
 
 /** 發送(即時)訊息 */
 export const sendMessage = async (
-  chatRoomId: string,
+  chatRoomInfo: chatDataType,
   uid: string,
-  friendUid: string,
   message: string,
   type: string = 'sendMessage',
 ) => {
   try {
-    await createMessage(chatRoomId, uid, message, type);
+    await createMessage(chatRoomInfo.chatRoomId, uid, message, type);
+    const {
+      chatRoomId,
+      member,
+      chatRoomName,
+      avatarUrl,
+      bgColor,
+    } = chatRoomInfo;
 
     // 建立即時通知
-    const messageRef = ref(realtimeDb, `messages/${friendUid}`);
-    await push(messageRef, {
-      message,
-      fromUid: uid,
-      type,
-      createdAt: serverTimestamp(),
-      isRead: false,
+    member.forEach(async (memberId) => {
+      const messageRef = ref(realtimeDb, `messages/${memberId}`);
+      await push(messageRef, {
+        message,
+        fromUid: uid,
+        chatRoomId,
+        chatRoomName,
+        chatRoomAvatar: avatarUrl,
+        chatRoomBgColor: bgColor,
+        type,
+        createdAt: serverTimestamp(),
+        isRead: false,
+      });
     });
 
     return { code: "success", message: "訊息發送成功" };

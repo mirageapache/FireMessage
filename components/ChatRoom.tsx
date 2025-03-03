@@ -6,32 +6,39 @@ import {
   PanelGroup,
   PanelResizeHandle,
 } from "react-resizable-panels";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { setActiveChatRoomId } from '@/store/chatSlice';
+import { clearActiveChatRoom } from '@/store/chatSlice';
+import { useMessage } from '@/hooks/useMessage';
 import { sendMessage } from '@/lib/chat';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 import MessageItem from './MessageItem';
 
 function ChatRoom() {
-  const roomId = useAppSelector((state: RootState) => state.chat.activeChatRoomId);
-  const friendUid = useAppSelector((state: RootState) => state.chat.activeFriendUid);
+  const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
   const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useAppDispatch();
 
+  const handleUpdateMessage = () => {
+    console.log("更新聊天室訊息資料");
+  };
+
+  // 監聽即時訊息
+  useMessage(uid!, handleUpdateMessage);
+
   useEffect(() => {
     // 取得聊天室資料
     setIsLoading(false);
-  }, [roomId]);
+  }, [roomInfo?.chatRoomId]);
 
-  if (roomId === "") {
+  if (roomInfo?.chatRoomId === "") {
     return (
       <div className="flex justify-center items-center h-full">
         <p className="text-2xl">開始聊天吧！</p>
@@ -42,7 +49,7 @@ function ChatRoom() {
   /** 傳送訊息 */
   const handleSendMessage = async () => {
     if (message.length < 1) return;
-    const result = await sendMessage(roomId, uid!, friendUid!, message);
+    const result = await sendMessage(roomInfo!, uid!, message);
     if (result.code === "success") {
       setMessage("");
       // 更新聊天訊息
@@ -59,7 +66,7 @@ function ChatRoom() {
             <Panel defaultSize={85} minSize={60}>
               {/* 頁首區塊 header */}
               <div className="absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] rounded-tr-lg px-2 bg-[var(--card-bg-color)] z-20">
-                <button type="button" className="p-1" onClick={() => dispatch(setActiveChatRoomId({ chatRoomId: "", friendUid: "" }))}>
+                <button type="button" className="p-1" onClick={() => dispatch(clearActiveChatRoom())}>
                   <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
                 </button>
                 <p className="text-lg w-full text-center text-xl">User Name</p>
