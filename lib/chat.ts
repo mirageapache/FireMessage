@@ -1,5 +1,6 @@
 import { db, realtimeDb } from "@/firebase";
 import { chatDataType } from "@/types/chatType";
+import { userDataType } from "@/types/userType";
 import { push, ref, serverTimestamp } from "firebase/database";
 import {
   addDoc,
@@ -17,6 +18,28 @@ export const createChatRoom = async (member: string[]) => {
     createdAt: new Date(),
   });
   return chatRoomRef.id;
+};
+
+/** 取得聊天室列表 */
+export const getChatList = async (uid: string) => {
+  try {
+    const chatListRef = collection(db, "chatRooms");
+    const chatListQuery = query(chatListRef, where("member", "array-contains", uid));
+    const chatListSnapshot = await getDocs(chatListQuery);
+    const chatList = chatListSnapshot.docs.map((doc) => {
+      const data = doc.data();
+
+      return {
+        ...data,
+        id: doc.id,
+        createdAt: data.createdAt.toDate().toISOString(),
+      };
+    });
+
+    return { code: "success", chatList };
+  } catch (error) {
+    return { code: "error", message: "取得聊天室列表失敗", error };
+  }
 };
 
 /** 建立(傳送)聊天訊息 */
@@ -50,12 +73,11 @@ export const getMessages = async (chatRoomId: string) => {
 /** 發送(即時)訊息 */
 export const sendMessage = async (
   chatRoomInfo: chatDataType,
-  uid: string,
+  userData: userDataType,
   message: string,
-  type: string = 'sendMessage',
 ) => {
   try {
-    await createMessage(chatRoomInfo.chatRoomId, uid, message, type);
+    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "sendMessage");
     const {
       chatRoomId,
       member,
@@ -69,12 +91,13 @@ export const sendMessage = async (
       const messageRef = ref(realtimeDb, `messages/${memberId}`);
       await push(messageRef, {
         message,
-        fromUid: uid,
+        fromUid: userData.uid,
         chatRoomId,
-        chatRoomName,
-        chatRoomAvatar: avatarUrl,
-        chatRoomBgColor: bgColor,
-        type,
+        // 註：因為即時訊息通知是通知接收方，所以好友類型的聊天室名稱&頭貼設定發送者的頭貼
+        chatRoomName: chatRoomInfo.type === 0 ? userData.userName : chatRoomName,
+        chatRoomAvatar: chatRoomInfo.type === 0 ? userData.avatarUrl : avatarUrl,
+        chatRoomBgColor: chatRoomInfo.type === 0 ? userData.bgColor : bgColor,
+        type: "sendMessage",
         createdAt: serverTimestamp(),
         isRead: false,
       });

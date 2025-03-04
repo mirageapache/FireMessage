@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import { setActiveChatRoomId } from "@/store/chatSlice";
+import { setActiveChatRoom } from "@/store/chatSlice";
 import { useAppDispatch } from "@/store/hooks";
 import Avatar from "./Avatar";
 
@@ -45,7 +45,19 @@ function UserItem({
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={() => {
         if (status === 5 && chatRoomId) {
-          dispatch(setActiveChatRoomId({ chatRoomId, friendUid: uid }));
+          dispatch(setActiveChatRoom({
+            chatRoom: {
+              chatRoomId,
+              chatRoomName: userName,
+              member: [uid],
+              type: 0,
+              avatarUrl,
+              bgColor,
+              lastMessage: "",
+              lastMessageTime: "",
+              unreadCount: 0,
+            },
+          }));
         }
       }}
     >

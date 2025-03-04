@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setActiveChatRoom } from "@/store/chatSlice";
+import { formatDateTime } from "@/lib/utils";
 import Avatar from "./Avatar";
 
 interface ChatItemProps {
@@ -63,7 +64,7 @@ function ChatItem({
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
       </div>
       <div className="relative flex flex-col gap-2 justify-space items-end h-[50px]">
-        <p className="top-0 right-0 text-[var(--secondary-text-color)] text-xs">{lastMessageTime}</p>
+        <p className="top-0 right-0 text-[var(--secondary-text-color)] text-xs">{formatDateTime(lastMessageTime)}</p>
         {showCount && unreadCount > 0 && (
           <p className="bg-orange-500 text-white rounded-full px-2 text-sm">
             {unreadCount}

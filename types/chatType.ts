@@ -36,7 +36,7 @@ export type messageDataType = {
 
 /** 即時訊息資料 */
 export type immediateMessageDataType = {
-  fromuid: string;
+  member: string[];
   chatRoomId: string;
   chatRoomName: string;
   chatRoomAvatar: string;

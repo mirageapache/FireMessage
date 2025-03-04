@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { realtimeDb } from '@/firebase';
 import { immediateMessageDataType } from "@/types/chatType";
 import { isEmpty } from 'lodash';
+import ChatItem from "@/components/ChatItem";
 
 export const useMessage = (
   uid: string,
@@ -26,10 +27,18 @@ export const useMessage = (
       if (!messageData.isRead) {
         toast.update(latestId, {
           render: () => (
-            <div>
-              <p>UserName</p>
-              <p>{messageData.message}</p>
-            </div>
+            <ChatItem
+              key={messageData.chatRoomId}
+              chatRoomId={messageData.chatRoomId}
+              member={messageData.member}
+              chatRoomName={messageData.chatRoomName}
+              avatarUrl={messageData.chatRoomAvatar}
+              bgColor={messageData.chatRoomBgColor}
+              lastMessage={messageData.message}
+              lastMessageTime={messageData.createdAt}
+              unreadCount={0}
+              showCount={false}
+            />
           ),
         });
 

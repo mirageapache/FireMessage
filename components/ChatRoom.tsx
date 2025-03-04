@@ -20,6 +20,7 @@ import MessageItem from './MessageItem';
 
 function ChatRoom() {
   const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
+  const userData = useAppSelector((state: RootState) => state.user.userData);
   const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
 
   const [message, setMessage] = useState("");
@@ -49,7 +50,7 @@ function ChatRoom() {
   /** 傳送訊息 */
   const handleSendMessage = async () => {
     if (message.length < 1) return;
-    const result = await sendMessage(roomInfo!, uid!, message);
+    const result = await sendMessage(roomInfo!, userData!, message);
     if (result.code === "success") {
       setMessage("");
       // 更新聊天訊息

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { isEmpty } from 'lodash';
-import { setActiveChatRoomId } from '@/store/chatSlice';
+import { setActiveChatRoom } from '@/store/chatSlice';
 import { friendDataType } from '@/types/friendType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
@@ -27,7 +27,19 @@ function FriendList(friendData: friendDataType[]) {
         href="/chat"
         className="flex items-center gap-2 w-full p-2"
         onClick={() => {
-          dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+          dispatch(setActiveChatRoom({
+            chatRoom: {
+              chatRoomId: item.chatRoomId,
+              chatRoomName: item.userName,
+              member: [item.uid],
+              type: 0,
+              avatarUrl: item.avatarUrl,
+              bgColor: item.bgColor,
+              lastMessage: "",
+              lastMessageTime: "",
+              unreadCount: 0,
+            },
+          }));
         }}
       >
         <Avatar
@@ -55,7 +67,19 @@ function FriendList(friendData: friendDataType[]) {
               href="/chat"
               className={cn(dropdownItemStyle)}
               onClick={() => {
-                dispatch(setActiveChatRoomId({ chatRoomId: item.chatRoomId, friendUid: item.uid }));
+                dispatch(setActiveChatRoom({
+                  chatRoom: {
+                    chatRoomId: item.chatRoomId,
+                    chatRoomName: item.userName,
+                    member: [item.uid],
+                    type: 0,
+                    avatarUrl: item.avatarUrl,
+                    bgColor: item.bgColor,
+                    lastMessage: "",
+                    lastMessageTime: "",
+                    unreadCount: 0,
+                  },
+                }));
               }}
             >
               聊天

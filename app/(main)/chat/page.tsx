@@ -6,7 +6,7 @@ import ChatRoom from '@/components/ChatRoom';
 import ChatList from '@/components/ChatList';
 
 function Chat() {
-  const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoomId);
+  const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoom?.chatRoomId);
 
   return (
     <div className="flex w-full h-full md:pt-5 md:px-5">

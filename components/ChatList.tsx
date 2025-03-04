@@ -4,19 +4,28 @@ import React, { useEffect, useState } from "react";
 import { friendDataType } from "@/types/friendType";
 import { chatDataType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
+import { getChatList } from "@/lib/chat";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 
 function ChatList() {
+  const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [chatList, setChatList] = useState<chatDataType[]>([]);
 
+  const handleGetChatList = async () => {
+    const result = await getChatList(uid!);
+    if (result.code === "success") {
+      setChatList(result.chatList);
+    }
+  };
+
   useEffect(() => {
     setFriendList(FriendListData!);
-    setChatList([]);
+    handleGetChatList();
   }, [FriendListData]);
 
   useEffect(() => {
@@ -34,6 +43,8 @@ function ChatList() {
         setActiveUnderLine("translate-x-0");
     }
   }, [activeTab]);
+
+  console.log(chatList);
 
   return (
     <>
