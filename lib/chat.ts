@@ -1,20 +1,36 @@
+/* eslint-disable import/no-cycle */
+
 import { db, realtimeDb } from "@/firebase";
-import { chatDataType } from "@/types/chatType";
-import { userDataType } from "@/types/userType";
-import { push, ref, serverTimestamp } from "firebase/database";
+import {
+  push,
+  ref,
+  serverTimestamp,
+  update,
+} from "firebase/database";
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
+import { chatListInfoType } from "@/types/chatType";
+import { userDataType } from "@/types/userType";
+import { getSimpleUserData } from "./user";
 
 /** 建立聊天室 */
-export const createChatRoom = async (member: string[]) => {
+export const createChatRoom = async (members: string[], type: number) => {
   const chatRoomRef = collection(db, "chatRooms");
   await addDoc(chatRoomRef, {
-    member,
+    members,
+    type,
+    chatRoomName: "",
+    avatarUrl: "",
+    bgColor: "",
+    lastMessage: "",
+    lastMessageTime: "",
     createdAt: new Date(),
   });
   return chatRoomRef.id;
@@ -24,22 +40,44 @@ export const createChatRoom = async (member: string[]) => {
 export const getChatList = async (uid: string) => {
   try {
     const chatListRef = collection(db, "chatRooms");
-    const chatListQuery = query(chatListRef, where("member", "array-contains", uid));
+    const chatListQuery = query(chatListRef, where("members", "array-contains", uid));
     const chatListSnapshot = await getDocs(chatListQuery);
-    const chatList = chatListSnapshot.docs.map((doc) => {
-      const data = doc.data();
-
+    const chatListPromise = chatListSnapshot.docs.map(async (chatDoc) => {
+      const data = chatDoc.data() as chatListInfoType;
+      if (data.type === 0) {
+        const friendUid = data.members.find((user: string) => user !== uid);
+        const friendData = await getSimpleUserData(friendUid!) as unknown as userDataType;
+        return {
+          ...data,
+          chatRoomId: chatDoc.id,
+          chatRoomName: friendData.userName, // 聊天室類別為好友時，替換為對方名字、頭像、顏色
+          avatarUrl: friendData.avatarUrl,
+          bgColor: friendData.bgColor,
+          lastMessageTime: data.lastMessageTime.toDate().toISOString(),
+          createdAt: data.createdAt.toDate().toISOString(),
+        };
+      }
       return {
         ...data,
-        id: doc.id,
+        chatRoomId: chatDoc.id,
+        lastMessageTime: data.lastMessageTime.toDate().toISOString(),
         createdAt: data.createdAt.toDate().toISOString(),
       };
     });
-
+    const chatList = await Promise.all(chatListPromise);
     return { code: "success", chatList };
   } catch (error) {
     return { code: "error", message: "取得聊天室列表失敗", error };
   }
+};
+
+/** 更新聊天室列表最後訊息 */
+export const updateLastMessage = async (chatRoomId: string, message: string) => {
+  const chatRoomRef = doc(db, "chatRooms", chatRoomId);
+  await updateDoc(chatRoomRef, {
+    lastMessage: message,
+    lastMessageTime: new Date(),
+  });
 };
 
 /** 建立(傳送)聊天訊息 */
@@ -57,6 +95,7 @@ export const createMessage = async (
     type,
     createdAt: new Date(),
   });
+  await updateLastMessage(chatRoomId, content); // 更新聊天室列表最後訊息
 };
 
 /** 取得聊天訊息 */
@@ -67,12 +106,12 @@ export const getMessages = async (chatRoomId: string) => {
     where("chatRoomId", "==", chatRoomId),
   );
   const messagesSnapshot = await getDocs(messagesQuery);
-  return messagesSnapshot.docs.map((doc) => doc.data());
+  return messagesSnapshot.docs.map((msg) => msg.data());
 };
 
 /** 發送(即時)訊息 */
 export const sendMessage = async (
-  chatRoomInfo: chatDataType,
+  chatRoomInfo: chatListInfoType,
   userData: userDataType,
   message: string,
 ) => {
@@ -80,15 +119,20 @@ export const sendMessage = async (
     await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "sendMessage");
     const {
       chatRoomId,
-      member,
+      members,
       chatRoomName,
       avatarUrl,
       bgColor,
     } = chatRoomInfo;
 
     // 建立即時通知
-    member.forEach(async (memberId) => {
-      const messageRef = ref(realtimeDb, `messages/${memberId}`);
+    members.forEach(async (memberId) => {
+      // 更新該使用者於聊天室內未讀即時訊息(先刪除舊資料，再建立)
+      update(ref(realtimeDb), {
+        [`messages/${memberId}/${chatRoomId}`]: null, // 設為 null 即可刪除該筆資料
+      });
+
+      const messageRef = ref(realtimeDb, `messages/${memberId}/${chatRoomId}`);
       await push(messageRef, {
         message,
         fromUid: userData.uid,

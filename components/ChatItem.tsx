@@ -7,7 +7,7 @@ import Avatar from "./Avatar";
 
 interface ChatItemProps {
   chatRoomId: string;
-  member: string[];
+  members: string[];
   chatRoomName: string;
   avatarUrl: string;
   bgColor: string;
@@ -19,7 +19,7 @@ interface ChatItemProps {
 
 function ChatItem({
   chatRoomId,
-  member,
+  members,
   chatRoomName,
   avatarUrl,
   bgColor,
@@ -39,12 +39,13 @@ function ChatItem({
           chatRoom: {
             chatRoomId,
             chatRoomName,
-            member,
+            members,
             type: 0,
             avatarUrl,
             bgColor,
-            lastMessage: "",
-            lastMessageTime: "",
+            lastMessage,
+            lastMessageTime,
+            createdAt: "",
             unreadCount: 0,
           },
         }));
@@ -64,7 +65,7 @@ function ChatItem({
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
       </div>
       <div className="relative flex flex-col gap-2 justify-space items-end h-[50px]">
-        <p className="top-0 right-0 text-[var(--secondary-text-color)] text-xs">{formatDateTime(lastMessageTime)}</p>
+        <p className="top-0 right-0 w-16 text-[var(--secondary-text-color)] text-xs text-right">{formatDateTime(lastMessageTime)}</p>
         {showCount && unreadCount > 0 && (
           <p className="bg-orange-500 text-white rounded-full px-2 text-sm">
             {unreadCount}

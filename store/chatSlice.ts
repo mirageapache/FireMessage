@@ -1,10 +1,10 @@
-import { chatDataType, chatRoomInfoType } from '@/types/chatType';
+import { chatListInfoType, chatRoomInfoType } from '@/types/chatType';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // 定義 State 型別
 interface ChatState {
-  chatData: chatDataType | null;
-  activeChatRoom: chatDataType | null;
+  chatData: chatListInfoType | null;
+  activeChatRoom: chatListInfoType | null;
   chatRoomInfo: chatRoomInfoType | null;
 }
 
@@ -20,7 +20,7 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     // 設定聊天室資料
-    setChatData: (state, action: PayloadAction<chatDataType | null>) => {
+    setChatData: (state, action: PayloadAction<chatListInfoType | null>) => {
       state.chatData = action.payload;
     },
     // 清除聊天室資料
@@ -30,7 +30,7 @@ const chatSlice = createSlice({
     // 設定開啟的聊天室資訊
     setActiveChatRoom: (
       state,
-      action: PayloadAction<{ chatRoom: chatDataType }>,
+      action: PayloadAction<{ chatRoom: chatListInfoType }>,
     ) => {
       state.activeChatRoom = action.payload.chatRoom;
     },

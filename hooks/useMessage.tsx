@@ -30,7 +30,7 @@ export const useMessage = (
             <ChatItem
               key={messageData.chatRoomId}
               chatRoomId={messageData.chatRoomId}
-              member={messageData.member}
+              members={messageData.member}
               chatRoomName={messageData.chatRoomName}
               avatarUrl={messageData.chatRoomAvatar}
               bgColor={messageData.chatRoomBgColor}

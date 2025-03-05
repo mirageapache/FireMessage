@@ -120,12 +120,13 @@ function Friend() {
             chatRoom: {
               chatRoomId: item.chatRoomId,
               chatRoomName: item.userName,
-              member: [item.uid, userData?.uid || ""],
+              members: [item.uid, userData?.uid || ""],
               type: 0,
               avatarUrl: item.avatarUrl,
               bgColor: item.bgColor,
               lastMessage: "",
               lastMessageTime: "",
+              createdAt: "",
               unreadCount: 0,
             },
           }));
@@ -160,12 +161,13 @@ function Friend() {
                   chatRoom: {
                     chatRoomId: item.chatRoomId,
                     chatRoomName: item.userName,
-                    member: [item.uid, userData?.uid || ""],
+                    members: [item.uid, userData?.uid || ""],
                     type: 0,
                     avatarUrl: item.avatarUrl,
                     bgColor: item.bgColor,
                     lastMessage: "",
                     lastMessageTime: "",
+                    createdAt: "",
                     unreadCount: 0,
                   },
                 }));

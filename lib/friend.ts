@@ -136,7 +136,7 @@ export const updateBothFriendStatus = async (uid: string, friendUid: string, sta
       await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
       await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
       // 雙方確定好友身分則建立聊天室資訊
-      const chatRoomId = await createChatRoom([uid, friendUid]);
+      const chatRoomId = await createChatRoom([uid, friendUid], 0);
       // 更新雙方好友資訊
       await Promise.all([
         updateFriendStatus(uid, friendUid, status, chatRoomId),

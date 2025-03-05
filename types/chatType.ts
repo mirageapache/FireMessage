@@ -2,16 +2,17 @@
 
 import { userDataType } from "./userType";
 
-/** 聊天列表訊息資料 */
-export type chatDataType = {
+/** 聊天列表資訊 */
+export type chatListInfoType = {
   chatRoomId: string;
-  chatRoomName: string;
-  member: string[];
   type: number; // 聊天室類型 0: 好友 1: 群組
-  avatarUrl: string; // 聊天室頭像
+  members: string[]; // 聊天室成員
+  chatRoomName: string; // 如果為好友則為對方名字，如果為群組則為群組名稱
+  avatarUrl: string; // 如果為好友則為對方頭像，如果為群組則為群組頭像
   bgColor: string; // 聊天室顏色
   lastMessage: string;
   lastMessageTime: string | any;
+  createdAt: string | any;
   unreadCount: number;
 };
 
@@ -22,7 +23,7 @@ export type chatRoomInfoType = {
   avatarUrl: string; // 聊天室頭像
   bgColor: string; // 聊天室顏色
   member: string[];
-  createdAt: string;
+  createdAt: any;
 };
 
 /** 訊息資料  */

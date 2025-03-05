@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { friendDataType } from "@/types/friendType";
-import { chatDataType } from "@/types/chatType";
+import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
 import { getChatList } from "@/lib/chat";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
+import Spinner from "./Spinner";
 
 function ChatList() {
   const uid = useAppSelector((state) => state.user.userData?.uid);
@@ -14,18 +15,22 @@ function ChatList() {
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
-  const [chatList, setChatList] = useState<chatDataType[]>([]);
+  const [chatList, setChatList] = useState<chatListInfoType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handleGetChatList = async () => {
+    if (!uid) return;
+    setLoading(true);
     const result = await getChatList(uid!);
     if (result.code === "success") {
-      setChatList(result.chatList);
+      setChatList(result.chatList as unknown as chatListInfoType[]);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     setFriendList(FriendListData!);
-    handleGetChatList();
+    if (uid) handleGetChatList();
   }, [FriendListData]);
 
   useEffect(() => {
@@ -44,7 +49,7 @@ function ChatList() {
     }
   }, [activeTab]);
 
-  console.log(chatList);
+  // console.log(chatList);
 
   return (
     <>
@@ -86,53 +91,59 @@ function ChatList() {
         />
       </div>
       <div>
-        {/* 聊天室 */}
-        {activeTab === "chat" && (
-          <div>
-            {chatList?.length === 0 ? (
-              <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            {/* 聊天室 */}
+            {activeTab === "chat" && (
+              <div>
+                {chatList?.length === 0 ? (
+                  <div className="flex justify-center items-center h-full">
+                    <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
+                  </div>
+                ) : (
+                  chatList?.map((item) => (
+                    <ChatItem
+                      key={item.chatRoomId}
+                      chatRoomId={item.chatRoomId}
+                      members={[]}
+                      chatRoomName={item.chatRoomName}
+                      avatarUrl={item.avatarUrl}
+                      bgColor={item.bgColor}
+                      lastMessage={item.lastMessage}
+                      lastMessageTime={item.lastMessageTime}
+                      unreadCount={0}
+                      showCount
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              chatList?.map((item) => (
-                <ChatItem
-                  key={item.chatRoomId}
-                  chatRoomId={item.chatRoomId}
-                  member={[]}
-                  chatRoomName="Test"
-                  avatarUrl=""
-                  bgColor="#3b82f6"
-                  lastMessage="Test"
-                  lastMessageTime="12:00"
-                  unreadCount={2}
-                  showCount
-                />
-              ))
             )}
-          </div>
-        )}
-        {/* 好友 */}
-        {activeTab === "friend" && (
-          <div>
-            {friendList?.length === 0 ? (
-              <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
+            {/* 好友 */}
+            {activeTab === "friend" && (
+              <div>
+                {friendList?.length === 0 ? (
+                  <div className="flex justify-center items-center h-full">
+                    <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
+                  </div>
+                ) : (
+                  friendList!.map((item) => (
+                    <UserItem
+                      key={item.uid}
+                      uid={item.uid}
+                      userName={item.sourceUserData.userName}
+                      userAccount={item.sourceUserData.userAccount}
+                      avatarUrl={item.sourceUserData.avatarUrl}
+                      bgColor={item.sourceUserData.bgColor}
+                      chatRoomId={item.chatRoomId}
+                      status={item.status}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              friendList!.map((item) => (
-                <UserItem
-                  key={item.uid}
-                  uid={item.uid}
-                  userName={item.sourceUserData.userName}
-                  userAccount={item.sourceUserData.userAccount}
-                  avatarUrl={item.sourceUserData.avatarUrl}
-                  bgColor={item.sourceUserData.bgColor}
-                  chatRoomId={item.chatRoomId}
-                  status={item.status}
-                />
-              ))
             )}
-          </div>
+          </>
         )}
       </div>
     </>
