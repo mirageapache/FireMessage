@@ -13,7 +13,8 @@ import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearActiveChatRoom } from '@/store/chatSlice';
 import { useMessage } from '@/hooks/useMessage';
-import { sendMessage } from '@/lib/chat';
+import { getMessages, sendMessage } from '@/lib/chat';
+import { messageDataType } from '@/types/chatType';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 import MessageItem from './MessageItem';
@@ -24,22 +25,29 @@ function ChatRoom() {
   const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
 
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [messageList, setMessageList] = useState<messageDataType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const handleUpdateMessage = () => {
-    console.log("更新聊天室訊息資料");
+  /** 取得聊天室訊息資料 */
+  const handleGetMessage = async () => {
+    setIsLoading(true);
+    if (!roomInfo?.chatRoomId) return;
+    const result = await getMessages(roomInfo.chatRoomId, uid!);
+    if (result.code === "success") {
+      setMessageList(result.messageData as messageDataType[]);
+    }
+    setIsLoading(false);
   };
 
   // 監聽即時訊息
-  useMessage(uid!, handleUpdateMessage);
+  useMessage(uid!, handleGetMessage);
 
   useEffect(() => {
-    // 取得聊天室資料
-    setIsLoading(false);
+    handleGetMessage();
   }, [roomInfo?.chatRoomId]);
 
-  if (roomInfo?.chatRoomId === "") {
+  if (!roomInfo) {
     return (
       <div className="flex justify-center items-center h-full">
         <p className="text-2xl">開始聊天吧！</p>
@@ -56,6 +64,8 @@ function ChatRoom() {
       // 更新聊天訊息
     }
   };
+
+  console.log(messageList);
 
   return (
     <div className="w-full h-full">
@@ -76,7 +86,16 @@ function ChatRoom() {
               {/* 訊息顯示區塊 message panel */}
               <div className="h-[calc(100%-50px)] overflow-y-auto mt-[50px] p-5 flex flex-col-reverse">
                 <div className="flex flex-col gap-2">
-                  <MessageItem />
+                  {messageList && (
+                    messageList.map((messageData) => (
+                      <MessageItem
+                        key={messageData.messageId}
+                        message={messageData.message}
+                        createdAt={messageData.createdAt}
+                        isOwner={messageData.isOwner}
+                      />
+                    ))
+                  )}
                 </div>
               </div>
             </Panel>

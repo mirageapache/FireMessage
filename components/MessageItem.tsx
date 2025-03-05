@@ -1,17 +1,26 @@
 import React from 'react';
+import { messageDataType } from '@/types/chatType';
+import { cn, formatDateTime } from '@/lib/utils';
 
-function MessageItem() {
+function MessageItem({
+  message,
+  createdAt,
+  isOwner,
+}: messageDataType) {
   return (
-    <>
-      <div className="flex justify-start items-end w-full">
-        <p className="messageItem right-radius max-w-[70%]">English content 2</p>
-        <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">14:00</p>
-      </div>
-      <div className="flex justify-end items-end w-full">
-        <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">12:00</p>
-        <p className="messageItem left-radius max-w-[70%]">English content1</p>
-      </div>
-    </>
+    <div className={cn("flex justify-start items-end w-full", isOwner ? "justify-end" : "justify-start")}>
+      {isOwner ? (
+        <>
+          <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">{formatDateTime(createdAt)}</p>
+          <p className="messageItem left-radius max-w-[70%]">{message}</p>
+        </>
+      ) : (
+        <>
+          <p className="messageItem right-radius max-w-[70%]">{message}</p>
+          <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">{formatDateTime(createdAt)}</p>
+        </>
+      )}
+    </div>
   );
 }
 

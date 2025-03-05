@@ -15,6 +15,7 @@ import {
   query,
   updateDoc,
   where,
+  orderBy,
 } from "firebase/firestore";
 import { chatListInfoType } from "@/types/chatType";
 import { userDataType } from "@/types/userType";
@@ -84,29 +85,42 @@ export const updateLastMessage = async (chatRoomId: string, message: string) => 
 export const createMessage = async (
   chatRoomId: string,
   uid: string,
-  content: string,
+  message: string,
   type: string = 'text',
 ) => {
   const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
 
   await addDoc(messagesRef, {
     senderId: uid,
-    content,
+    message,
     type,
     createdAt: new Date(),
   });
-  await updateLastMessage(chatRoomId, content); // 更新聊天室列表最後訊息
+  await updateLastMessage(chatRoomId, message); // 更新聊天室列表最後訊息
 };
 
 /** 取得聊天訊息 */
-export const getMessages = async (chatRoomId: string) => {
-  const messagesRef = collection(db, "messages");
-  const messagesQuery = query(
-    messagesRef,
-    where("chatRoomId", "==", chatRoomId),
-  );
-  const messagesSnapshot = await getDocs(messagesQuery);
-  return messagesSnapshot.docs.map((msg) => msg.data());
+export const getMessages = async (chatRoomId: string, uid: string) => {
+  try {
+    const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
+    const messagesQuery = query(
+      messagesRef,
+      orderBy("createdAt", "desc"),
+    );
+    const messagesSnapshot = await getDocs(messagesQuery);
+    const messageData = messagesSnapshot.docs.map((msg) => {
+      const data = msg.data();
+
+      return ({
+        ...data,
+        isOwner: data.senderId === uid,
+        createdAt: data.createdAt.toDate().toISOString(),
+      });
+    });
+    return { code: "success", messageData };
+  } catch (error) {
+    return { code: "error", message: "取得聊天訊息失敗", error };
+  }
 };
 
 /** 發送(即時)訊息 */

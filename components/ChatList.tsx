@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from "react";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
