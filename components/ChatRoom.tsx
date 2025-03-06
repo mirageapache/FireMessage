@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Panel,
   PanelGroup,
@@ -23,6 +25,7 @@ function ChatRoom() {
   const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState<messageDataType[]>([]);
@@ -60,12 +63,20 @@ function ChatRoom() {
     if (message.length < 1) return;
     const result = await sendMessage(roomInfo!, userData!, message);
     if (result.code === "success") {
+      // 建立新訊息物件
+      const newMessage: messageDataType = {
+        messageId: Date.now().toString(), // 暫時使用時間戳作為ID
+        message,
+        createdAt: new Date().toISOString(),
+        isOwner: true,
+        senderData: userData!,
+        type: 'text',
+      };
+      setMessageList((prev) => [...prev, newMessage]);
+      textareaRef.current!.value = "";
       setMessage("");
-      // 更新聊天訊息
     }
   };
-
-  console.log(messageList);
 
   return (
     <div className="w-full h-full">
@@ -90,9 +101,12 @@ function ChatRoom() {
                     messageList.map((messageData) => (
                       <MessageItem
                         key={messageData.messageId}
+                        messageId={messageData.messageId}
                         message={messageData.message}
                         createdAt={messageData.createdAt}
                         isOwner={messageData.isOwner}
+                        senderData={messageData.senderData}
+                        type={messageData.type}
                       />
                     ))
                   )}
@@ -106,6 +120,7 @@ function ChatRoom() {
             <Panel defaultSize={15} minSize={15}>
               <div className="flex justify-between items-center w-full h-full border-t border-[var(--divider-color)]">
                 <Textarea
+                  ref={textareaRef}
                   className="resize-none w-full h-full text-lg placeholder-gray-400 border-none"
                   maxLength={500}
                   placeholder="輸入訊息..."

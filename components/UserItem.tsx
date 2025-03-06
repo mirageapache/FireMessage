@@ -49,12 +49,13 @@ function UserItem({
             chatRoom: {
               chatRoomId,
               chatRoomName: userName,
-              member: [uid],
+              members: [uid],
               type: 0,
               avatarUrl,
               bgColor,
               lastMessage: "",
               lastMessageTime: "",
+              createdAt: "",
               unreadCount: 0,
             },
           }));

@@ -86,7 +86,7 @@ export const createMessage = async (
   chatRoomId: string,
   uid: string,
   message: string,
-  type: string = 'text',
+  type: string = 'text', // 訊息類型 (text, image, file...)
 ) => {
   const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
 
@@ -105,18 +105,21 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
     const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
     const messagesQuery = query(
       messagesRef,
-      orderBy("createdAt", "desc"),
+      orderBy("createdAt", "asc"),
     );
     const messagesSnapshot = await getDocs(messagesQuery);
-    const messageData = messagesSnapshot.docs.map((msg) => {
+    const messageDataPromise = messagesSnapshot.docs.map(async (msg) => {
       const data = msg.data();
-
+      const userData = await getSimpleUserData(data.senderId) as unknown as userDataType;
       return ({
         ...data,
         isOwner: data.senderId === uid,
         createdAt: data.createdAt.toDate().toISOString(),
+        senderData: userData,
       });
     });
+
+    const messageData = await Promise.all(messageDataPromise);
     return { code: "success", messageData };
   } catch (error) {
     return { code: "error", message: "取得聊天訊息失敗", error };
@@ -130,7 +133,7 @@ export const sendMessage = async (
   message: string,
 ) => {
   try {
-    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "sendMessage");
+    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "text");
     const {
       chatRoomId,
       members,

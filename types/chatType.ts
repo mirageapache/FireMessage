@@ -32,8 +32,8 @@ export type messageDataType = {
   message: string;
   createdAt: string | any;
   isOwner: boolean; // 用來判斷是否為自己發送的訊息
-  sourceUserData: userDataType;
-  type: number; // 訊息類型 0: 文字 1: 圖片 2: 影片 3: 語音 4: 位置 5: 連結 6: 其他
+  senderData: userDataType;
+  type: string; // 訊息類型 (text, image, file...)
 };
 
 /** 即時訊息資料 */
