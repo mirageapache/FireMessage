@@ -1,62 +1,42 @@
 "use client";
 
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Panel,
   PanelGroup,
   PanelResizeHandle,
 } from "react-resizable-panels";
+import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearActiveChatRoom } from '@/store/chatSlice';
-import { useMessage } from '@/hooks/useMessage';
-import { getMessages, sendMessage } from '@/lib/chat';
+import { sendMessage } from '@/lib/chat';
 import { messageDataType } from '@/types/chatType';
 import { Textarea } from './ui/textarea';
 import Spinner from './Spinner';
 import MessageItem from './MessageItem';
 
-function ChatRoom() {
+function ChatRoom({
+  isLoading,
+  messageList,
+  setMessageList,
+}: {
+  isLoading: boolean,
+  messageList: messageDataType[],
+  setMessageList: React.Dispatch<React.SetStateAction<messageDataType[]>>,
+}) {
   const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
   const userData = useAppSelector((state: RootState) => state.user.userData);
-  const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [message, setMessage] = useState("");
-  const [messageList, setMessageList] = useState<messageDataType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-
-  /** 取得聊天室訊息資料 */
-  const handleGetMessage = async () => {
-    setIsLoading(true);
-    if (!roomInfo?.chatRoomId) return;
-    const result = await getMessages(roomInfo.chatRoomId, uid!);
-    if (result.code === "success") {
-      setMessageList(result.messageData as messageDataType[]);
-    }
-    setIsLoading(false);
-  };
-
-  // 監聽即時訊息
-  useMessage(uid!, handleGetMessage);
-
-  useEffect(() => {
-    handleGetMessage();
-  }, [roomInfo?.chatRoomId]);
-
-  if (!roomInfo) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <p className="text-2xl">開始聊天吧！</p>
-      </div>
-    );
-  }
 
   /** 傳送訊息 */
   const handleSendMessage = async () => {
@@ -78,6 +58,14 @@ function ChatRoom() {
     }
   };
 
+  if (!roomInfo) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-2xl">開始聊天吧！</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full">
       {isLoading ? (
@@ -91,24 +79,42 @@ function ChatRoom() {
                 <button type="button" className="p-1" onClick={() => dispatch(clearActiveChatRoom())}>
                   <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
                 </button>
-                <p className="text-lg w-full text-center text-xl">User Name</p>
+                <p className="text-lg w-full text-center text-xl">{roomInfo.chatRoomName}</p>
               </div>
 
               {/* 訊息顯示區塊 message panel */}
               <div className="h-[calc(100%-50px)] overflow-y-auto mt-[50px] p-5 flex flex-col-reverse">
                 <div className="flex flex-col gap-2">
                   {messageList && (
-                    messageList.map((messageData) => (
-                      <MessageItem
-                        key={messageData.messageId}
-                        messageId={messageData.messageId}
-                        message={messageData.message}
-                        createdAt={messageData.createdAt}
-                        isOwner={messageData.isOwner}
-                        senderData={messageData.senderData}
-                        type={messageData.type}
-                      />
-                    ))
+                    messageList.map((messageData, index) => {
+                      const currentDate = new Date();
+                      let isSameDay = false;
+                      if (index > 0) {
+                        isSameDay = moment(messageData.createdAt).isSame(moment(messageList[index - 1].createdAt), 'day');
+                      }
+                      const isSameYear = moment(currentDate).isSame(moment(messageData.createdAt), 'year');
+                      const isToday = moment(currentDate).isSame(moment(messageData.createdAt), 'day');
+                      return (
+                        <div key={messageData.messageId}>
+                          {!isSameDay && (
+                            <div className="flex justify-center items-center w-full">
+                              <p className="text-sm bg-gray-200 text-[var(--disable-text-color)] my-2 py-1 px-3 rounded-md">
+                                {isToday ? "今天" : (isSameYear ? moment(messageData.createdAt).format("MM/DD(ddd)") : moment(messageData.createdAt).format("YYYY/MM/DD(ddd)"))}
+                              </p>
+                            </div>
+                          )}
+                          <MessageItem
+                            // key={messageData.messageId}
+                            messageId={messageData.messageId}
+                            message={messageData.message}
+                            createdAt={messageData.createdAt}
+                            isOwner={messageData.isOwner}
+                            senderData={messageData.senderData}
+                            type={messageData.type}
+                          />
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               </div>

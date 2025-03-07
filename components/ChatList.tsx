@@ -109,7 +109,7 @@ function ChatList() {
                     <ChatItem
                       key={item.chatRoomId}
                       chatRoomId={item.chatRoomId}
-                      members={[]}
+                      members={item.members}
                       chatRoomName={item.chatRoomName}
                       avatarUrl={item.avatarUrl}
                       bgColor={item.bgColor}

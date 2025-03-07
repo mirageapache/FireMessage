@@ -113,6 +113,7 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
       const userData = await getSimpleUserData(data.senderId) as unknown as userDataType;
       return ({
         ...data,
+        messageId: msg.id,
         isOwner: data.senderId === uid,
         createdAt: data.createdAt.toDate().toISOString(),
         senderData: userData,
@@ -145,14 +146,15 @@ export const sendMessage = async (
     // 建立即時通知
     members.forEach(async (memberId) => {
       // 更新該使用者於聊天室內未讀即時訊息(先刪除舊資料，再建立)
-      update(ref(realtimeDb), {
-        [`messages/${memberId}/${chatRoomId}`]: null, // 設為 null 即可刪除該筆資料
+      await update(ref(realtimeDb), {
+        [`messages/${memberId}`]: null, // 設為 null 即可刪除該筆資料
       });
 
-      const messageRef = ref(realtimeDb, `messages/${memberId}/${chatRoomId}`);
+      const messageRef = ref(realtimeDb, `messages/${memberId}`);
       await push(messageRef, {
         message,
         fromUid: userData.uid,
+        members,
         chatRoomId,
         // 註：因為即時訊息通知是通知接收方，所以好友類型的聊天室名稱&頭貼設定發送者的頭貼
         chatRoomName: chatRoomInfo.type === 0 ? userData.userName : chatRoomName,
@@ -166,6 +168,7 @@ export const sendMessage = async (
 
     return { code: "success", message: "訊息發送成功" };
   } catch (error) {
+    console.log(error);
     return { code: "error", message: "訊息發送失敗", error };
   }
 };

@@ -29,7 +29,6 @@ function ChatItem({
   showCount,
 }: ChatItemProps) {
   const dispatch = useDispatch();
-
   return (
     <Link
       href="/chat"
