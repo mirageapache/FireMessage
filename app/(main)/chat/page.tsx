@@ -60,7 +60,7 @@ function Chat() {
       </section>
 
       {/* 手機版 */}
-      {activeChatRoomId === "" ? (
+      {(!activeChatRoomId || activeChatRoomId === "") ? (
         <div className="md:hidden w-full h-full bg-white dark:bg-[var(--background)] border-b border-[var(--divider-color)] pt-2 px-5">
           <ChatList />
         </div>
