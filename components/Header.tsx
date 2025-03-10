@@ -20,15 +20,19 @@ import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
 import { useNotification } from "@/hooks/useNotification";
+import { useMessage } from "@/hooks/useMessage";
 import { RootState } from "@/store";
 import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { notificationDataType, notificationResponseType } from "@/types/notificationType";
-import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
+import { setFriendList } from "@/store/friendSlice";
+import { setChatList } from "@/store/chatSlice";
 import { updateUserSettings } from "@/lib/user";
 import { getFriendList } from "@/lib/friend";
+import { getChatList } from "@/lib/chat";
+import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
+import { notificationDataType, notificationResponseType } from "@/types/notificationType";
 import { friendResponseType } from "@/types/friendType";
-import { setFriendList } from "@/store/friendSlice";
+import { chatListInfoType } from "@/types/chatType";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -42,6 +46,7 @@ function Header() {
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const userSettings = useAppSelector((state: RootState) => state.system.userSettings);
+  const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoom?.chatRoomId);
   const navItemStyle = "w-9 h-9 rounded-full p-[5px] text-gray-400";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
@@ -55,6 +60,15 @@ function Header() {
       setNotificationCount(res.unCheckedCount);
       setNotificationData(res.data);
       dispatch(setUnCheckedNotiCount(res.unCheckedCount));
+    }
+  };
+
+  /** 取得聊天室列表資料 */
+  const handleGetChatList = async () => {
+    if (!userData?.uid) return;
+    const result = await getChatList(userData?.uid || "");
+    if (result.code === "success") {
+      dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
     }
   };
 
@@ -75,6 +89,9 @@ function Header() {
 
   // 監聽通知
   useNotification(userData?.uid || "", handleGetNotification, handleUpdateFriend);
+
+  // 監聽即時訊息
+  useMessage(userData?.uid || "", "header", activeChatRoomId || "", () => {}, handleGetChatList);
 
   useEffect(() => {
     if (isLogin) handleGetNotification();

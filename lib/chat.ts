@@ -168,7 +168,6 @@ export const sendMessage = async (
 
     return { code: "success", message: "訊息發送成功" };
   } catch (error) {
-    console.log(error);
     return { code: "error", message: "訊息發送失敗", error };
   }
 };

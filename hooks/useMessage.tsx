@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useEffect } from "react";
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, update } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { realtimeDb } from '@/firebase';
 import { immediateMessageDataType } from "@/types/chatType";
@@ -10,7 +10,10 @@ import ChatItem from "@/components/ChatItem";
 
 export const useMessage = (
   uid: string,
-  handleGetMessage: (valuse: string) => void,
+  pathname: string,
+  currentRoomId: string,
+  handleGetMessage: (values: string, values2: string) => void,
+  handleGetChatList: () => void,
 ) => {
   useEffect(() => {
     if (!uid) return;
@@ -26,8 +29,8 @@ export const useMessage = (
       if (!messageData.isRead) {
         if (messageData.fromUid !== uid) {
           // 接收方的使用者顯示通知並更新聊天室訊息資料
-          toast.update(latestId, {
-            render: () => (
+          if (pathname === "header") {
+            toast(
               <ChatItem
                 key={messageData.chatRoomId}
                 chatRoomId={messageData.chatRoomId}
@@ -39,17 +42,21 @@ export const useMessage = (
                 lastMessageTime={messageData.createdAt}
                 unreadCount={0}
                 showCount={false}
-              />
-            ),
-          });
-          handleGetMessage(messageData.chatRoomId); // 更新聊天室訊息資料
+              />,
+              { toastId: latestId },
+            );
+          }
+        }
+        handleGetChatList(); // 更新聊天室列表資料
+        if (pathname === "chatroom") {
+          handleGetMessage(messageData.chatRoomId, currentRoomId); // 更新聊天室訊息資料
         }
       }
 
       // 刪除已讀的即時通知
-      // update(ref(realtimeDb), {
-      //   [`messages/${uid}/${latestId}`]: null, // 設為 null 即可刪除該筆資料
-      // });
+      update(ref(realtimeDb), {
+        [`messages/${uid}/${latestId}`]: null, // 設為 null 即可刪除該筆資料
+      });
     });
-  }, [uid]);
+  }, [uid, currentRoomId]);
 };

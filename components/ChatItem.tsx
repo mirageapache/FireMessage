@@ -50,11 +50,11 @@ function ChatItem({
         }));
       }}
     >
-      <div>
+      <div className="w-10 h-10">
         <Avatar
           userName={chatRoomName}
           avatarUrl={avatarUrl}
-          classname="w-10 h-10"
+          classname="w-10 h-10 max-w-10 max-h-10"
           textSize="text-md"
           bgColor={bgColor}
         />

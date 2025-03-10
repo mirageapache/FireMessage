@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from "react";
+import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
@@ -14,12 +15,14 @@ import Spinner from "./Spinner";
 function ChatList() {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
+  const chatListData = useAppSelector((state) => state.chat.chatList);
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /** 取得聊天室列表資料 */
   const handleGetChatList = async () => {
     if (!uid) return;
     setLoading(true);
@@ -32,8 +35,9 @@ function ChatList() {
 
   useEffect(() => {
     setFriendList(FriendListData!);
-    if (uid) handleGetChatList();
-  }, [FriendListData]);
+    setChatList(chatListData!);
+    if (uid && isEmpty(chatListData)) handleGetChatList();
+  }, [FriendListData, chatListData]);
 
   useEffect(() => {
     switch (activeTab) {

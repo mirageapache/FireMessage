@@ -6,6 +6,7 @@ interface ChatState {
   chatData: chatListInfoType | null;
   activeChatRoom: chatListInfoType | null;
   chatRoomInfo: chatRoomInfoType | null;
+  chatList: chatListInfoType[] | null;
 }
 
 // 初始狀態
@@ -13,6 +14,7 @@ const initialState: ChatState = {
   chatData: null,
   activeChatRoom: null, // 開啟的聊天室ID
   chatRoomInfo: null, // 聊天室資訊
+  chatList: null, // 聊天室列表
 };
 
 const chatSlice = createSlice({
@@ -38,6 +40,10 @@ const chatSlice = createSlice({
     clearActiveChatRoom: (state) => {
       state.activeChatRoom = null;
     },
+    // 設定聊天室列表
+    setChatList: (state, action: PayloadAction<chatListInfoType[] | null>) => {
+      state.chatList = action.payload;
+    },
   },
 });
 
@@ -46,5 +52,6 @@ export const {
   clearChatData,
   setActiveChatRoom,
   clearActiveChatRoom,
+  setChatList,
 } = chatSlice.actions;
 export default chatSlice.reducer;

@@ -1,41 +1,43 @@
 "use client";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '@/store/hooks';
 import ChatRoom from '@/components/ChatRoom';
 import ChatList from '@/components/ChatList';
-import { useMessage } from '@/hooks/useMessage';
 import { RootState } from '@/store';
 import { getMessages } from '@/lib/chat';
 import { messageDataType } from '@/types/chatType';
+import { useMessage } from '@/hooks/useMessage';
 
 function Chat() {
   const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoom?.chatRoomId);
-  const [isLoading, setIsLoading] = useState(false);
+  const [currentRoomId, setCurrentRoomId] = useState<string | undefined>(activeChatRoomId);
   const [messageList, setMessageList] = useState<messageDataType[]>([]);
   const uid = useAppSelector((state: RootState) => state.user.userData?.uid);
 
   /** 取得聊天室訊息資料 */
-  const handleGetMessage = async (roomId: string) => {
-    setIsLoading(true);
-    if (!activeChatRoomId) {
-      setIsLoading(false);
+  const handleGetMessage = async (roomId: string, activeRoomId: string) => {
+    if (!activeRoomId || activeRoomId !== roomId) {
       return;
     }
     const result = await getMessages(roomId, uid!);
-    // console.log(result);
     if (result.code === "success") {
       setMessageList(result.messageData as messageDataType[]);
     }
-    setIsLoading(false);
   };
 
-  // 監聽即時訊息
-  useMessage(uid!, handleGetMessage);
-
   useEffect(() => {
-    handleGetMessage(activeChatRoomId!);
-  }, [activeChatRoomId]);
+    if (activeChatRoomId) {
+      setCurrentRoomId(activeChatRoomId);
+      setMessageList([]);
+      handleGetMessage(activeChatRoomId!, currentRoomId!);
+    }
+  }, [activeChatRoomId, currentRoomId]);
+
+  // 監聽即時訊息
+  useMessage(uid!, "chatroom", currentRoomId || "", handleGetMessage, () => {});
 
   return (
     <div className="flex w-full h-full md:pt-5 md:px-5">
@@ -44,7 +46,6 @@ function Chat() {
       </aside>
       <section className="hidden md:block w-full h-full border-l border-[var(--divider-color)] bg-[var(--card-bg-color)] md:rounded-tr-lg">
         <ChatRoom
-          isLoading={isLoading}
           messageList={messageList}
           setMessageList={setMessageList}
         />
@@ -58,7 +59,6 @@ function Chat() {
       ) : (
         <div className="md:hidden w-full h-full bg-white dark:bg-[var(--background)] border-b border-[var(--divider-color)]">
           <ChatRoom
-            isLoading={isLoading}
             messageList={messageList}
             setMessageList={setMessageList}
           />
