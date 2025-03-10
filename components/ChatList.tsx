@@ -55,8 +55,6 @@ function ChatList() {
     }
   }, [activeTab]);
 
-  // console.log(chatList);
-
   return (
     <>
       <div>
@@ -119,8 +117,8 @@ function ChatList() {
                       bgColor={item.bgColor}
                       lastMessage={item.lastMessage}
                       lastMessageTime={item.lastMessageTime}
-                      unreadCount={0}
-                      showCount
+                      unreadCount={item.unreadCount}
+                      showCount={item.unreadCount > 0}
                     />
                   ))
                 )}

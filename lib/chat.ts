@@ -18,6 +18,7 @@ import {
   orderBy,
   getDoc,
   setDoc,
+  getCountFromServer,
 } from "firebase/firestore";
 import { chatListInfoType } from "@/types/chatType";
 import { userDataType } from "@/types/userType";
@@ -43,17 +44,15 @@ export const createChatRoom = async (members: string[], type: number) => {
 export const calculateUnreadMessageCount = async (chatRoomId: string, uid: string) => {
   // 取得所有聊天室最後讀取時間
   const readStatusRef = collection(db, "readStatus", uid, "chatRooms");
-  const readStatusQuery = query(readStatusRef);
+  const readStatusQuery = query(readStatusRef, where("chatRoomId", "==", chatRoomId));
   const readStatusSnapshot = await getDocs(readStatusQuery);
-  const readStatusPromise = readStatusSnapshot.docs.map(async (statusDoc) => {
-    const data = statusDoc.data();
-    return {
-      chatRoomId: statusDoc.id,
-      lastReadAt: data.lastReadAt.toDate().toISOString(),
-    };
-  });
-  const readStatusData = await Promise.all(readStatusPromise);
+  const readStatusData = readStatusSnapshot.docs[0].data();
 
+  const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
+  const messagesQuery = query(messagesRef, where("createdAt", ">", readStatusData.lastReadAt));
+  const messagesSnapshot = await getCountFromServer(messagesQuery);
+
+  return messagesSnapshot.data().count;
 };
 
 /** 取得聊天室列表 */
@@ -65,6 +64,7 @@ export const getChatList = async (uid: string) => {
 
     const chatListPromise = chatListSnapshot.docs.map(async (chatDoc) => {
       const data = chatDoc.data() as chatListInfoType;
+      const unreadCount = await calculateUnreadMessageCount(chatDoc.id, uid); // 計算未讀訊息數
       if (data.type === 0) {
         const friendUid = data.members.find((user: string) => user !== uid);
         const friendData = await getSimpleUserData(friendUid!) as unknown as userDataType;
@@ -76,6 +76,7 @@ export const getChatList = async (uid: string) => {
           bgColor: friendData.bgColor,
           lastMessageTime: data.lastMessageTime.toDate().toISOString(),
           createdAt: data.createdAt.toDate().toISOString(),
+          unreadCount,
         };
       }
       return {
@@ -83,12 +84,12 @@ export const getChatList = async (uid: string) => {
         chatRoomId: chatDoc.id,
         lastMessageTime: data.lastMessageTime.toDate().toISOString(),
         createdAt: data.createdAt.toDate().toISOString(),
+        unreadCount,
       };
     });
     const chatList = await Promise.all(chatListPromise);
     return { code: "success", chatList };
   } catch (error) {
-    console.log(error);
     return { code: "error", message: "取得聊天室列表失敗", error };
   }
 };
@@ -108,10 +109,12 @@ export const updateReadStatus = async (chatRoomId: string, uid: string) => {
   const readStatusData = await getDoc(readStatusRef);
   if (readStatusData.exists()) {
     await updateDoc(readStatusRef, {
+      chatRoomId,
       lastReadAt: new Date(),
     });
   } else {
     await setDoc(readStatusRef, {
+      chatRoomId,
       lastReadAt: new Date(),
     });
   }
