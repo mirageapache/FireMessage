@@ -16,6 +16,8 @@ import {
   updateDoc,
   where,
   orderBy,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
 import { chatListInfoType } from "@/types/chatType";
 import { userDataType } from "@/types/userType";
@@ -37,12 +39,30 @@ export const createChatRoom = async (members: string[], type: number) => {
   return chatRoomRef.id;
 };
 
+/** 計算未讀訊息數 */
+export const calculateUnreadMessageCount = async (chatRoomId: string, uid: string) => {
+  // 取得所有聊天室最後讀取時間
+  const readStatusRef = collection(db, "readStatus", uid, "chatRooms");
+  const readStatusQuery = query(readStatusRef);
+  const readStatusSnapshot = await getDocs(readStatusQuery);
+  const readStatusPromise = readStatusSnapshot.docs.map(async (statusDoc) => {
+    const data = statusDoc.data();
+    return {
+      chatRoomId: statusDoc.id,
+      lastReadAt: data.lastReadAt.toDate().toISOString(),
+    };
+  });
+  const readStatusData = await Promise.all(readStatusPromise);
+
+};
+
 /** 取得聊天室列表 */
 export const getChatList = async (uid: string) => {
   try {
     const chatListRef = collection(db, "chatRooms");
     const chatListQuery = query(chatListRef, where("members", "array-contains", uid));
     const chatListSnapshot = await getDocs(chatListQuery);
+
     const chatListPromise = chatListSnapshot.docs.map(async (chatDoc) => {
       const data = chatDoc.data() as chatListInfoType;
       if (data.type === 0) {
@@ -68,6 +88,7 @@ export const getChatList = async (uid: string) => {
     const chatList = await Promise.all(chatListPromise);
     return { code: "success", chatList };
   } catch (error) {
+    console.log(error);
     return { code: "error", message: "取得聊天室列表失敗", error };
   }
 };
@@ -79,6 +100,21 @@ export const updateLastMessage = async (chatRoomId: string, message: string) => 
     lastMessage: message,
     lastMessageTime: new Date(),
   });
+};
+
+/** 更新讀取狀態 */
+export const updateReadStatus = async (chatRoomId: string, uid: string) => {
+  const readStatusRef = doc(db, "readStatus", uid, "chatRooms", chatRoomId);
+  const readStatusData = await getDoc(readStatusRef);
+  if (readStatusData.exists()) {
+    await updateDoc(readStatusRef, {
+      lastReadAt: new Date(),
+    });
+  } else {
+    await setDoc(readStatusRef, {
+      lastReadAt: new Date(),
+    });
+  }
 };
 
 /** 建立(傳送)聊天訊息 */

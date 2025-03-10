@@ -48,7 +48,7 @@ export const useMessage = (
           }
         }
         handleGetChatList(); // 更新聊天室列表資料
-        if (pathname === "chatroom") {
+        if (pathname === "chatroom" && currentRoomId === messageData.chatRoomId) {
           handleGetMessage(messageData.chatRoomId, currentRoomId); // 更新聊天室訊息資料
         }
       }

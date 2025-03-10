@@ -7,7 +7,7 @@ import { useAppSelector } from '@/store/hooks';
 import ChatRoom from '@/components/ChatRoom';
 import ChatList from '@/components/ChatList';
 import { RootState } from '@/store';
-import { getMessages } from '@/lib/chat';
+import { getMessages, updateReadStatus } from '@/lib/chat';
 import { messageDataType } from '@/types/chatType';
 import { useMessage } from '@/hooks/useMessage';
 
@@ -28,11 +28,18 @@ function Chat() {
     }
   };
 
+  /** 更新讀取狀態 */
+  const handleUpdateReadStatus = async () => {
+    if (!currentRoomId || !uid) return;
+    await updateReadStatus(currentRoomId, uid);
+  };
+
   useEffect(() => {
     if (activeChatRoomId) {
       setCurrentRoomId(activeChatRoomId);
       setMessageList([]);
       handleGetMessage(activeChatRoomId!, currentRoomId!);
+      handleUpdateReadStatus();
     }
   }, [activeChatRoomId, currentRoomId]);
 
@@ -48,6 +55,7 @@ function Chat() {
         <ChatRoom
           messageList={messageList}
           setMessageList={setMessageList}
+          handleUpdateReadStatus={handleUpdateReadStatus}
         />
       </section>
 
@@ -61,6 +69,7 @@ function Chat() {
           <ChatRoom
             messageList={messageList}
             setMessageList={setMessageList}
+            handleUpdateReadStatus={handleUpdateReadStatus}
           />
         </div>
       )}
