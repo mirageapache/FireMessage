@@ -46,8 +46,13 @@ function Chat() {
   /** 更新讀取狀態 */
   const handleUpdateReadStatus = async (isSendMessage: boolean = false) => {
     if (!currentRoomId || !uid || !chatList) return;
-    const currentRoomUnRead =  chatList.find((item) => item.chatRoomId === currentRoomId)?.unreadCount;
-    if ((currentRoomUnRead && currentRoomUnRead > 0) || isSendMessage) {
+    const currentRoom = chatList.find((item) => {
+      if (item.chatRoomId === currentRoomId) {
+        return item.unreadCount;
+      }
+      return 0;
+    });
+    if ((currentRoom && currentRoom.unreadCount > 0) || isSendMessage) {
       await updateReadStatus(currentRoomId, uid);
       handleGetChatList();
     }
