@@ -12,6 +12,7 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
+import { createContext, useMemo } from "react";
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -26,17 +27,27 @@ type FormFieldContextValue<
 };
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue
+  {} as FormFieldContextValue,
 );
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
-  ...props
-}: ControllerProps<TFieldValues, TName>) => {
+    ...props
+  }: ControllerProps<TFieldValues, TName>) => {
+  const id = React.useId();
+
+  const value = useMemo(
+    () => ({
+      name: props.name,
+      id,
+    }),
+    [props.name, id],
+  );
+
   return (
-    <FormFieldContext.Provider value={{ name: props.name }}>
+    <FormFieldContext.Provider value={value}>
       <Controller {...props} />
     </FormFieldContext.Provider>
   );
@@ -69,8 +80,8 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue
+const FormItemContext = createContext<FormItemContextValue>(
+  {} as FormItemContextValue,
 );
 
 const FormItem = React.forwardRef<
@@ -79,8 +90,15 @@ const FormItem = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const id = React.useId();
 
+  const value = useMemo(
+    () => ({
+      id,
+    }),
+    [id],
+  );
+
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={value}>
       <div ref={ref} className={cn("space-y-2", className)} {...props} />
     </FormItemContext.Provider>
   );
@@ -108,8 +126,12 @@ const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
-
+  const {
+    error,
+    formItemId,
+    formDescriptionId,
+    formMessageId,
+  } = useFormField();
   return (
     <Slot
       ref={ref}
@@ -157,7 +179,7 @@ const FormMessage = React.forwardRef<
       className={cn("text-destructive", className)}
       {...props}
     >
-      {!isEmpty(body) ? body : ''}
+      {!isEmpty(body) ? body : ""}
     </p>
   );
 });

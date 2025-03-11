@@ -21,6 +21,10 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
 
   useEffect(() => {
+    setOrgList([]);
+  }, []);
+
+  useEffect(() => {
     setFriendList(FriendListData!);
   }, [FriendListData]);
 
