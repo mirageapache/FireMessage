@@ -109,7 +109,7 @@ function Header() {
       handleGetNotification();
       handleGetChatList();
     }
-  }, [userData?.uid, isLogin]);
+  }, []);
 
   // 更新訊息未讀數
   useEffect(() => {

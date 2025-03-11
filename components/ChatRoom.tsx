@@ -28,7 +28,7 @@ function ChatRoom({
 }: {
   messageList: messageDataType[],
   setMessageList: React.Dispatch<React.SetStateAction<messageDataType[]>>,
-  handleUpdateReadStatus: () => void,
+  handleUpdateReadStatus: (isSendMessage: boolean) => void,
 }) {
   const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
   const userData = useAppSelector((state: RootState) => state.user.userData);
@@ -54,11 +54,12 @@ function ChatRoom({
       setMessageList((prev) => [...prev, newMessage]);
       textareaRef.current!.value = "";
       setMessage("");
+      handleUpdateReadStatus(true);
     }
   };
 
   useEffect(() => {
-    handleUpdateReadStatus();
+    handleUpdateReadStatus(false);
   }, [messageList]);
 
   if (!roomInfo) {
@@ -70,7 +71,10 @@ function ChatRoom({
   }
 
   return (
-    <div className="w-full h-full">
+    <div
+      className="w-full h-full"
+      onClick={() => handleUpdateReadStatus(false)}
+    >
       <div className="relative h-full">
         <PanelGroup direction="vertical">
           <Panel defaultSize={85} minSize={60}>
@@ -104,7 +108,6 @@ function ChatRoom({
                           </div>
                         )}
                         <MessageItem
-                          // key={messageData.messageId}
                           messageId={messageData.messageId}
                           message={messageData.message}
                           createdAt={messageData.createdAt}
@@ -130,7 +133,6 @@ function ChatRoom({
                 className="resize-none w-full h-full text-lg placeholder-gray-400 border-none"
                 maxLength={500}
                 placeholder="輸入訊息..."
-                onFocus={() => handleUpdateReadStatus()}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.altKey) {

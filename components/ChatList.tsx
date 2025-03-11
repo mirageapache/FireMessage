@@ -6,15 +6,12 @@ import React, { useEffect, useState } from "react";
 import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getChatList } from "@/lib/chat";
+import { useAppSelector } from "@/store/hooks";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 import Spinner from "./Spinner";
-import { setUnReadMessageCount } from "@/store/sysSlice";
 
-function ChatList() {
-  const dispatch = useAppDispatch();
+function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const chatListData = useAppSelector((state) => state.chat.chatList);
@@ -22,27 +19,15 @@ function ChatList() {
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  /** 取得聊天室列表資料 */
-  const handleGetChatList = async () => {
-    if (!uid) return;
-    setLoading(true);
-    const result = await getChatList(uid!);
-    if (result.code === "success") {
-      setChatList(result.chatList as unknown as chatListInfoType[]);
-
-      const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
-      dispatch(setUnReadMessageCount(count));
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
     setFriendList(FriendListData!);
+  }, [FriendListData]);
+
+  useEffect(() => {
     setChatList(chatListData!);
     if (uid && isEmpty(chatListData)) handleGetChatList();
-  }, [FriendListData, chatListData]);
+  }, [uid, chatListData]);
 
   useEffect(() => {
     switch (activeTab) {
@@ -100,59 +85,53 @@ function ChatList() {
         />
       </div>
       <div>
-        {loading ? (
-          <Spinner />
-        ) : (
-          <>
-            {/* 聊天室 */}
-            {activeTab === "chat" && (
-              <div>
-                {chatList?.length === 0 ? (
-                  <div className="flex justify-center items-center h-full">
-                    <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
-                  </div>
-                ) : (
-                  chatList?.map((item) => (
-                    <ChatItem
-                      key={item.chatRoomId}
-                      chatRoomId={item.chatRoomId}
-                      members={item.members}
-                      chatRoomName={item.chatRoomName}
-                      avatarUrl={item.avatarUrl}
-                      bgColor={item.bgColor}
-                      lastMessage={item.lastMessage}
-                      lastMessageTime={item.lastMessageTime}
-                      unreadCount={item.unreadCount}
-                      showCount={item.unreadCount > 0}
-                    />
-                  ))
-                )}
+        {/* 聊天室 */}
+        {activeTab === "chat" && (
+          <div>
+            {chatList?.length === 0 ? (
+              <div className="flex justify-center items-center h-full">
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
               </div>
+            ) : (
+              chatList?.map((item) => (
+                <ChatItem
+                  key={item.chatRoomId}
+                  chatRoomId={item.chatRoomId}
+                  members={item.members}
+                  chatRoomName={item.chatRoomName}
+                  avatarUrl={item.avatarUrl}
+                  bgColor={item.bgColor}
+                  lastMessage={item.lastMessage}
+                  lastMessageTime={item.lastMessageTime}
+                  unreadCount={item.unreadCount}
+                  showCount={item.unreadCount > 0}
+                />
+              ))
             )}
-            {/* 好友 */}
-            {activeTab === "friend" && (
-              <div>
-                {friendList?.length === 0 ? (
-                  <div className="flex justify-center items-center h-full">
-                    <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
-                  </div>
-                ) : (
-                  friendList!.map((item) => (
-                    <UserItem
-                      key={item.uid}
-                      uid={item.uid}
-                      userName={item.sourceUserData.userName}
-                      userAccount={item.sourceUserData.userAccount}
-                      avatarUrl={item.sourceUserData.avatarUrl}
-                      bgColor={item.sourceUserData.bgColor}
-                      chatRoomId={item.chatRoomId}
-                      status={item.status}
-                    />
-                  ))
-                )}
+          </div>
+        )}
+        {/* 好友 */}
+        {activeTab === "friend" && (
+          <div>
+            {friendList?.length === 0 ? (
+              <div className="flex justify-center items-center h-full">
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
               </div>
+            ) : (
+              friendList!.map((item) => (
+                <UserItem
+                  key={item.uid}
+                  uid={item.uid}
+                  userName={item.sourceUserData.userName}
+                  userAccount={item.sourceUserData.userAccount}
+                  avatarUrl={item.sourceUserData.avatarUrl}
+                  bgColor={item.sourceUserData.bgColor}
+                  chatRoomId={item.chatRoomId}
+                  status={item.status}
+                />
+              ))
             )}
-          </>
+          </div>
         )}
       </div>
     </>
