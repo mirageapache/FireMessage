@@ -15,10 +15,12 @@ export type friendStatusDataType = {
 export type friendDataType = {
   uid: string;
   userName: string;
+  userAccount: string;
   avatarUrl: string;
   bgColor: string;
   status: number;
-  createdAt: string;
+  chatRoomId: string;
+  createdAt: string | any;
   sourceUserData: userDataType;
 };
 

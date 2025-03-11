@@ -74,12 +74,12 @@ function Search() {
   return (
     <div className="flex flex-col items-center justify-start h-screen pt-0 md:pt-5">
       <label aria-label="搜尋" htmlFor="search" className="relative flex items-center justify-center py-5 w-full md:max-w-[600px]">
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-3 w-5 h-5 text-[var(--input-text-color)]" />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-7 w-5 h-5 text-[var(--input-text-color)]" />
         <input
           id="search"
           type="text"
           placeholder="搜尋用戶或群組..."
-          className="formInput pl-10"
+          className="formInput pl-[40px] mx-4"
           ref={inputRef}
           onChange={(e) => {
             setKeyword(e.target.value.trim());
@@ -92,7 +92,7 @@ function Search() {
         <button
           type="button"
           aria-label="清除搜尋"
-          className="absolute top-[25px] right-3 w-8 h-8 py-1 text-[var(--input-text-color)] hover:text-[var(--active)] rounded-md"
+          className="absolute top-[25px] right-5 w-8 h-8 py-1 text-[var(--input-text-color)] hover:text-[var(--active)] rounded-lg"
           onClick={() => {
             if (inputRef.current) {
               inputRef.current.value = "";
@@ -105,7 +105,7 @@ function Search() {
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
         </button>
       </label>
-      <div className="w-full flex flex-col items-center justify-start">
+      <div className="w-full flex flex-col items-center justify-start px-4">
         {isEmpty(keyword) && existingHistory.length === 0 && <h3>- 尚無搜尋紀錄 -</h3>}
         {isEmpty(keyword) && existingHistory.length !== 0 && (
           <div className="w-full flex flex-col items-center justify-center gap-1">
@@ -114,7 +114,7 @@ function Search() {
               {existingHistory.map((item: string) => (
                 <button
                   type="button"
-                  className="py-2 px-3 hover:bg-[var(--hover-bg-color)] w-full text-left text-xl rounded-md"
+                  className="py-2 px-3 hover:bg-[var(--hover-bg-color)] w-full text-left text-xl rounded-lg"
                   key={item}
                   onClick={() => handleHistoryClick(item)}
                 >
@@ -125,7 +125,7 @@ function Search() {
             <button
               type="button"
               aria-label="清除搜尋紀錄"
-              className="py-2 px-3 hover:bg-[var(--secondary)] text-left rounded-md"
+              className="py-2 px-3 hover:bg-[var(--secondary)] text-left rounded-lg"
               onClick={() => clearSearchHistory()}
             >
               清除紀錄
@@ -151,6 +151,7 @@ function Search() {
                   userAccount={item.userAccount}
                   status={item.friendStatus}
                   bgColor={item.bgColor}
+                  chatRoomId=""
                 />
               );
             })}

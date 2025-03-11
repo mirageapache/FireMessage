@@ -1,19 +1,43 @@
+"use client";
+
 import ChatItem from "@/components/ChatItem";
 import ProfileCard from "@/components/ProfileCard";
 import UserItem from "@/components/UserItem";
+import { checkNewFriend } from "@/lib/friend";
 import { cn } from "@/lib/utils";
+import { useAppSelector } from "@/store/hooks";
 import React from "react";
 
 function Dashboard() {
   const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-[var(--card-bg-color)] rounded-lg";
+  const friendList = useAppSelector((state) => state.friend.friendList);
+  const newFriendList = checkNewFriend(friendList);
 
   return (
-    <div className="flex w-full p-5 md:p-0">
+    <div className="w-full p-5">
+      <section className={cn(sectionStyle, "mb-5 px-6")}>
+        <ProfileCard />
+      </section>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 content-start w-full">
-        <div className="hidden md:block" />
-        <section className={cn(sectionStyle, "px-6")}>
-          <ProfileCard />
-        </section>
+        {newFriendList.length > 0 && (
+          <section>
+            <h4 className="text-left mb-2">最新好友</h4>
+            <div className={sectionStyle}>
+              {newFriendList.map((friend) => (
+                <UserItem
+                  key={friend.uid}
+                  uid={friend.uid}
+                  userName={friend.sourceUserData.userName}
+                  avatarUrl={friend.sourceUserData.avatarUrl}
+                  userAccount=""
+                  bgColor={friend.sourceUserData.bgColor}
+                  status={5}
+                  chatRoomId={friend.chatRoomId}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section>
           <h4 className="text-left mb-2">未讀訊息</h4>
@@ -42,7 +66,7 @@ function Dashboard() {
           </div>
         </section>
 
-        <section>
+        {/* <section>
           <h4 className="text-left mb-2">推薦好友</h4>
           <div className={sectionStyle}>
             <UserItem
@@ -67,7 +91,7 @@ function Dashboard() {
               bgColor="#3b82f6"
             />
           </div>
-        </section>
+        </section> */}
       </div>
     </div>
   );

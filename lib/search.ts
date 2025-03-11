@@ -66,7 +66,6 @@ export const searchUser = async (keyword: string, uid: string) => {
 
     return { code: "SUCCESS", count: results.length, data: results };
   } catch (error) {
-    console.log(error);
     return { code: "ERROR", error };
   }
 };

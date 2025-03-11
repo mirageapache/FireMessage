@@ -1,18 +1,19 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable max-len */
 
-import { db, realtimeDb } from "@/firebase";
+import { db } from "@/firebase";
+import moment from "moment";
 import { userDataType } from "@/types/userType";
-import { friendStatusDataType } from "@/types/friendType";
+import { friendDataType, friendStatusDataType } from "@/types/friendType";
 import {
   collection, query, where, getDocs,
   setDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { ref, push, serverTimestamp } from "firebase/database";
 import { getSimpleUserData } from "./user";
-import { createNotification } from "./notification";
+import { createNotification, sendImmediateNotification } from "./notification";
+import { createChatRoom } from "./chat";
 
 /** 建立好友 */
 export const createFriend = async (uid: string, friendUid: string, status: number) => {
@@ -40,7 +41,7 @@ export const createFriend = async (uid: string, friendUid: string, status: numbe
 };
 
 /** 更新好友狀態 */
-export const updateFriendStatus = async (uid: string, friendUid: string, status: number) => {
+export const updateFriendStatus = async (uid: string, friendUid: string, status: number, chatRoomId?: string) => {
   try {
     const friendRef = collection(db, "friends");
     const friendQuery = query(friendRef, where("uid", "==", uid));
@@ -48,9 +49,10 @@ export const updateFriendStatus = async (uid: string, friendUid: string, status:
     let friendList = [];
     if (!friendSnapshot.empty) friendList = friendSnapshot.docs[0].data().friendList;
 
+    const variable = chatRoomId ? { status, chatRoomId } : { status };
     await updateDoc(doc(db, "friends", uid), {
       friendList: friendList.map(
-        (item: friendStatusDataType) => (item.uid === friendUid ? { ...item, status, createdAt: new Date() } : item),
+        (item: friendStatusDataType) => (item.uid === friendUid ? { ...item, ...variable, createdAt: new Date() } : item),
       ),
     });
 
@@ -69,14 +71,12 @@ export const createFriendRequest = async (uid: string, friendUid: string) => {
 
     // 取得發送者的資料
     const senderData = await getSimpleUserData(uid) as unknown as userDataType;
-    // 在 Realtime Database 中建立通知
-    const notificationRef = ref(realtimeDb, `notifications/${friendUid}`);
-    await push(notificationRef, {
-      type: 'friendRequest',
-      message: `${senderData.userName} 向您發送了好友邀請`,
-      fromUid: uid,
-      timestamp: serverTimestamp(),
-    });
+    await sendImmediateNotification(
+      uid,
+      friendUid,
+      "friendRequest",
+      `${senderData.userName} 向您發送了好友邀請`,
+    );
 
     return { code: 'SUCCESS', message: "已發送好友邀請" };
   } catch (error) {
@@ -132,16 +132,31 @@ export const getFriendList = async (uid: string, status: number) => {
 /** 更新雙方好友狀態 */
 export const updateBothFriendStatus = async (uid: string, friendUid: string, status: number) => {
   try {
-    // 同時更新雙方狀態
-    await Promise.all([
-      updateFriendStatus(uid, friendUid, status),
-      updateFriendStatus(friendUid, uid, status),
-    ]).then(async () => {
-      if (status === 5) {
-        await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
-        await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
-      }
-    });
+    if (status === 5) {
+      await createNotification(uid, "friendAccepted", "已成為好友", friendUid);
+      await createNotification(friendUid, "friendAccepted", "已成為好友", uid);
+      // 雙方確定好友身分則建立聊天室資訊
+      const chatRoomId = await createChatRoom([uid, friendUid], 0);
+      // 更新雙方好友資訊
+      await Promise.all([
+        updateFriendStatus(uid, friendUid, status, chatRoomId),
+        updateFriendStatus(friendUid, uid, status, chatRoomId),
+      ]);
+
+      // 發送即時通知
+      const senderData = await getSimpleUserData(uid) as unknown as userDataType; // 取得發送者的資料
+      await sendImmediateNotification(
+        uid,
+        friendUid,
+        "friendAccepted",
+        `您與${senderData.userName}已成為好友`,
+      );
+    } else {
+      await Promise.all([
+        updateFriendStatus(uid, friendUid, status),
+        updateFriendStatus(friendUid, uid, status),
+      ]);
+    }
 
     return { code: 'SUCCESS', message: "更新成功" };
   } catch (error) {
@@ -173,4 +188,15 @@ export const rejectFriendRequest = async (uid: string, friendUid: string) => {
 export const unfriend = async (uid: string, friendUid: string) => {
   const result = await updateBothFriendStatus(uid, friendUid, 8);
   return { code: 'SUCCESS', result };
+};
+
+/** 檢查新好友(若有3天內的新好友則顯示在dashboard) */
+export const checkNewFriend = (friendList: friendDataType[] | null) => {
+  if (!friendList || !Array.isArray(friendList) || friendList.length === 0) return [];
+
+  const threeDaysAgo = moment().subtract(3, "days"); // 計算3天前的時間戳記
+  const newFriendList = friendList
+    .filter((friend) => moment(friend.createdAt).isAfter(threeDaysAgo))
+    .slice(0, 3); // 只取前3筆資料
+  return newFriendList;
 };

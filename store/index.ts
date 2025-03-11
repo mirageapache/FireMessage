@@ -14,6 +14,8 @@ import storage from 'redux-persist/lib/storage';
 // 引入 Reducers
 import sysReducer from './sysSlice';
 import userReducer from './userSlice';
+import friendReducer from './friendSlice';
+import chatReducer from './chatSlice';
 
 // Persist 配置 [用於保留指定的 Redux 狀態]
 const persistConfig = {
@@ -27,6 +29,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   system: sysReducer,
   user: userReducer,
+  friend: friendReducer,
+  chat: chatReducer,
 });
 
 // 建立持久化 Reducer

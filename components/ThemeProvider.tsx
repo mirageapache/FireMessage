@@ -6,7 +6,10 @@ import { RootState } from "@/store";
 import { ToastContainer } from "react-toastify";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
+  const reduxDarkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
+  const localDarkMode = localStorage.getItem('darkMode');
+  const darkMode = localDarkMode || reduxDarkMode;
+
   useEffect(() => {
     if (darkMode === 'dark') {
       document.documentElement.classList.add('dark');
@@ -22,6 +25,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         position="top-center"
         theme={darkMode === 'dark' ? 'dark' : 'light'}
         autoClose={3000}
+        stacked
+        pauseOnFocusLoss={false}
       />
     </div>
   );

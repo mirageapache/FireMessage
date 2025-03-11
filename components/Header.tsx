@@ -1,11 +1,14 @@
 "use client";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
+  faMessage,
   faMoon,
   faSearch,
   faSun,
@@ -17,11 +20,19 @@ import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
 import { useNotification } from "@/hooks/useNotification";
+import { useMessage } from "@/hooks/useMessage";
 import { RootState } from "@/store";
-import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
+import { setDarkMode, setUnCheckedNotiCount, setUnReadMessageCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { notificationDataType, notificationResponseType } from "@/types/notificationType";
+import { setFriendList } from "@/store/friendSlice";
+import { setChatList } from "@/store/chatSlice";
+import { updateUserSettings } from "@/lib/user";
+import { getFriendList } from "@/lib/friend";
+import { getChatList } from "@/lib/chat";
 import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
+import { notificationDataType, notificationResponseType } from "@/types/notificationType";
+import { friendResponseType } from "@/types/friendType";
+import { chatListInfoType } from "@/types/chatType";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -34,11 +45,15 @@ function Header() {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const isLogin = !isEmpty(cookies.get("UAT"));
   const userData = useAppSelector((state: RootState) => state.user.userData);
-  const navItemStyle = "rounded-full p-[5px]";
+  const userSettings = useAppSelector((state: RootState) => state.system.userSettings);
+  const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoom?.chatRoomId);
+  const unReadMessageCount = useAppSelector((state) => state.system.unReadMessageCount);
+  const navItemStyle = "w-9 h-9 rounded-full p-[5px] text-gray-400";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
+  const [unReadCount, setUnReadCount] = useState(0);
 
   /** 取得通知訊息 */
   const handleGetNotification = async () => {
@@ -50,6 +65,31 @@ function Header() {
     }
   };
 
+  /** 取得聊天室列表資料 */
+  const handleGetChatList = async () => {
+    if (!userData?.uid) return;
+    const result = await getChatList(userData?.uid || "");
+    if (result.code === "success") {
+      dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
+
+      if (isEmpty(result.chatList)) {
+        setUnReadCount(0);
+      } else {
+        const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
+        setUnReadCount(count);
+        dispatch(setUnReadMessageCount(count));
+      }
+    }
+  };
+
+  /** 更新好友資料 */
+  const handleUpdateFriend = async () => {
+    const res = await getFriendList(userData?.uid || "", 5) as friendResponseType;
+    if (res.code === "SUCCESS") {
+      dispatch(setFriendList(res.data));
+    }
+  };
+
   /** 處理開啟通知行為 */
   const handleOpenNotification = async () => {
     const result = await updateNotificationIsChecked(userData?.uid || "");
@@ -58,11 +98,23 @@ function Header() {
   };
 
   // 監聽通知
-  useNotification(userData?.uid || "", handleGetNotification);
+  useNotification(userData?.uid || "", handleGetNotification, handleUpdateFriend);
 
+  // 監聽即時訊息
+  useMessage(userData?.uid || "", "header", activeChatRoomId || "", () => {}, handleGetChatList);
+
+  // 取得通知及訊息未讀數
   useEffect(() => {
-    if (isLogin) handleGetNotification();
-  }, [userData?.uid, isLogin]);
+    if (isLogin) {
+      handleGetNotification();
+      handleGetChatList();
+    }
+  }, []);
+
+  // 更新訊息未讀數
+  useEffect(() => {
+    setUnReadCount(unReadMessageCount);
+  }, [unReadMessageCount]);
 
   // 監聽螢幕 resize
   useEffect(() => {
@@ -75,7 +127,7 @@ function Header() {
   }, [showDropdown, showNotificationModal]);
 
   return (
-    <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-[var(--background)] shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
+    <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-gray-700 shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
       <nav className="relative flex justify-between items-center md:mr-4 w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
           <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
@@ -96,7 +148,7 @@ function Header() {
               <button
                 type="button"
                 aria-label="搜尋"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative flex justify-center items-center mt-[2px]")}
                 onClick={() => router.push("/search")}
               >
                 <FontAwesomeIcon icon={faSearch} size="lg" />
@@ -105,9 +157,15 @@ function Header() {
               {/* 深色模式 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "w-9 h-9 mt-[2px] relative text-gray-400 flex justify-center items-center")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative flex justify-center items-center mt-[2px]")}
                 aria-label="切換深色模式"
-                onClick={() => dispatch(setDarkMode())}
+                onClick={() => {
+                  dispatch(setDarkMode());
+                  updateUserSettings(userData?.uid || "", {
+                    ...userSettings,
+                    darkMode: userSettings.darkMode === "dark" ? "" : "dark",
+                  });
+                }}
               >
                 <FontAwesomeIcon
                   icon={faSun}
@@ -121,10 +179,22 @@ function Header() {
                 />
               </button>
 
+              {/* 聊天 */}
+              <Link
+                href="/chat"
+                aria-label="聊天"
+                className={cn(navItemStyle, navItemHoverStyle, "relative hover:text-[var(--active)]")}
+              >
+                <FontAwesomeIcon icon={faMessage} size="lg" className="w-[18px] h-[18px] ml-1 mt=[1px]" />
+                <span className="absolute top-2 right-6">
+                  <NotifyTip amount={unReadCount} />
+                </span>
+              </Link>
+
               {/* 通知 */}
               <button
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "relative w-9 h-9 mr-1 text-gray-400 hover:text-[var(--active)]")}
+                className={cn(navItemStyle, navItemHoverStyle, "relative mr-1 hover:text-[var(--active)]")}
                 aria-label="通知"
                 onClick={() => handleOpenNotification()}
               >
@@ -138,7 +208,7 @@ function Header() {
               <button
                 aria-label="使用者選單"
                 type="button"
-                className={cn(navItemStyle, navItemHoverStyle, "hidden sm:flex justify-center items-center mt-[2px]")}
+                className={cn(navItemStyle, navItemHoverStyle, "flex justify-center items-center mt-[2px]")}
                 onClick={() => setShowDropdown(!showDropdown)}
               >
                 <Avatar

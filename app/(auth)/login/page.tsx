@@ -43,7 +43,7 @@ function LoginPage() {
       values.password,
     )) as authResponseType;
     if (result.code === "SUCCESS") {
-      toast("歡迎回來！");
+      toast.success("歡迎回來！");
       router.push("/dashboard");
     } else {
       const msg = authErrorHandle(result.error.code);

@@ -4,16 +4,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface SysState {
   userSettings: userSettingsType;
   unCheckedNotiCount: number;
+  unReadMessageCount: number;
 }
 
 const initialState: SysState = {
   userSettings: {
-    darkMode: "dark",
+    darkMode: "",
     toastifyPosition: "top-center",
     themeMode: "default",
     language: "zh-TW",
   },
   unCheckedNotiCount: 0, // 未查看的通知數量
+  unReadMessageCount: 0, // 未讀訊息數量
 };
 
 const sysSlice = createSlice({
@@ -29,6 +31,7 @@ const sysSlice = createSlice({
       let newState = "";
       if (state.userSettings.darkMode === "") newState = "dark";
       state.userSettings.darkMode = newState;
+      localStorage.setItem("darkMode", newState);
     },
     // 設定toastify位置
     setToastifyPosition: (state, action: PayloadAction<string>) => {
@@ -50,6 +53,10 @@ const sysSlice = createSlice({
     setUnCheckedNotiCount: (state, action: PayloadAction<number>) => {
       state.unCheckedNotiCount = action.payload;
     },
+    // 設定未讀訊息數量
+    setUnReadMessageCount: (state, action: PayloadAction<number>) => {
+      state.unReadMessageCount = action.payload;
+    },
   },
 });
 
@@ -61,5 +68,6 @@ export const {
   setLanguage,
   clearUserSettings,
   setUnCheckedNotiCount,
+  setUnReadMessageCount,
 } = sysSlice.actions;
 export default sysSlice.reducer;

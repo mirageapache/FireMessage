@@ -30,10 +30,11 @@ function BottomNavbar() {
   const router = useRouter();
   const userData = useSelector((state: RootState) => state.user.userData);
   const unCheckedNotiCount = useSelector((state: RootState) => state.system.unCheckedNotiCount);
+  const unReadMessageCount = useSelector((state: RootState) => state.system.unReadMessageCount);
   const dispatch = useAppDispatch();
   const path = usePathname();
   const currentPath = path?.slice(1);
-  const basicItemStyle = "flex justify-center w-full";
+  const basicItemStyle = "flex justify-center w-full text-gray-400";
 
   /** 處理開啟通知行為 */
   const handleOpenNotification = async () => {
@@ -63,7 +64,7 @@ function BottomNavbar() {
         className={cn(currentPath === "chat" && "activeItem", basicItemStyle, "relative")}
       >
         <FontAwesomeIcon icon={faMessage} size="lg" />
-        <NotifyTip amount={1111} />
+        <NotifyTip amount={unReadMessageCount} />
       </Link>
       <Link
         href="/notification"

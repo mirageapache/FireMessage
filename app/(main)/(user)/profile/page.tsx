@@ -119,9 +119,9 @@ function Profile() {
   };
 
   return (
-    <>
+    <div>
       {/* 封面 */}
-      <section className="relative h-[200px] bg-[var(--modal-bg-color)]">
+      <section className="relative h-[200px] bg-[var(--image-bg-color)]">
         {(cover || cover !== "") && (
           <Image
             src={cover}
@@ -246,9 +246,9 @@ function Profile() {
                 onClick={async () => {
                   const res = await sendVerification();
                   if (res.code === "SUCCESS") {
-                    toast("📨驗證信已發送，請至信箱查看");
+                    toast.success("📨驗證信已發送，請至信箱查看");
                   } else {
-                    toast("發送失敗，請稍後再試");
+                    toast.error("發送失敗，請稍後再試");
                   }
                 }}
               >
@@ -369,7 +369,7 @@ function Profile() {
           />
         </div>
       )}
-    </>
+    </div>
   );
 }
 
