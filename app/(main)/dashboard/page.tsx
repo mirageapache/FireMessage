@@ -12,6 +12,8 @@ function Dashboard() {
   const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-[var(--card-bg-color)] rounded-lg";
   const friendList = useAppSelector((state) => state.friend.friendList);
   const newFriendList = checkNewFriend(friendList);
+  const chatList = useAppSelector((state) => state.chat.chatList);
+  const recentChatList = chatList?.slice(0, 3);
 
   return (
     <div className="w-full p-5">
@@ -39,32 +41,27 @@ function Dashboard() {
           </section>
         )}
 
-        <section>
-          <h4 className="text-left mb-2">未讀訊息</h4>
-          <div className={sectionStyle}>
-            <ChatItem
-              userName="Test"
-              avatarUrl=""
-              lastMessage="Test"
-              lastMessageTime="12:00"
-              unreadCount={2}
-            />
-            <ChatItem
-              userName="Test"
-              avatarUrl=""
-              lastMessage="Test"
-              lastMessageTime="12:00"
-              unreadCount={2}
-            />
-            <ChatItem
-              userName="Test"
-              avatarUrl=""
-              lastMessage="Test"
-              lastMessageTime="12:00"
-              unreadCount={2}
-            />
-          </div>
-        </section>
+        {(recentChatList && recentChatList.length > 0) && (
+          <section>
+            <h4 className="text-left mb-2">近期訊息</h4>
+            <div className={sectionStyle}>
+              {recentChatList.map((item) => (
+                <ChatItem
+                  key={item.chatRoomId}
+                  chatRoomId={item.chatRoomId}
+                  members={item.members}
+                  chatRoomName={item.chatRoomName}
+                  avatarUrl={item.avatarUrl}
+                  bgColor={item.bgColor}
+                  lastMessage={item.lastMessage}
+                  lastMessageTime={item.lastMessageTime}
+                  unreadCount={item.unreadCount}
+                  showCount={item.unreadCount > 0}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* <section>
           <h4 className="text-left mb-2">推薦好友</h4>
