@@ -7,6 +7,7 @@ import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
+// import { createOrganization } from "@/lib/organization";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 
@@ -20,18 +21,24 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
 
+  /** 建立群組 */
+  const handleCreateOrg = async () => {
+    // const res = await createOrganization(uid!, "test");
+    // console.log(res);
+  };
+
   useEffect(() => {
-    setOrgList([]);
-  }, []);
+    setChatList(chatListData!);
+    if (uid && isEmpty(chatListData)) handleGetChatList();
+  }, [uid, chatListData]);
 
   useEffect(() => {
     setFriendList(FriendListData!);
   }, [FriendListData]);
 
   useEffect(() => {
-    setChatList(chatListData!);
-    if (uid && isEmpty(chatListData)) handleGetChatList();
-  }, [uid, chatListData]);
+    setOrgList([]);
+  }, []);
 
   useEffect(() => {
     switch (activeTab) {
@@ -94,7 +101,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           <div>
             {chatList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無聊天紀錄-</p>
               </div>
             ) : (
               chatList?.map((item) => (
@@ -119,7 +126,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           <div>
             {friendList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無好友資料-</p>
               </div>
             ) : (
               friendList!.map((item) => (
@@ -141,9 +148,18 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
         {/* 群組 */}
         {activeTab === "group" && (
           <div>
+            <button
+              type="button"
+              className="bg-[var(--brand-color)] text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                // 開啟建立群組頁面
+              }}
+            >
+              新增群組
+            </button>
             {orgList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無群組資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無群組資料-</p>
               </div>
             ) : (
               orgList!.map((item) => (

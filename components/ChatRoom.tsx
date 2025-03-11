@@ -41,7 +41,7 @@ function ChatRoom({
   const handleSendMessage = async () => {
     if (message.length < 1) return;
     const result = await sendMessage(roomInfo!, userData!, message);
-    if (result.code === "success") {
+    if (result.code === "SUCCESS") {
       // 建立新訊息物件
       const newMessage: messageDataType = {
         messageId: Date.now().toString(), // 暫時使用時間戳作為ID

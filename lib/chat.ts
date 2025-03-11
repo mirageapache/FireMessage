@@ -88,9 +88,9 @@ export const getChatList = async (uid: string) => {
       };
     });
     const chatList = await Promise.all(chatListPromise);
-    return { code: "success", chatList };
+    return { code: "SUCCESS", chatList };
   } catch (error) {
-    return { code: "error", message: "取得聊天室列表失敗", error };
+    return { code: "ERROR", message: "取得聊天室列表失敗", error };
   }
 };
 
@@ -160,9 +160,9 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
     });
 
     const messageData = await Promise.all(messageDataPromise);
-    return { code: "success", messageData };
+    return { code: "SUCCESS", messageData };
   } catch (error) {
-    return { code: "error", message: "取得聊天訊息失敗", error };
+    return { code: "ERROR", message: "取得聊天訊息失敗", error };
   }
 };
 
@@ -205,8 +205,8 @@ export const sendMessage = async (
       });
     });
 
-    return { code: "success", message: "訊息發送成功" };
+    return { code: "SUCCESS", message: "訊息發送成功" };
   } catch (error) {
-    return { code: "error", message: "訊息發送失敗", error };
+    return { code: "ERROR", message: "訊息發送失敗", error };
   }
 };

@@ -69,7 +69,7 @@ function Header() {
   const handleGetChatList = async () => {
     if (!userData?.uid) return;
     const result = await getChatList(userData?.uid || "");
-    if (result.code === "success") {
+    if (result.code === "SUCCESS") {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
 
       if (isEmpty(result.chatList)) {
@@ -243,6 +243,7 @@ function Header() {
                 </Link>
                 <div className="flex flex-col border-y border-[var(--divider-color)] my-3 py-3">
                   <Link href="/friend" className={cn(dropdownItemStyle)} onClick={() => setShowDropdown(false)}>好友</Link>
+                  <Link href="/organization" className={cn(dropdownItemStyle)} onClick={() => setShowDropdown(false)}>群組</Link>
                   <Link href="/setting" className={cn(dropdownItemStyle)} onClick={() => setShowDropdown(false)}>設定</Link>
                 </div>
                 <div>

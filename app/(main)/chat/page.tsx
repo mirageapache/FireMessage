@@ -27,7 +27,7 @@ function Chat() {
       return;
     }
     const result = await getMessages(roomId, uid!);
-    if (result.code === "success") {
+    if (result.code === "SUCCESS") {
       setMessageList(result.messageData as messageDataType[]);
     }
   };
@@ -36,7 +36,7 @@ function Chat() {
   const handleGetChatList = async () => {
     if (!uid) return;
     const result = await getChatList(uid!);
-    if (result.code === "success") {
+    if (result.code === "SUCCESS") {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
