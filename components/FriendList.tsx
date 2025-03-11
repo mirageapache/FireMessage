@@ -8,11 +8,12 @@ import { friendDataType } from '@/types/friendType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import Avatar from './Avatar';
 
 function FriendList(friendData: friendDataType[]) {
   const dispatch = useAppDispatch();
+  const uid = useAppSelector((state) => state.user.userData?.uid);
   const [openDropdownUid, setOpenDropdownUid] = useState<string>(""); // 判斷開啟選單的選項
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
@@ -31,13 +32,14 @@ function FriendList(friendData: friendDataType[]) {
             chatRoom: {
               chatRoomId: item.chatRoomId,
               chatRoomName: item.userName,
-              member: [item.uid],
+              members: [item.uid, uid!],
               type: 0,
               avatarUrl: item.avatarUrl,
               bgColor: item.bgColor,
               lastMessage: "",
               lastMessageTime: "",
               unreadCount: 0,
+              createdAt: "",
             },
           }));
         }}
@@ -71,13 +73,14 @@ function FriendList(friendData: friendDataType[]) {
                   chatRoom: {
                     chatRoomId: item.chatRoomId,
                     chatRoomName: item.userName,
-                    member: [item.uid],
+                    members: [item.uid, uid!],
                     type: 0,
                     avatarUrl: item.avatarUrl,
                     bgColor: item.bgColor,
                     lastMessage: "",
                     lastMessageTime: "",
                     unreadCount: 0,
+                    createdAt: "",
                   },
                 }));
               }}

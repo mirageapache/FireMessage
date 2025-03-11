@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import Cookies from 'universal-cookie';
@@ -9,7 +8,9 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublicPath = ['/', '/login', '/register'].includes(pathname);
 
-  if (!isEmpty(token) && isPublicPath) {
+  const hasToken = token !== undefined && token !== null && token !== '';
+
+  if (hasToken && isPublicPath) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

@@ -9,7 +9,6 @@ import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
-import Spinner from "./Spinner";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
@@ -17,8 +16,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const chatListData = useAppSelector((state) => state.chat.chatList);
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
-  const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
+  const [friendList, setFriendList] = useState<friendDataType[]>([]);
+  const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
 
   useEffect(() => {
     setFriendList(FriendListData!);
@@ -128,6 +128,32 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
                   bgColor={item.sourceUserData.bgColor}
                   chatRoomId={item.chatRoomId}
                   status={item.status}
+                />
+              ))
+            )}
+          </div>
+        )}
+
+        {/* 群組 */}
+        {activeTab === "group" && (
+          <div>
+            {orgList?.length === 0 ? (
+              <div className="flex justify-center items-center h-full">
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無群組資料-</p>
+              </div>
+            ) : (
+              orgList!.map((item) => (
+                <ChatItem
+                  key={item.chatRoomId}
+                  chatRoomId={item.chatRoomId}
+                  members={item.members}
+                  chatRoomName={item.chatRoomName}
+                  avatarUrl={item.avatarUrl}
+                  bgColor={item.bgColor}
+                  lastMessage={item.lastMessage}
+                  lastMessageTime={item.lastMessageTime}
+                  unreadCount={item.unreadCount}
+                  showCount={item.unreadCount > 0}
                 />
               ))
             )}

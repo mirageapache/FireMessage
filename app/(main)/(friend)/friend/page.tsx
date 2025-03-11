@@ -66,7 +66,7 @@ function Friend() {
     if (userData?.uid) {
       handleGetFriendRequestList();
     }
-  }, [userData?.uid]);
+  }, []);
 
   /** 好友邀請列表 */
   const RequestList = friendRequestList.map((item) => (
