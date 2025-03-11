@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { useNotification } from "@/hooks/useNotification";
 import { useMessage } from "@/hooks/useMessage";
 import { RootState } from "@/store";
-import { setDarkMode, setUnCheckedNotiCount } from "@/store/sysSlice";
+import { setDarkMode, setUnCheckedNotiCount, setUnReadMessageCount } from "@/store/sysSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setFriendList } from "@/store/friendSlice";
 import { setChatList } from "@/store/chatSlice";
@@ -47,11 +47,13 @@ function Header() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
   const userSettings = useAppSelector((state: RootState) => state.system.userSettings);
   const activeChatRoomId = useAppSelector((state) => state.chat.activeChatRoom?.chatRoomId);
+  const unReadMessageCount = useAppSelector((state) => state.system.unReadMessageCount);
   const navItemStyle = "w-9 h-9 rounded-full p-[5px] text-gray-400";
   const navItemHoverStyle = "hover:bg-gray-200 dark:hover:bg-gray-600";
   const dropdownItemStyle = "text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
+  const [unReadCount, setUnReadCount] = useState(0);
 
   /** 取得通知訊息 */
   const handleGetNotification = async () => {
@@ -69,6 +71,14 @@ function Header() {
     const result = await getChatList(userData?.uid || "");
     if (result.code === "success") {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
+
+      if (isEmpty(result.chatList)) {
+        setUnReadCount(0);
+      } else {
+        const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
+        setUnReadCount(count);
+        dispatch(setUnReadMessageCount(count));
+      }
     }
   };
 
@@ -93,9 +103,18 @@ function Header() {
   // 監聽即時訊息
   useMessage(userData?.uid || "", "header", activeChatRoomId || "", () => {}, handleGetChatList);
 
+  // 取得通知及訊息未讀數
   useEffect(() => {
-    if (isLogin) handleGetNotification();
+    if (isLogin) {
+      handleGetNotification();
+      handleGetChatList();
+    }
   }, [userData?.uid, isLogin]);
+
+  // 更新訊息未讀數
+  useEffect(() => {
+    setUnReadCount(unReadMessageCount);
+  }, [unReadMessageCount]);
 
   // 監聽螢幕 resize
   useEffect(() => {
@@ -168,7 +187,7 @@ function Header() {
               >
                 <FontAwesomeIcon icon={faMessage} size="lg" className="w-[18px] h-[18px] ml-1 mt=[1px]" />
                 <span className="absolute top-2 right-6">
-                  <NotifyTip amount={0} />
+                  <NotifyTip amount={unReadCount} />
                 </span>
               </Link>
 

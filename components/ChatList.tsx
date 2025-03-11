@@ -6,13 +6,15 @@ import React, { useEffect, useState } from "react";
 import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getChatList } from "@/lib/chat";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 import Spinner from "./Spinner";
+import { setUnReadMessageCount } from "@/store/sysSlice";
 
 function ChatList() {
+  const dispatch = useAppDispatch();
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const chatListData = useAppSelector((state) => state.chat.chatList);
@@ -29,6 +31,9 @@ function ChatList() {
     const result = await getChatList(uid!);
     if (result.code === "success") {
       setChatList(result.chatList as unknown as chatListInfoType[]);
+
+      const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
+      dispatch(setUnReadMessageCount(count));
     }
     setLoading(false);
   };
