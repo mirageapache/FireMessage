@@ -5,6 +5,9 @@ import { db } from "@/firebase";
 import {
   collection,
   addDoc,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { createChatRoom, updateReadStatus } from "./chat";
 import { getRandomColor } from "./utils";
@@ -45,5 +48,19 @@ export const createOrganization = async (uid: string, organizationName: string, 
     return { code: "SUCCESS", message: "已新增群組" };
   } catch (error) {
     return { code: "ERROR", message: "建立群組失敗", error };
+  }
+};
+
+/** 取得群組列表資料 */
+export const getOrganizationData = async (uid: string) => {
+  try {
+    const organizationRef = collection(db, "organizations");
+    const organizationQuery = query(organizationRef, where("members", "array-contains", uid ));
+    const organizationSnapshot = await getDocs(organizationQuery);
+    const organizationList = organizationSnapshot.docs.map((doc) => doc.data());
+
+    return { code: "SUCCESS", data: organizationList };
+  } catch (error) {
+    return { code: "ERROR", message: "取得群組列表資料失敗", error };
   }
 };

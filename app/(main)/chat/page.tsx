@@ -12,6 +12,9 @@ import { chatListInfoType, messageDataType } from '@/types/chatType';
 import { useMessage } from '@/hooks/useMessage';
 import { setChatList } from '@/store/chatSlice';
 import { setUnReadMessageCount } from '@/store/sysSlice';
+import { getOrganizationData } from '@/lib/organization';
+import { setOrganizationList } from '@/store/organizationSlice';
+import { organizationDataType } from '@/types/organizationType';
 
 function Chat() {
   const dispatch = useAppDispatch();
@@ -40,6 +43,14 @@ function Chat() {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
+    }
+  };
+
+  /** 取得群組列表資料 */
+  const handleGetOrgList = async () => {
+    const result = await getOrganizationData(uid!);
+    if (result.code === "SUCCESS") {
+      dispatch(setOrganizationList(result.data as organizationDataType[]));
     }
   };
 

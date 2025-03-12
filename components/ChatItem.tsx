@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { setActiveChatRoom, setChatList } from "@/store/chatSlice";
+import { setActiveChatRoom } from "@/store/chatSlice";
 import { formatDateTime } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
-import { chatListInfoType } from "@/types/chatType";
 import Avatar from "./Avatar";
+import { updateReadStatus } from "@/lib/chat";
 
 interface ChatItemProps {
   chatRoomId: string;
@@ -32,25 +32,17 @@ function ChatItem({
   showCount,
   type,
 }: ChatItemProps) {
-  const chatList = useAppSelector((state) => state.chat.chatList);
   const dispatch = useDispatch();
-
-  const updateChatList = () => {
-    const updatedChatList = chatList?.map((item) => {
-      if (item.chatRoomId === chatRoomId) {
-        return { ...item, unreadCount: 0 };
-      }
-      return item;
-    });
-    dispatch(setChatList(updatedChatList as chatListInfoType[] | null));
-  };
+  const uid = useAppSelector((state) => state.user.userData?.uid);
 
   return (
     <Link
       href="/chat"
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
-      onClick={() => {
-        updateChatList();
+      onClick={async () => {
+        if (unreadCount > 0) {
+          await updateReadStatus(chatRoomId, uid!);
+        }
         dispatch(setActiveChatRoom({
           chatRoom: {
             chatRoomId,

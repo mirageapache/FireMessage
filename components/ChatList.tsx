@@ -11,17 +11,23 @@ import { useAppSelector } from "@/store/hooks";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 import CreateOrgModal from "./CreateOrgModal";
+import { organizationDataType } from "@/types/organizationType";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const chatListData = useAppSelector((state) => state.chat.chatList);
+  const organizationListData = useAppSelector(
+    (state) => state.organization.organizationList
+  );
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
-  const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
+  const [orgList, setOrgList] = useState<organizationDataType[]>([]);
   const [createOrgModal, setCreateOrgModal] = useState(false);
+
+  console.log(orgList);
 
   useEffect(() => {
     setChatList(chatListData!);
@@ -33,8 +39,8 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   }, [FriendListData]);
 
   useEffect(() => {
-    setOrgList([]);
-  }, []);
+    setOrgList(organizationListData!);
+  }, [organizationListData]);
 
   useEffect(() => {
     switch (activeTab) {
@@ -97,7 +103,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           <div>
             {chatList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無聊天紀錄-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  -尚無聊天紀錄-
+                </p>
               </div>
             ) : (
               chatList?.map((item) => (
@@ -124,7 +132,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           <div>
             {friendList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無好友資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  -尚無好友資料-
+                </p>
               </div>
             ) : (
               friendList!.map((item) => (
@@ -155,7 +165,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
             </button>
             {orgList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">-尚無群組資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  -尚無群組資料-
+                </p>
               </div>
             ) : (
               orgList!.map((item) => (
@@ -177,7 +189,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           </div>
         )}
       </div>
-      {createOrgModal && <CreateOrgModal setCreateOrgModal={setCreateOrgModal} />}
+      {createOrgModal && (
+        <CreateOrgModal setCreateOrgModal={setCreateOrgModal} />
+      )}
     </>
   );
 }
