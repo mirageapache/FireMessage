@@ -2,7 +2,8 @@
 import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { cn } from "@/lib/utils";
 import { setActiveChatRoom } from "@/store/chatSlice";
 import { useAppDispatch } from "@/store/hooks";
 import Avatar from "./Avatar";
@@ -15,6 +16,9 @@ interface UserItemProps {
   status?: number;
   bgColor: string;
   chatRoomId: string | null;
+  type?: string;
+  isSelected?: boolean;
+  handleSelect?: (uid: string) => void;
 }
 
 function UserItem({
@@ -25,6 +29,9 @@ function UserItem({
   status,
   bgColor,
   chatRoomId,
+  type = "link", // 預設link作為連結 / select為可選取項目
+  isSelected = false, // 做為選項時使用
+  handleSelect = () => {},
 }: UserItemProps) {
   const dispatch = useAppDispatch();
 
@@ -37,6 +44,35 @@ function UserItem({
       break;
     default:
       linkString = `/userProfile/${uid}`;
+  }
+
+  if (type === "select") {
+    return (
+      <button
+        type="button"
+        className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
+        onClick={() => handleSelect(uid)}
+      >
+        <div className="flex items-center gap-2">
+          <Avatar
+            userName={userName}
+            avatarUrl={avatarUrl}
+            classname="w-8 h-8 max-w-8 max-h-8"
+            textSize="text-sm"
+            bgColor={bgColor}
+          />
+          <p>{userName}</p>
+        </div>
+        <div
+          className={cn(
+            "flex justify-center items-center",
+            isSelected ? "text-[var(--active)]" : "text-[var(--disable)]",
+          )}
+        >
+          <FontAwesomeIcon icon={faCheckCircle} className="w-8 h-5" />
+        </div>
+      </button>
+    );
   }
 
   return (
@@ -73,7 +109,9 @@ function UserItem({
       </div>
       <div className="w-full px-2">
         <p>{userName}</p>
-        <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{userAccount}</p>
+        {userAccount && (
+          <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{userAccount}</p>
+        )}
       </div>
       {(status === 0) && (
         <div className="flexjustify-center items-center hover:text-[var(--active)]">

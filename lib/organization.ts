@@ -6,25 +6,43 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
-import { createChatRoom } from "./chat";
+import { createChatRoom, updateReadStatus } from "./chat";
 import { getRandomColor } from "./utils";
+import { createNotification, sendImmediateNotification } from "./notification";
+import { userDataType } from "@/types/userType";
+import { getSimpleUserData } from "./user";
 
 /** 建立群組 */
-export const createOrganization = async (uid: string, organizationName: string) => {
+export const createOrganization = async (uid: string, organizationName: string, members: string[]) => {
   try {
     const organizationRef = collection(db, "organizations");
+    const bgColor = getRandomColor();
     await addDoc(organizationRef, {
       hostId: uid,
-      members: [uid],
       organizationName,
+      members: [uid, ...members],
       avatarUrl: "",
-      bgColor: getRandomColor(),
+      bgColor,
       createdAt: new Date(),
     });
+    const roomId = await createChatRoom([uid, ...members], organizationName, "", bgColor, 1);
+    await updateReadStatus(roomId, uid);
 
-    await createChatRoom([uid], 1);
+    const notiPromise = members.map(async (member) => {
+      const userData = await getSimpleUserData(uid) as unknown as userDataType;
+      await updateReadStatus(roomId, member);
+      await createNotification(member, "newOrganization", `${userData.userName}已將您加入${organizationName}`, uid);
+      await sendImmediateNotification(
+        uid,
+        member,
+        "newOrganization",
+        `${userData.userName}已將您加入${organizationName}`,
+      );
+    });
 
-    return { code: "SUCCESS", message: "建立群組成功" };
+    await Promise.all(notiPromise);
+
+    return { code: "SUCCESS", message: "已新增群組" };
   } catch (error) {
     return { code: "ERROR", message: "建立群組失敗", error };
   }

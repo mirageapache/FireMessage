@@ -10,6 +10,7 @@ import { useAppSelector } from "@/store/hooks";
 // import { createOrganization } from "@/lib/organization";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
+import CreateOrgModal from "./CreateOrgModal";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
@@ -20,12 +21,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
-
-  /** 建立群組 */
-  const handleCreateOrg = async () => {
-    // const res = await createOrganization(uid!, "test");
-    // console.log(res);
-  };
+  const [createOrgModal, setCreateOrgModal] = useState(false);
 
   useEffect(() => {
     setChatList(chatListData!);
@@ -121,6 +117,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
             )}
           </div>
         )}
+
         {/* 好友 */}
         {activeTab === "friend" && (
           <div>
@@ -147,13 +144,11 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
 
         {/* 群組 */}
         {activeTab === "group" && (
-          <div>
+          <div className="relative">
             <button
               type="button"
-              className="bg-[var(--brand-color)] text-white px-4 py-2 rounded-lg"
-              onClick={() => {
-                // 開啟建立群組頁面
-              }}
+              className="bg-[var(--brand-color)] w-full text-white px-4 py-2 rounded-lg"
+              onClick={() => setCreateOrgModal(true)}
             >
               新增群組
             </button>
@@ -180,6 +175,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           </div>
         )}
       </div>
+      {createOrgModal && <CreateOrgModal setCreateOrgModal={setCreateOrgModal} />}
     </>
   );
 }

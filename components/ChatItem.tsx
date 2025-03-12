@@ -79,7 +79,9 @@ function ChatItem({
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
       </div>
       <div className="relative flex flex-col gap-2 justify-space items-end h-[50px]">
-        <p className="top-0 right-0 w-16 text-[var(--secondary-text-color)] text-xs text-right">{formatDateTime(lastMessageTime)}</p>
+        {lastMessage.length > 0 && (
+          <p className="top-0 right-0 w-16 text-[var(--secondary-text-color)] text-xs text-right">{formatDateTime(lastMessageTime)}</p>
+        )}
         {showCount && unreadCount > 0 && (
           <p className="bg-orange-500 text-white rounded-full px-2 text-sm">
             {unreadCount}

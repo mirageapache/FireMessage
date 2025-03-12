@@ -25,16 +25,22 @@ import { userDataType } from "@/types/userType";
 import { getSimpleUserData } from "./user";
 
 /** 建立聊天室 */
-export const createChatRoom = async (members: string[], type: number) => {
+export const createChatRoom = async (
+  members: string[],
+  chatRoomName:string,
+  avatarUrl:string,
+  bgColor:string,
+  type: number,
+) => {
   const chatRoomRef = collection(db, "chatRooms");
   await addDoc(chatRoomRef, {
     members,
     type,
-    chatRoomName: "",
-    avatarUrl: "",
-    bgColor: "",
+    chatRoomName,
+    avatarUrl,
+    bgColor,
     lastMessage: "",
-    lastMessageTime: "",
+    lastMessageTime: new Date(),
     createdAt: new Date(),
   });
   return chatRoomRef.id;
