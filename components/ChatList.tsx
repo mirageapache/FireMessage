@@ -7,18 +7,18 @@ import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
-// import { createOrganization } from "@/lib/organization";
+import { organizationDataType } from "@/types/organizationType";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
 import CreateOrgModal from "./CreateOrgModal";
-import { organizationDataType } from "@/types/organizationType";
+import OrgItem from "./OrgItem";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const chatListData = useAppSelector((state) => state.chat.chatList);
   const organizationListData = useAppSelector(
-    (state) => state.organization.organizationList
+    (state) => state.organization.organizationList,
   );
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
@@ -171,18 +171,13 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
               </div>
             ) : (
               orgList!.map((item) => (
-                <ChatItem
-                  key={item.chatRoomId}
+                <OrgItem
+                  key={item.orgId}
                   chatRoomId={item.chatRoomId}
                   members={item.members}
-                  chatRoomName={item.chatRoomName}
+                  organizationName={item.organizationName}
                   avatarUrl={item.avatarUrl}
                   bgColor={item.bgColor}
-                  lastMessage={item.lastMessage}
-                  lastMessageTime={item.lastMessageTime}
-                  unreadCount={item.unreadCount}
-                  showCount={item.unreadCount > 0}
-                  type={item.type}
                 />
               ))
             )}

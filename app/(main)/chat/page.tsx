@@ -50,7 +50,7 @@ function Chat() {
   const handleGetOrgList = async () => {
     const result = await getOrganizationData(uid!);
     if (result.code === "SUCCESS") {
-      dispatch(setOrganizationList(result.data as organizationDataType[]));
+      dispatch(setOrganizationList(result.data as unknown as organizationDataType[]));
     }
   };
 
@@ -77,6 +77,10 @@ function Chat() {
       handleUpdateReadStatus();
     }
   }, [activeChatRoomId, currentRoomId]);
+
+  useEffect(() => {
+    handleGetOrgList();
+  }, []);
 
   // 監聽即時訊息
   useMessage(uid!, "chatroom", currentRoomId || "", handleGetMessage, () => {});

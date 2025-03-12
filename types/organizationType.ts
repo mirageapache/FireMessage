@@ -5,6 +5,8 @@ import { apiResponseType } from "./api";
 /** 群組資料 */
 export type organizationDataType = {
   hostId: string;
+  chatRoomId: string;
+  orgId: string;
   organizationName: string;
   avatarUrl: string;
   bgColor: string;

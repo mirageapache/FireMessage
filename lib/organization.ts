@@ -8,28 +8,48 @@ import {
   query,
   where,
   getDocs,
+  updateDoc,
+  doc,
 } from "firebase/firestore";
+import { userDataType } from "@/types/userType";
+import { organizationDataType } from "@/types/organizationType";
 import { createChatRoom, updateReadStatus } from "./chat";
 import { getRandomColor } from "./utils";
 import { createNotification, sendImmediateNotification } from "./notification";
-import { userDataType } from "@/types/userType";
 import { getSimpleUserData } from "./user";
+
+/** 更新群組資料 */
+export const updateOrganizationData = async (orgId: string, data: organizationDataType) => {
+  try {
+    await updateDoc(doc(db, "organizations", orgId), data);
+
+    return { code: "SUCCESS", message: "更新群組資料成功" };
+  } catch (error) {
+    return { code: "ERROR", message: "更新群組資料失敗", error };
+  }
+};
 
 /** 建立群組 */
 export const createOrganization = async (uid: string, organizationName: string, members: string[]) => {
   try {
-    const organizationRef = collection(db, "organizations");
     const bgColor = getRandomColor();
-    await addDoc(organizationRef, {
+    const variable = {
       hostId: uid,
       organizationName,
       members: [uid, ...members],
       avatarUrl: "",
       bgColor,
       createdAt: new Date(),
+    };
+    const organizationRef = collection(db, "organizations");
+    const orgData = await addDoc(organizationRef, variable);
+    const roomId = await createChatRoom([uid, ...members], organizationName, "", bgColor, 1); // 建立聊天室
+    await updateOrganizationData(orgData.id, { // 更新群組資料(加入聊天室id)
+      ...variable,
+      orgId: orgData.id,
+      chatRoomId: roomId,
     });
-    const roomId = await createChatRoom([uid, ...members], organizationName, "", bgColor, 1);
-    await updateReadStatus(roomId, uid);
+    await updateReadStatus(roomId, uid); // 當前使用者更新聊天室未讀狀態
 
     const notiPromise = members.map(async (member) => {
       const userData = await getSimpleUserData(uid) as unknown as userDataType;
@@ -55,9 +75,19 @@ export const createOrganization = async (uid: string, organizationName: string, 
 export const getOrganizationData = async (uid: string) => {
   try {
     const organizationRef = collection(db, "organizations");
-    const organizationQuery = query(organizationRef, where("members", "array-contains", uid ));
+    const organizationQuery = query(organizationRef, where("members", "array-contains", uid));
     const organizationSnapshot = await getDocs(organizationQuery);
-    const organizationList = organizationSnapshot.docs.map((doc) => doc.data());
+    const organizationList = organizationSnapshot.docs.map((orgDoc) => {
+      const data = orgDoc.data();
+      return {
+        orgId: orgDoc.id,
+        members: data.members,
+        organizationName: data.organizationName,
+        avatarUrl: data.avatarUrl,
+        bgColor: data.bgColor,
+        chatRoomId: data.chatRoomId,
+      };
+    });
 
     return { code: "SUCCESS", data: organizationList };
   } catch (error) {

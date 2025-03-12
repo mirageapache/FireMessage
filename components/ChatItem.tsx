@@ -2,10 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setActiveChatRoom } from "@/store/chatSlice";
-import { formatDateTime } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
-import Avatar from "./Avatar";
+import { formatDateTime } from "@/lib/utils";
 import { updateReadStatus } from "@/lib/chat";
+import Avatar from "./Avatar";
 
 interface ChatItemProps {
   chatRoomId: string;
