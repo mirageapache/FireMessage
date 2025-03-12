@@ -186,8 +186,8 @@ export const sendMessage = async (
       chatRoomName,
       avatarUrl,
       bgColor,
+      type,
     } = chatRoomInfo;
-
     // 建立即時通知
     members.forEach(async (memberId) => {
       // 更新該使用者於聊天室內未讀即時訊息(先刪除舊資料，再建立)
@@ -202,10 +202,11 @@ export const sendMessage = async (
         members,
         chatRoomId,
         // 註：因為即時訊息通知是通知接收方，所以好友類型的聊天室名稱&頭貼設定發送者的頭貼
-        chatRoomName: chatRoomInfo.type === 0 ? userData.userName : chatRoomName,
-        chatRoomAvatar: chatRoomInfo.type === 0 ? userData.avatarUrl : avatarUrl,
-        chatRoomBgColor: chatRoomInfo.type === 0 ? userData.bgColor : bgColor,
+        chatRoomName: type === 0 ? userData.userName : chatRoomName,
+        chatRoomAvatar: type === 0 ? userData.avatarUrl : avatarUrl,
+        chatRoomBgColor: type === 0 ? userData.bgColor : bgColor,
         type: "sendMessage",
+        chatRoomType: type,
         createdAt: serverTimestamp(),
         isRead: false,
       });

@@ -31,12 +31,12 @@ export const createOrganization = async (uid: string, organizationName: string, 
     const notiPromise = members.map(async (member) => {
       const userData = await getSimpleUserData(uid) as unknown as userDataType;
       await updateReadStatus(roomId, member);
-      await createNotification(member, "newOrganization", `${userData.userName}已將您加入${organizationName}`, uid);
+      await createNotification(member, "newOrganization", `${userData.userName}已將您加入「${organizationName}」`, uid);
       await sendImmediateNotification(
         uid,
         member,
         "newOrganization",
-        `${userData.userName}已將您加入${organizationName}`,
+        `${userData.userName}已將您加入「${organizationName}」`,
       );
     });
 

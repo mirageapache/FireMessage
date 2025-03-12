@@ -112,6 +112,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
                   lastMessageTime={item.lastMessageTime}
                   unreadCount={item.unreadCount}
                   showCount={item.unreadCount > 0}
+                  type={item.type}
                 />
               ))
             )}
@@ -169,6 +170,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
                   lastMessageTime={item.lastMessageTime}
                   unreadCount={item.unreadCount}
                   showCount={item.unreadCount > 0}
+                  type={item.type}
                 />
               ))
             )}

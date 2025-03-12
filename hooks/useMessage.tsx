@@ -42,6 +42,7 @@ export const useMessage = (
                 lastMessageTime={messageData.createdAt}
                 unreadCount={0}
                 showCount={false}
+                type={messageData.chatRoomType}
               />,
               { toastId: latestId },
             );

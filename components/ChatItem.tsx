@@ -17,6 +17,7 @@ interface ChatItemProps {
   lastMessageTime: string;
   unreadCount: number;
   showCount: boolean;
+  type: number;
 }
 
 function ChatItem({
@@ -29,6 +30,7 @@ function ChatItem({
   lastMessageTime,
   unreadCount,
   showCount,
+  type,
 }: ChatItemProps) {
   const chatList = useAppSelector((state) => state.chat.chatList);
   const dispatch = useDispatch();
@@ -54,7 +56,7 @@ function ChatItem({
             chatRoomId,
             chatRoomName,
             members,
-            type: 0,
+            type,
             avatarUrl,
             bgColor,
             lastMessage,
