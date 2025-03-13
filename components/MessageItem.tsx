@@ -15,7 +15,7 @@ function MessageItem({
       {isOwner ? (
         <>
           <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pr-1">{moment(createdAt).format("HH:mm")}</p>
-          <p className="messageItem left-radius max-w-[70%]">{message}</p>
+          <p className="messageItem left-radius max-w-[70%] whitespace-pre-wrap">{message}</p>
         </>
       ) : (
         <>
@@ -26,7 +26,7 @@ function MessageItem({
             textSize="text-sm"
             bgColor={senderData.bgColor}
           />
-          <p className="messageItem right-radius max-w-[70%]">{message}</p>
+          <p className="messageItem right-radius max-w-[70%] whitespace-pre-wrap">{message}</p>
           <p className="text-sm text-[var(--disable-text-color)] dark:text-[var(--secondary-text-color)] pl-1">{moment(createdAt).format("H:mm")}</p>
         </>
       )}
