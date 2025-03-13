@@ -27,8 +27,6 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const [orgList, setOrgList] = useState<organizationDataType[]>([]);
   const [createOrgModal, setCreateOrgModal] = useState(false);
 
-  console.log(orgList);
-
   useEffect(() => {
     setChatList(chatListData!);
     if (uid && isEmpty(chatListData)) handleGetChatList();
