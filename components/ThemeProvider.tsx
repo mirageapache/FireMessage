@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { ToastContainer } from "react-toastify";
+import { Bounce, ToastContainer } from "react-toastify";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const reduxDarkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
@@ -25,8 +25,9 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         position="top-center"
         theme={darkMode === 'dark' ? 'dark' : 'light'}
         autoClose={3000}
-        stacked
         pauseOnFocusLoss={false}
+        transition={Bounce}
+        hideProgressBar
       />
     </div>
   );
