@@ -69,3 +69,29 @@ export const searchUser = async (keyword: string, uid: string) => {
     return { code: "ERROR", error };
   }
 };
+
+/** 搜尋群組  */
+export const searchOrganization = async (keyword: string) => {
+  try {
+    const organizationsRef = collection(db, "organizations");
+    const organizationNameQuery = query(
+      organizationsRef,
+      where("organizationName", ">=", keyword),
+      where("organizationName", "<=", `${keyword}\uf8ff`),
+    );
+
+    const [organizationNameSnapshot] = await Promise.all([
+      getDocs(organizationNameQuery),
+    ]);
+
+    if (organizationNameSnapshot.empty) {
+      return { code: "NOT_FOUND", count: 0 };
+    }
+
+    const results = organizationNameSnapshot.docs.map((doc) => doc.data());
+
+    return { code: "SUCCESS", count: results.length, data: results };
+  } catch (error) {
+    return { code: "ERROR", error };
+  }
+};

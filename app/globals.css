@@ -99,6 +99,14 @@
   h5 {
     @apply text-xl block text-center;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    /* 使用 transition-delay 來保持背景色 */
+    transition: background-color 5000s ease-in-out 0s;
+}
 }
 
 @layer utilities {
