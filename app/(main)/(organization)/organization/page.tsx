@@ -101,45 +101,54 @@ function Organization() {
           />
         </button>
         {openDropdownId === item.orgId && (
-          <div className="absolute top-10 right-0 w-4/5 sm:w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2">
-            <Link
-              href="/chat"
-              className={cn(dropdownItemStyle)}
-              onClick={() => {
-                dispatch(
-                  setActiveChatRoom({
-                    chatRoom: {
-                      chatRoomId: item.chatRoomId,
-                      chatRoomName: item.organizationName,
-                      members: item.members,
-                      type: 0,
-                      avatarUrl: item.avatarUrl,
-                      bgColor: item.bgColor,
-                      lastMessage: "",
-                      lastMessageTime: "",
-                      createdAt: "",
-                      unreadCount: 0,
-                    },
-                  }),
-                );
-              }}
-            >
-              聊天
-            </Link>
-            <Link
-              href={`/userProfile/${item.orgId}`}
-              className={cn(dropdownItemStyle)}
-            >
-              查看群組資訊
-            </Link>
-            <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
-            <button type="button" className={cn(dropdownItemStyle)}>
-              封鎖
-            </button>
-            <button type="button" className={cn(dropdownItemStyle)}>
-              刪除
-            </button>
-          </div>
+          <button
+            type="button"
+            className="fixed sm:absolute w-full sm:w-40 top-20 sm:top-10 right-0 flex justify-center items-center sm:justify-end z-20"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenDropdownId("");
+            }}
+          >
+            <div className="relative w-4/5 sm:w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2 z-10">
+              <Link
+                href={linkUrl}
+                className={cn(dropdownItemStyle)}
+                onClick={() => {
+                  dispatch(
+                    setActiveChatRoom({
+                      chatRoom: {
+                        chatRoomId: item.chatRoomId,
+                        chatRoomName: item.organizationName,
+                        members: item.members,
+                        type: 0,
+                        avatarUrl: item.avatarUrl,
+                        bgColor: item.bgColor,
+                        lastMessage: "",
+                        lastMessageTime: "",
+                        createdAt: "",
+                        unreadCount: 0,
+                      },
+                    }),
+                  );
+                }}
+              >
+                聊天
+              </Link>
+              <Link
+                href={`/userProfile/${item.orgId}`}
+                className={cn(dropdownItemStyle)}
+              >
+                查看群組資訊
+              </Link>
+              <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
+              <button type="button" className={cn(dropdownItemStyle)}>
+                封鎖
+              </button>
+              <button type="button" className={cn(dropdownItemStyle)}>
+                刪除
+              </button>
+            </div>
+          </button>
         )}
       </div>
     </div>
@@ -161,7 +170,7 @@ function Organization() {
         <button
           aria-label="關閉選單"
           type="button"
-          className="fixed top-0 left-0 w-screen h-screen cursor-default z-10"
+          className="fixed top-0 left-0 w-screen h-screen bg-gray-900 opacity-60 sm:bg-transparent cursor-default z-10"
           onClick={() => setOpenDropdownId("")}
         />
       )}
