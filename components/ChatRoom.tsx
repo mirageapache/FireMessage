@@ -10,6 +10,7 @@ import {
   PanelResizeHandle,
 } from "react-resizable-panels";
 import moment from 'moment';
+import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
@@ -36,6 +37,9 @@ function ChatRoom({
 
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const path = usePathname();
+  const currentPath = path?.slice(1);
 
   /** 傳送訊息 */
   const handleSendMessage = async () => {
@@ -80,7 +84,14 @@ function ChatRoom({
           <Panel defaultSize={85} minSize={60}>
             {/* 頁首區塊 header */}
             <div className="absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] rounded-tr-lg px-2 bg-[var(--card-bg-color)] z-20">
-              <button type="button" className="p-1" onClick={() => dispatch(clearActiveChatRoom())}>
+              <button
+                type="button"
+                className="p-1"
+                onClick={() => {
+                  dispatch(clearActiveChatRoom());
+                  if (currentPath === "chatRoom") router.back();
+                }}
+              >
                 <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
               </button>
               <p className="text-lg w-full text-center text-xl">{roomInfo.chatRoomName}</p>

@@ -1,5 +1,6 @@
-/* eslint-disable react/require-default-props */
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faUserPlus } from "@fortawesome/free-solid-svg-icons";
@@ -34,17 +35,19 @@ function UserItem({
   handleSelect = () => {},
 }: UserItemProps) {
   const dispatch = useAppDispatch();
+  const [linkUrl, setLinkUrl] = useState(`/userProfile/${uid}`);
 
-  let linkString = `/userProfile/${uid}`;
-  switch (status) {
-    case 5:
-      if (chatRoomId) {
-        linkString = "/chat"; // 是好友且有chatRoomId才導到聊天介面
-      }
-      break;
-    default:
-      linkString = `/userProfile/${uid}`;
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+
+    if (status === 5 && chatRoomId) handleResize(); // 是好友且有chatRoomId才導到聊天介面
+
+    // 監聽視窗大小變化
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (type === "select") {
     return (
@@ -77,7 +80,7 @@ function UserItem({
 
   return (
     <Link
-      href={linkString}
+      href={linkUrl}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={() => {
         if (status === 5 && chatRoomId) {

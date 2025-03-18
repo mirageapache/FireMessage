@@ -1,7 +1,9 @@
+"use client";
+
 import { setActiveChatRoom } from "@/store/chatSlice";
 import { useAppDispatch } from "@/store/hooks";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 
 function OrgItem({
@@ -18,10 +20,22 @@ function OrgItem({
   bgColor: string;
 }) {
   const dispatch = useAppDispatch();
+  const [linkUrl, setLinkUrl] = useState("/chat");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+
+    handleResize();
+    // 監聽視窗大小變化
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <Link
-      href="/chat"
+      href={linkUrl}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={() => {
         if (chatRoomId) {

@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setActiveChatRoom } from "@/store/chatSlice";
@@ -34,10 +36,22 @@ function ChatItem({
 }: ChatItemProps) {
   const dispatch = useDispatch();
   const uid = useAppSelector((state) => state.user.userData?.uid);
+  const [linkUrl, setLinkUrl] = useState("/chat");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+
+    handleResize();
+    // 監聽視窗大小變化
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <Link
-      href="/chat"
+      href={linkUrl}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={async () => {
         if (unreadCount > 0) {
