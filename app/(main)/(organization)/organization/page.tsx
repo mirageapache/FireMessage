@@ -135,7 +135,7 @@ function Organization() {
                 聊天
               </Link>
               <Link
-                href={`/userProfile/${item.orgId}`}
+                href={`/organizationProfile/${item.orgId}`}
                 className={cn(dropdownItemStyle)}
               >
                 查看群組資訊

@@ -10,6 +10,7 @@ import {
   getDocs,
   updateDoc,
   doc,
+  getDoc,
 } from "firebase/firestore";
 import { userDataType } from "@/types/userType";
 import { organizationDataType } from "@/types/organizationType";
@@ -48,6 +49,8 @@ export const createOrganization = async (uid: string, organizationName: string, 
       ...variable,
       orgId: orgData.id,
       chatRoomId: roomId,
+      coverUrl: "",
+      description: "",
     });
     await updateReadStatus(roomId, uid); // 當前使用者更新聊天室未讀狀態
 
@@ -90,6 +93,24 @@ export const getOrganizationData = async (uid: string) => {
     });
 
     return { code: "SUCCESS", data: organizationList };
+  } catch (error) {
+    return { code: "ERROR", message: "取得群組列表資料失敗", error };
+  }
+};
+
+/** 取得群組詳細資料 */
+export const getOrganizationDetail = async (orgId: string) => {
+  try {
+    const organizationRef = doc(db, "organizations", orgId);
+    const organizationSnapshot = await getDoc(organizationRef);
+
+    const organizationData = {
+      ...organizationSnapshot.data(),
+      orgId: organizationSnapshot.id,
+      createdAt: organizationSnapshot.data()?.createdAt?.toDate()?.toISOString(),
+    };
+
+    return { code: "SUCCESS", data: organizationData };
   } catch (error) {
     return { code: "ERROR", message: "取得群組列表資料失敗", error };
   }

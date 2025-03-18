@@ -8,8 +8,10 @@ export type organizationDataType = {
   chatRoomId: string;
   orgId: string;
   organizationName: string;
+  coverUrl: string;
   avatarUrl: string;
   bgColor: string;
+  description: string;
   members: string[];
   createdAt: string | any;
 };
