@@ -1,7 +1,11 @@
 "use client";
 
-import Avatar from '@/components/Avatar';
-import Spinner from '@/components/Spinner';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
 import { getFriendList, updateBothFriendStatus } from '@/lib/friend';
 import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
@@ -9,16 +13,12 @@ import { setFriendList } from '@/store/friendSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setActiveChatRoom } from '@/store/chatSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isEmpty } from 'lodash';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import Avatar from '@/components/Avatar';
+import ItemLoading from '@/components/ItemLoading';
 
 function Friend() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
-  const FriendListData = useAppSelector((state: RootState) => state.friend.friendList);
+  const friendListData = useAppSelector((state: RootState) => state.friend.friendList);
   const [isLoading, setIsLoading] = useState(true);
   const [friendData, setFriendData] = useState<friendDataType[]>([]);
   const [friendRequestList, setFriendRequestList] = useState<friendDataType[]>([]);
@@ -26,6 +26,8 @@ function Friend() {
   const [linkUrl, setLinkUrl] = useState("/chat");
   const dispatch = useAppDispatch();
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
+
+  console.log(friendListData);
 
   /** 取得好友邀請 */
   const handleGetFriendRequestList = async () => {
@@ -57,16 +59,19 @@ function Friend() {
   };
 
   useEffect(() => {
-    if (!isEmpty(FriendListData)) {
-      setFriendData(FriendListData!);
+    setIsLoading(true);
+    if (!isEmpty(friendListData)) {
+      setFriendData(friendListData!);
     }
     setIsLoading(false);
-  }, [FriendListData]);
+  }, [friendListData]);
 
   useEffect(() => {
+    setIsLoading(true);
     if (userData?.uid) {
       handleGetFriendRequestList();
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -217,7 +222,13 @@ function Friend() {
         <h4 className="my-1">好友列表</h4>
         {isLoading ? (
           <div className="my-2">
-            <Spinner />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
           </div>
         ) : (
           FriendList
