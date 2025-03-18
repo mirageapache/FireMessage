@@ -50,6 +50,8 @@ function BottomNavbar() {
     return () => window.removeEventListener('resize', handleResize); // 清理監聽
   }, [isOpen]);
 
+  if (currentPath === "chatRoom") return null; // 手機版聊天室不顯示
+
   return (
     <nav className="fixed bottom-0 flex justify-between items-center w-full h-[50px] p-5 sm:hidden bg-[var(--background)] z-50">
       <Link
