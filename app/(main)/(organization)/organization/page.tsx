@@ -18,6 +18,7 @@ function Organization() {
   const [isLoading, setIsLoading] = useState(false);
   const [orgListData, setOrgListData] = useState<organizationDataType[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<string>(""); // 判斷開啟選單的選項
+  const [linkUrl, setLinkUrl] = useState("/chat");
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
   /** 取得群組列表資料 */
@@ -36,13 +37,23 @@ function Organization() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+    handleResize();
+    // 監聽視窗大小變化，調整聊天室顯示路徑
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const orgList = orgListData.map((item) => (
     <div
       key={item.orgId}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
     >
       <Link
-        href="/chat"
+        href={linkUrl}
         className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
         onClick={() => {
           if (item.chatRoomId) {

@@ -28,7 +28,7 @@ function OrgItem({
     };
 
     handleResize();
-    // 監聽視窗大小變化
+    // 監聽視窗大小變化，調整聊天室顯示路徑
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);

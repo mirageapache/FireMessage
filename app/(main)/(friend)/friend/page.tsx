@@ -23,6 +23,7 @@ function Friend() {
   const [friendData, setFriendData] = useState<friendDataType[]>([]);
   const [friendRequestList, setFriendRequestList] = useState<friendDataType[]>([]);
   const [openDropdownUid, setOpenDropdownUid] = useState<string>(""); // 判斷開啟選單的選項
+  const [linkUrl, setLinkUrl] = useState("/chat");
   const dispatch = useAppDispatch();
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
@@ -66,6 +67,16 @@ function Friend() {
     if (userData?.uid) {
       handleGetFriendRequestList();
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+    handleResize();
+    // 監聽視窗大小變化，調整聊天室顯示路徑
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   /** 好友邀請列表 */
@@ -113,7 +124,7 @@ function Friend() {
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
     >
       <Link
-        href="/chat"
+        href={linkUrl}
         className="flex items-center gap-2 w-full p-2"
         onClick={() => {
           dispatch(setActiveChatRoom({
