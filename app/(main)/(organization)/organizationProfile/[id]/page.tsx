@@ -132,7 +132,7 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
 
       {/* 返回 */}
       <section className="flex justify-center items-center pb-5 px-4">
-        <Button type="button" className="w-full sm:w-auto bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
+        <Button type="button" className="w-full sm:w-auto bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.back()}>返回</Button>
       </section>
 
       {/* 修改群組資料modal */}

@@ -8,6 +8,7 @@ import { RootState } from "@/store";
 import { deleteUserImage, deleteOrgImage, uploadOrgImage, uploadUserImage } from "@/lib/image";
 import { isEmpty } from "lodash";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function EditImageModal({
   orgId,
@@ -116,10 +117,22 @@ function EditImageModal({
           上傳{imageType}
         </label>
         <button
-          aria-label="刪除封面"
+          aria-label="刪除圖片"
           type="button"
           className="w-full text-center text-lg text-white bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
-          onClick={() => handleDeleteImage(imgType, publicId!)}
+          onClick={() => {
+            Swal.fire({
+              title: `確定要移除${imageType}嗎？`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "確定",
+              cancelButtonText: "取消",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                handleDeleteImage(imgType, publicId!);
+              }
+            });
+          }}
         >
           刪除{imageType}
         </button>

@@ -11,6 +11,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { userDataType } from "@/types/userType";
 import { organizationDataType } from "@/types/organizationType";
@@ -21,8 +22,13 @@ import { getSimpleUserData } from "./user";
 
 /** 更新群組資料 */
 export const updateOrganizationData = async (orgId: string, data: organizationDataType) => {
+  const variable= {
+    ...data,
+    createdAt: Timestamp.fromDate(new Date(data.createdAt)),
+  }
+
   try {
-    await updateDoc(doc(db, "organizations", orgId), data);
+    await updateDoc(doc(db, "organizations", orgId), variable);
 
     return { code: "SUCCESS", message: "更新群組資料成功" };
   } catch (error) {

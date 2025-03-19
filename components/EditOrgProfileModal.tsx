@@ -72,6 +72,7 @@ function EditOrgProfileModal({
       variable,
     );
     if (result.code === "SUCCESS") {
+      setOrgData(variable);
       setEditmode(false);
       toast.success("更新成功");
     } else {
@@ -126,7 +127,7 @@ function EditOrgProfileModal({
             onSubmit={form.handleSubmit(onSubmit)}
           >
             {/* 封面 */}
-            <section className="relative h-[200px] bg-[var(--image-bg-color)]">
+            <section className="relative h-[200px] bg-[var(--image-bg-color)] dark:bg-gray-400">
               {(cover || cover !== "") && (
                 <Image
                   src={cover}
