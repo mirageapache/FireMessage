@@ -132,7 +132,7 @@ function Organization() {
                   );
                 }}
               >
-                聊天
+                開啟聊天室
               </Link>
               <Link
                 href={`/organizationProfile/${item.orgId}`}
@@ -141,11 +141,8 @@ function Organization() {
                 查看群組資訊
               </Link>
               <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
-              <button type="button" className={cn(dropdownItemStyle)}>
-                封鎖
-              </button>
-              <button type="button" className={cn(dropdownItemStyle)}>
-                刪除
+              <button type="button" className={cn(dropdownItemStyle, "text-red-500 hover:text-red-500")}>
+                退出群組
               </button>
             </div>
           </button>

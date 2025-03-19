@@ -9,7 +9,9 @@ export type organizationDataType = {
   orgId: string;
   organizationName: string;
   coverUrl: string;
+  coverPublicId: string;
   avatarUrl: string;
+  avatarPublicId: string;
   bgColor: string;
   description: string;
   members: string[];

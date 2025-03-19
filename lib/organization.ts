@@ -38,7 +38,11 @@ export const createOrganization = async (uid: string, organizationName: string, 
       hostId: uid,
       organizationName,
       members: [uid, ...members],
+      coverUrl: "",
+      coverPublicId: "",
       avatarUrl: "",
+      avatarPublicId: "",
+      description: "",
       bgColor,
       createdAt: new Date(),
     };
@@ -48,9 +52,7 @@ export const createOrganization = async (uid: string, organizationName: string, 
     await updateOrganizationData(orgData.id, { // 更新群組資料(加入聊天室id)
       ...variable,
       orgId: orgData.id,
-      chatRoomId: roomId,
-      coverUrl: "",
-      description: "",
+      chatRoomId: roomId, 
     });
     await updateReadStatus(roomId, uid); // 當前使用者更新聊天室未讀狀態
 

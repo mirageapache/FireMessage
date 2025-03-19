@@ -12,13 +12,17 @@ import { organizationDataType } from "@/types/organizationType";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
+import EditOrgProfileModal from "@/components/EditOrgProfileModal";
 
 function OrganizationProfile({ params }: { params: { id: string } }) {
   const orgId = params.id;
-  const [orgData, setOrgData] = useState<organizationDataType>();
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const listItemStyle = "flex justify-between items-center";
+  const [orgData, setOrgData] = useState<organizationDataType>();
+  const [cover, setCover] = useState(orgData?.coverUrl || "");
+  const [avatar, setAvatar] = useState(orgData?.avatarUrl || "");
+  const [isLoading, setIsLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   /** 取得群組列表資料 */
   const handleGetOrgList = async () => {
@@ -29,6 +33,13 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (orgData) {
+      setCover(orgData?.coverUrl || "");
+      setAvatar(orgData?.avatarUrl || "");
+    }
+  }, [orgData]);
 
   useEffect(() => {
     if (orgId) handleGetOrgList();
@@ -70,53 +81,38 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
           </span>
         </div>
         <div>
-          <p className="text-[var(--secondary-text-color)]">
-            尚未設定群組簡介
-          </p>
-          {/* {isEmpty(orgData?.description) ? (
-            <p className="text-[var(--secondary-text-color)]">
-              尚未設定群組簡介
-            </p>
-          ) : (
+          {orgData?.description ? (
             <p className="text-[var(--text-color)] whitespace-pre-wrap">
               {orgData?.description}
             </p>
-          )} */}
+          ) : (
+            <p className="text-[var(--secondary-text-color)]">
+              尚未設定群組簡介
+            </p>
+          )}
         </div>
-        <div className="text-right">
-          {/* {orgData?.friendStatus === 0 && (
-            <Button
-              type="button"
-              aria-label="發送好友邀請"
-              className="w-full sm:w-auto bg-[var(--success)] hover:bg-[var(--success-hover)]"
-              onClick={async () => {
-                const reuslt = await createFriendRequest(currentUid || "", params.uid);
-                if (reuslt.code === "SUCCESS") {
-                  toast.success(reuslt.message);
-                  handleGetorgData();
-                } else {
-                  toast.error(reuslt.message);
-                }
-              }}
-            >
-              發送好友邀請
-            </Button>
-          )} */}
-          {/* {orgData?.friendStatus === 1 && (
-            <Button
-              type="button"
-              disabled
-              className="w-full sm:w-auto bg-[var(--disable)]"
-            >
-              已發送好友邀請
-            </Button>
-          )} */}
+        <div className="flex justify-end items-center gap-1">
           <Button
             type="button"
             aria-label="編輯群組"
-            className="w-full sm:w-auto bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+            onClick={() => setEditMode(true)}
           >
             編輯群組
+          </Button>
+          <Button
+            type="button"
+            aria-label="編輯成員"
+            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+          >
+            編輯成員
+          </Button>
+          <Button
+            type="button"
+            aria-label="退出群組"
+            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+          >
+            退出群組
           </Button>
         </div>
       </section>
@@ -138,6 +134,19 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
       <section className="flex justify-center items-center pb-5 px-4">
         <Button type="button" className="w-full sm:w-auto bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]" onClick={() => router.push("/dashboard")}>返回</Button>
       </section>
+
+      {/* 修改群組資料modal */}
+      {editMode && (
+        <EditOrgProfileModal
+          setEditmode={setEditMode}
+          orgData={orgData!}
+          cover={cover}
+          avatar={avatar}
+          setOrgData={setOrgData}
+          setCover={setCover}
+          setAvatar={setAvatar}
+        />
+      )}
     </div>
   );
 }
