@@ -27,8 +27,6 @@ function Friend() {
   const dispatch = useAppDispatch();
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
-  console.log(friendListData);
-
   /** 取得好友邀請 */
   const handleGetFriendRequestList = async () => {
     const result = await getFriendList(userData?.uid || "", 2) as friendResponseType;
@@ -59,20 +57,14 @@ function Friend() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    if (!isEmpty(friendListData)) {
-      setFriendData(friendListData!);
-    }
-    setIsLoading(false);
+    setFriendData(friendListData!);
   }, [friendListData]);
 
   useEffect(() => {
-    setIsLoading(true);
     if (userData?.uid) {
-      handleGetFriendRequestList();
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, []);
+  }, [userData?.uid]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -123,7 +115,9 @@ function Friend() {
   ));
 
   /** 好友列表 */
-  const FriendList = (isEmpty(friendData)) ? <p className="text-center my-2">-尚無好友-</p> : friendData!.map((item) => (
+  const FriendList = (!friendData && userData?.uid && !isLoading) ? (
+    <p className="text-center my-2">-尚無好友-</p>
+  ) : friendData!.map((item) => (
     <div
       key={item.uid}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
@@ -222,10 +216,6 @@ function Friend() {
         <h4 className="my-1">好友列表</h4>
         {isLoading ? (
           <div className="my-2">
-            <ItemLoading />
-            <ItemLoading />
-            <ItemLoading />
-            <ItemLoading />
             <ItemLoading />
             <ItemLoading />
             <ItemLoading />

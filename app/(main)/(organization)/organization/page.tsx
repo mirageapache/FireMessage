@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 import { getOrganizationData } from "@/lib/organization";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { organizationDataType } from "@/types/organizationType";
-import Spinner from "@/components/Spinner";
 import Link from "next/link";
 import { setActiveChatRoom } from "@/store/chatSlice";
 import Avatar from "@/components/Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
+import ItemLoading from "@/components/ItemLoading";
 
 function Organization() {
   const dispatch = useAppDispatch();
@@ -35,7 +35,7 @@ function Organization() {
     if (uid) {
       handleGetOrgList();
     }
-  }, []);
+  }, [uid]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -160,7 +160,9 @@ function Organization() {
         <h4 className="my-1">群組列表</h4>
         {isLoading ? (
           <div className="my-2">
-            <Spinner />
+            <ItemLoading />
+            <ItemLoading />
+            <ItemLoading />
           </div>
         ) : (
           orgList
