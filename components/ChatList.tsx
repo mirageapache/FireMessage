@@ -1,7 +1,5 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import React, { useEffect, useState } from "react";
 import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
@@ -10,7 +8,6 @@ import { useAppSelector } from "@/store/hooks";
 import { organizationDataType } from "@/types/organizationType";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
-import CreateOrgModal from "./CreateOrgModal";
 import OrgItem from "./OrgItem";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
@@ -25,7 +22,6 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [orgList, setOrgList] = useState<organizationDataType[]>([]);
-  const [createOrgModal, setCreateOrgModal] = useState(false);
 
   useEffect(() => {
     setChatList(chatListData!);
@@ -154,13 +150,6 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
         {/* 群組 */}
         {activeTab === "group" && (
           <div className="relative">
-            <button
-              type="button"
-              className="bg-[var(--brand-color)] w-full text-white px-4 py-2 rounded-lg"
-              onClick={() => setCreateOrgModal(true)}
-            >
-              新增群組
-            </button>
             {orgList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
                 <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
@@ -182,9 +171,6 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           </div>
         )}
       </div>
-      {createOrgModal && (
-        <CreateOrgModal setCreateOrgModal={setCreateOrgModal} />
-      )}
     </>
   );
 }

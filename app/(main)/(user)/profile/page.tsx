@@ -10,7 +10,7 @@ import { RootState } from "@/store";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { sendVerification } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";

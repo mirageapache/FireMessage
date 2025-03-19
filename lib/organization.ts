@@ -22,10 +22,10 @@ import { getSimpleUserData } from "./user";
 
 /** 更新群組資料 */
 export const updateOrganizationData = async (orgId: string, data: organizationDataType) => {
-  const variable= {
+  const variable = {
     ...data,
     createdAt: Timestamp.fromDate(new Date(data.createdAt)),
-  }
+  };
 
   try {
     await updateDoc(doc(db, "organizations", orgId), variable);
@@ -58,7 +58,7 @@ export const createOrganization = async (uid: string, organizationName: string, 
     await updateOrganizationData(orgData.id, { // 更新群組資料(加入聊天室id)
       ...variable,
       orgId: orgData.id,
-      chatRoomId: roomId, 
+      chatRoomId: roomId,
     });
     await updateReadStatus(roomId, uid); // 當前使用者更新聊天室未讀狀態
 

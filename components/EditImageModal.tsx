@@ -5,7 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useAppSelector } from "@/store/hooks";
 import { RootState } from "@/store";
-import { deleteUserImage, deleteOrgImage, uploadOrgImage, uploadUserImage } from "@/lib/image";
+import {
+  deleteUserImage,
+  deleteOrgImage,
+  uploadOrgImage,
+  uploadUserImage,
+} from "@/lib/image";
 import { isEmpty } from "lodash";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -87,7 +92,10 @@ function EditImageModal({
     <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
       <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] p-5 rounded-lg shadow-lg z-20">
         <div className="relative w-full flex justify-center items-center">
-          <h4 className="text-lg">編輯{imageType}</h4>
+          <h4 className="text-lg">
+            編輯
+            {imageType}
+          </h4>
           <button
             type="button"
             aria-label="關閉選單"
@@ -105,16 +113,15 @@ function EditImageModal({
           id="coverInput"
           type="file"
           className="hidden"
-          onChange={(e) =>
-            handleUploadImage(e, imgType, publicId!)
-          }
+          onChange={(e) => handleUploadImage(e, imgType, publicId!)}
         />
         <label
           aria-label="上傳圖片"
           htmlFor="coverInput"
           className="w-full text-center text-lg text-white bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg"
         >
-          上傳{imageType}
+          上傳
+          {imageType}
         </label>
         <button
           aria-label="刪除圖片"
@@ -134,7 +141,8 @@ function EditImageModal({
             });
           }}
         >
-          刪除{imageType}
+          刪除
+          {imageType}
         </button>
       </div>
       <button

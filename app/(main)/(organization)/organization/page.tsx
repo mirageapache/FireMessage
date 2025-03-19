@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import ItemLoading from "@/components/ItemLoading";
+import CreateOrgModal from "@/components/CreateOrgModal";
 
 function Organization() {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ function Organization() {
   const [orgListData, setOrgListData] = useState<organizationDataType[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<string>(""); // 判斷開啟選單的選項
   const [linkUrl, setLinkUrl] = useState("/chat");
+  const [createOrgModal, setCreateOrgModal] = useState(false);
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
   /** 取得群組列表資料 */
@@ -155,10 +157,17 @@ function Organization() {
     <div className="relative pt-3 sm:px-5">
       <div className="m-2 border-b border-[var(--divider-color)]">
         <h4 className="my-1">群組列表</h4>
+        <div className="flex justify-end mb-2">
+          <button
+            type="button"
+            className="bg-[var(--brand-color)] w-full sm:w-40 text-white px-4 py-2 rounded-lg"
+            onClick={() => setCreateOrgModal(true)}
+          >
+            新增群組
+          </button>
+        </div>
         {isLoading ? (
           <div className="my-2">
-            <ItemLoading />
-            <ItemLoading />
             <ItemLoading />
           </div>
         ) : (
@@ -172,6 +181,9 @@ function Organization() {
           className="fixed top-0 left-0 w-screen h-screen bg-gray-900 opacity-60 sm:bg-transparent cursor-default z-10"
           onClick={() => setOpenDropdownId("")}
         />
+      )}
+      {createOrgModal && (
+        <CreateOrgModal setCreateOrgModal={setCreateOrgModal} />
       )}
     </div>
   );

@@ -84,9 +84,9 @@ function EditOrgProfileModal({
   /** 更新群組資料 */
   const updateOrgData = (result: { imageUrl: string, public_id: string }, imgType: string) => {
     if (imgType === "cover") {
-      setOrgData({...orgData, coverUrl: result.imageUrl, coverPublicId: result.public_id});
+      setOrgData({ ...orgData, coverUrl: result.imageUrl, coverPublicId: result.public_id });
     } else {
-      setOrgData({...orgData, avatarUrl: result.imageUrl, avatarPublicId: result.public_id});
+      setOrgData({ ...orgData, avatarUrl: result.imageUrl, avatarPublicId: result.public_id });
     }
   };
 
@@ -243,7 +243,7 @@ function EditOrgProfileModal({
         </Form>
       </div>
       <div className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60" />
-    
+
       {showCoverModal && (
         <EditImageModal
           orgId={orgData?.orgId}

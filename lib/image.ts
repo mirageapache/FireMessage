@@ -39,7 +39,7 @@ const handleUploadImage = async (
   } catch (error) {
     return { code: "ERROR", error };
   }
-}
+};
 
 /** 處理刪除圖片 */
 const handleDeleteImage = async (
@@ -63,7 +63,7 @@ const handleDeleteImage = async (
   } catch (error) {
     return { code: "ERROR", error };
   }
-}
+};
 
 /** 更新使用者封面/頭貼 */
 const updateUserImage = async (

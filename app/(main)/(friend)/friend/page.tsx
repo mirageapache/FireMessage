@@ -217,8 +217,6 @@ function Friend() {
         {isLoading ? (
           <div className="my-2">
             <ItemLoading />
-            <ItemLoading />
-            <ItemLoading />
           </div>
         ) : (
           FriendList
