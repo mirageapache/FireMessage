@@ -6,12 +6,12 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { updateOrganizationData } from "@/lib/organization";
 import { organizationDataType } from "@/types/organizationType";
-import { useAppSelector } from "@/store/hooks";
 import { friendDataType } from "@/types/friendType";
 import Spinner from "./Spinner";
 import UserItem from "./UserItem";
 import { getSimpleUserData } from "@/lib/user";
-import { userDataType } from "@/types/userType";
+import { Button } from "./ui/button";
+import AddOrgMemberModal from "./AddOrgMemberModal.";
 
 interface memberListType extends friendDataType {
   isSelected: boolean;
@@ -26,27 +26,26 @@ function EditOrgMemberModal({
   orgData: organizationDataType;
   setOrgData: (orgData: organizationDataType) => void;
 }) {
-  const uid = useAppSelector((state) => state.user.userData?.uid);
-  const friendList = useAppSelector((state) => state.friend.friendList);
   const [isLoading, setIsLoading] = useState(false);
-  const [memberList, setMemberList] = useState<memberListType[]>([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [memberList, setMemberList] = useState<memberListType[]>([]); // 調整用的成員列表
+  const [originalMemberList, setOriginalMemberList] = useState<memberListType[]>([]); // 變更前的成員列表
+  const [addMemberModal, setAddMemberModal] = useState(false);
 
   /** 更新群組成員 */
   const handleUpdateOrgMember = async () => {
     setIsLoading(true);
+    const newMemberList = memberList.filter((member) => member.isSelected).map((member) => member.uid);
     const result = await updateOrganizationData(orgData.orgId, {
       ...orgData,
-      members: [...orgData.members],
+      members: newMemberList,
     });
-  };
 
-  /** 更新群組state資料 */
-  const updateOrgData = (result: { imageUrl: string, public_id: string }, imgType: string) => {
-    if (imgType === "cover") {
-      setOrgData({ ...orgData, coverUrl: result.imageUrl, coverPublicId: result.public_id });
-    } else {
-      setOrgData({ ...orgData, avatarUrl: result.imageUrl, avatarPublicId: result.public_id });
+    if (result.code === "SUCCESS") {
+      setOrgData({ ...orgData, members: newMemberList });
     }
+    setIsLoading(false);
+    setEditmode(false);
   };
 
   /** 處理選項選取 */
@@ -63,6 +62,12 @@ function EditOrgMemberModal({
     setMemberList(tempList);
   };
 
+  /** 處理搜尋功能 */
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const tempList = originalMemberList?.filter((friend) => friend.sourceUserData.userName.includes(e.target.value));
+    setMemberList(tempList as memberListType[]);
+  };
+
   /** 取得群組成員資料 */
   const getMemberList = async () => {
     const tempList = orgData.members.map(async (member) => {
@@ -74,13 +79,12 @@ function EditOrgMemberModal({
     });
     const memberList = await Promise.all(tempList);
     setMemberList(memberList as memberListType[]);
+    setOriginalMemberList(memberList as memberListType[]);
   };
 
   useEffect(() => {
     getMemberList();
   }, []);
-
-  console.log(memberList);
 
   return (
     <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
@@ -111,10 +115,28 @@ function EditOrgMemberModal({
             />
           </button>
         </div>
-        <h3 className="mb-5">群組成員</h3>
-        <form className="w-full md:w-auto h-[calc(100%-50px)] md:h-[400px] flex flex-col justify-center items-start gap-2">
+        <div className="relative w-full">
+          <h3 className="mb-5">群組成員</h3>
+          <Button
+            type="button"
+            className="absolute top-5 left-0 bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)] text-white"
+            onClick={() => setAddMemberModal(true)}
+          >
+            新增成員
+          </Button>
+        </div>
+        <form className="w-full md:w-auto h-[calc(100%-100px)] md:h-[400px] flex flex-col justify-center items-start gap-2">
           <div className="w-full h-full">
-            <input type="text" className="formInput my-2 px-4" placeholder="搜尋成員" />
+            <input
+              type="text"
+              className="formInput my-2 px-4"
+              placeholder="搜尋成員"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                handleSearch(e);
+              }}
+            />
             <div className="flex flex-col gap-2 h-[calc(100%-55px)] md:max-h-[350px] overflow-y-auto">
               {memberList?.map((member) => (
                 <UserItem
@@ -139,11 +161,18 @@ function EditOrgMemberModal({
             className="w-60 text-lg py-2 rounded-full bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]"
             onClick={handleUpdateOrgMember}
           >
-            {isLoading ? <Spinner /> : "確定"}
+            {isLoading ? <Spinner text="更新中..." /> : "確定"}
           </button>
         </div>
       </div>
       <div className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60" />
+      {addMemberModal && (
+        <AddOrgMemberModal
+          orgMemberList={memberList}
+          setMemberList={setMemberList}
+          setAddMemberModal={setAddMemberModal}
+        />
+      )}
     </div>
   );
 }
