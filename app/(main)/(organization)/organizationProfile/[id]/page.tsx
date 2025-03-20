@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import Image from "next/image";
 import EditOrgProfileModal from "@/components/EditOrgProfileModal";
+import EditOrgMemberModal from "@/components/EditOrgMemberModal";
 
 function OrganizationProfile({ params }: { params: { id: string } }) {
   const orgId = params.id;
@@ -23,6 +24,7 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
   const [avatar, setAvatar] = useState(orgData?.avatarUrl || "");
   const [isLoading, setIsLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [editMemberMode, setEditMemberMode] = useState(false);
 
   /** 取得群組列表資料 */
   const handleGetOrgList = async () => {
@@ -104,13 +106,15 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
             type="button"
             aria-label="編輯成員"
             className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+            onClick={() => setEditMemberMode(true)}
           >
-            編輯成員
+            成員
           </Button>
           <Button
             type="button"
             aria-label="退出群組"
             className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+            onClick={() => setEditMemberMode(true)}
           >
             退出群組
           </Button>
@@ -145,6 +149,15 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
           setOrgData={setOrgData}
           setCover={setCover}
           setAvatar={setAvatar}
+        />
+      )}
+
+      {/* 修改群組成員modal */}
+      {editMemberMode && (
+        <EditOrgMemberModal
+          setEditmode={setEditMemberMode}
+          orgData={orgData!}
+          setOrgData={setOrgData}
         />
       )}
     </div>

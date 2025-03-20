@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { setActiveChatRoom } from "@/store/chatSlice";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Avatar from "./Avatar";
 
 interface UserItemProps {
@@ -35,7 +35,9 @@ function UserItem({
   handleSelect = () => {},
 }: UserItemProps) {
   const dispatch = useAppDispatch();
+  const currentUid = useAppSelector((state) => state.user.userData?.uid);
   const [linkUrl, setLinkUrl] = useState(`/userProfile/${uid}`);
+  const isCurrentUser = currentUid === uid;
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,7 +54,10 @@ function UserItem({
       <button
         type="button"
         className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
-        onClick={() => handleSelect(uid)}
+        onClick={() => {
+          if (isCurrentUser) return;
+          handleSelect(uid);
+        }}
       >
         <div className="flex items-center gap-2">
           <Avatar
@@ -64,14 +69,16 @@ function UserItem({
           />
           <p>{userName}</p>
         </div>
-        <div
-          className={cn(
-            "flex justify-center items-center",
-            isSelected ? "text-[var(--active)]" : "text-[var(--disable)]",
-          )}
-        >
-          <FontAwesomeIcon icon={faCheckCircle} className="w-8 h-5" />
-        </div>
+        {!isCurrentUser && (
+          <div
+            className={cn(
+              "flex justify-center items-center",
+              isSelected ? "text-[var(--active)]" : "text-[var(--disable)]",
+            )}
+          >
+            <FontAwesomeIcon icon={faCheckCircle} className="w-8 h-5" />
+          </div>
+        )}
       </button>
     );
   }

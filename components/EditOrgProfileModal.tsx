@@ -81,7 +81,7 @@ function EditOrgProfileModal({
     setIsLoading(false);
   };
 
-  /** 更新群組資料 */
+  /** 更新群組state資料 */
   const updateOrgData = (result: { imageUrl: string, public_id: string }, imgType: string) => {
     if (imgType === "cover") {
       setOrgData({ ...orgData, coverUrl: result.imageUrl, coverPublicId: result.public_id });

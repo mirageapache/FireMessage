@@ -123,3 +123,25 @@ export const getOrganizationDetail = async (orgId: string) => {
     return { code: "ERROR", message: "取得群組列表資料失敗", error };
   }
 };
+
+/** 取得群組成員資料 */
+export const getOrganizationMemberData = async (orgId: string, uid: string, members: string[]) => {
+  try {
+    const memberListPromise = members.map(async (member) => {
+      const friendData = await getSimpleUserData(member) as unknown as userDataType;
+      return {
+        uid: member,
+        userName: friendData.userName,
+        avatarUrl: friendData.avatarUrl,
+        bgColor: friendData.bgColor,
+        isSelected: true,
+      };
+    });
+
+    const memberList = await Promise.all(memberListPromise);
+
+    return { code: "SUCCESS", data: memberList };
+  } catch (error) {
+    return { code: "ERROR", message: "取得資料失敗", error };
+  }
+};

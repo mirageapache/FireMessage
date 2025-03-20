@@ -63,7 +63,7 @@ function CreateOrgModal({
 
   return (
     <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
-      <div className="relative w-full h-full md:max-w-[600px] md:w-2/3 md:h-auto bg-[var(--modal-bg-color)] text-[var(--text-color)] pt-12 pb-10 px-5 rounded-lg shadow-lg z-20">
+      <div className="relative w-full md:max-w-[600px] md:w-2/3 h-[calc(100vh-100px)] sm:h-[calc(100vh-50px)] md:h-auto my-[100px] sm:mt-[100px] sm:mb-[50px] bg-[var(--modal-bg-color)] text-[var(--text-color)] pt-12 pb-10 px-5 md:rounded-lg shadow-lg z-20">
         <div className="flex justify-end">
           <button
             type="button"
@@ -91,22 +91,22 @@ function CreateOrgModal({
           </button>
         </div>
         <h3 className="mb-5">建立新群組</h3>
-        <form className="relative w-full md:w-auto flex flex-col justify-center gap-2">
-          <div>
+        <form className="w-full md:w-auto h-[calc(100%-50px)] md:h-[400px] flex flex-col justify-center items-start gap-2">
+          <div className="w-full h-full">
             <input
               type="text"
               className="formInput px-4"
-              placeholder="群組名稱"
+              placeholder="請輸入群組名稱"
               maxLength={20}
               onChange={(e) => {
                 if (e.target.value.length > 20) return;
                 setOrgName(e.target.value);
               }}
             />
-            <div className="w-full mt-2">
-              <h5 className="text-left">選擇群組成員</h5>
-              <input type="text" className="formInput my-2 px-4" placeholder="搜尋" />
-              <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+            <div className="w-full mt-5 border-t-[1px] border-[var(--divider-color)] pt-5">
+              <h5 className="text-center">請選擇群組成員</h5>
+              <input type="text" className="formInput my-2 px-4" placeholder="搜尋好友" />
+              <div className="flex flex-col gap-2 h-[calc(100%-55px)] md:max-h-[350px] overflow-y-auto">
                 {memberList?.map((friend) => (
                   <UserItem
                     key={friend.uid}
@@ -124,13 +124,13 @@ function CreateOrgModal({
               </div>
             </div>
           </div>
-          <div className="fixed bottom-10 md:relative md:bottom-0 w-full flex justify-center items-center">
+          <div className="w-full flex justify-center items-center mt-2">
             <button
               type="button"
-              className="w-full sm:w-60 text-lg py-2 rounded-full bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]"
+              className="w-60 text-lg py-2 rounded-full bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-color)]"
               onClick={handleCreateOrg}
             >
-              {isLoading ? <Spinner /> : "建立"}
+              {isLoading ? <Spinner text="建立中..." /> : "建立"}
             </button>
           </div>
         </form>
