@@ -29,7 +29,7 @@ function EditOrgMemberModal({
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [memberList, setMemberList] = useState<memberListType[]>([]); // 調整用的成員列表
-  const [originalMemberList, setOriginalMemberList] = useState<memberListType[]>([]); // 變更前的成員列表
+  const [tempMemberList, setTempMemberList] = useState<memberListType[]>([]); // 變更前的成員列表
   const [addMemberModal, setAddMemberModal] = useState(false);
 
   /** 更新群組成員 */
@@ -60,11 +60,16 @@ function EditOrgMemberModal({
       return friend;
     });
     setMemberList(tempList);
+    setTempMemberList(tempList);
   };
 
   /** 處理搜尋功能 */
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tempList = originalMemberList?.filter((friend) => friend.sourceUserData.userName.includes(e.target.value));
+  const handleSearch = (value: string) => {
+    if (value.length === 0) {
+      setMemberList(tempMemberList);
+      return;
+    }
+    const tempList = tempMemberList?.filter((friend) => friend.userName.includes(value));
     setMemberList(tempList as memberListType[]);
   };
 
@@ -79,7 +84,7 @@ function EditOrgMemberModal({
     });
     const memberList = await Promise.all(tempList);
     setMemberList(memberList as memberListType[]);
-    setOriginalMemberList(memberList as memberListType[]);
+    setTempMemberList(memberList as memberListType[]);
   };
 
   useEffect(() => {
@@ -127,16 +132,30 @@ function EditOrgMemberModal({
         </div>
         <form className="w-full md:w-auto h-[calc(100%-100px)] md:h-[400px] flex flex-col justify-center items-start gap-2">
           <div className="w-full h-full">
-            <input
-              type="text"
-              className="formInput my-2 px-4"
-              placeholder="搜尋成員"
-              value={searchValue}
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-                handleSearch(e);
-              }}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                className="formInput my-2 px-4"
+                placeholder="搜尋成員"
+                value={searchValue}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                  handleSearch(e.target.value);
+                }}
+              />
+              {searchValue.length > 0 && (
+                <button
+                  type="button"
+                  className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
+                  onClick={() => {
+                    setSearchValue("")
+                    handleSearch("");
+                  }}
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+              )}
+            </div>
             <div className="flex flex-col gap-2 h-[calc(100%-55px)] md:max-h-[350px] overflow-y-auto">
               {memberList?.map((member) => (
                 <UserItem

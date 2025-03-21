@@ -115,7 +115,7 @@ function Friend() {
   ));
 
   /** 好友列表 */
-  const FriendList = (!friendData && userData?.uid && !isLoading) ? (
+  const FriendList = (friendData.length === 0 && userData?.uid && !isLoading) ? (
     <p className="text-center my-2">-尚無好友-</p>
   ) : friendData!.map((item) => (
     <div
@@ -208,15 +208,15 @@ function Friend() {
     <div className="relative pt-3 sm:px-5">
       {!isEmpty(RequestList) && (
         <div className="m-2 border-b border-[var(--divider-color)]">
-          <h4 className="my-1">好友邀請</h4>
+          <h4 className="my-1 border-b border-[var(--divider-color)] pb-2">好友邀請</h4>
           {RequestList}
         </div>
       )}
-      <div className="m-2 border-b border-[var(--divider-color)]">
-        <h4 className="my-1">好友列表</h4>
+      <div className="m-2">
+        <h4 className="my-1 border-b border-[var(--divider-color)] pb-2">好友列表</h4>
         {isLoading ? (
           <div className="my-2">
-            <ItemLoading />
+            {/* <ItemLoading /> */}
           </div>
         ) : (
           FriendList

@@ -55,8 +55,8 @@ function CreateOrgModal({
   };
 
   /** 處理搜尋功能 */
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tempList = friendList?.filter((friend) => friend.sourceUserData.userName.includes(e.target.value));
+  const handleSearch = (value: string) => {
+    const tempList = friendList?.filter((friend) => friend.sourceUserData.userName.includes(value));
     setMemberList(tempList as memberListType[]);
   };
 
@@ -112,16 +112,30 @@ function CreateOrgModal({
             />
             <div className="w-full mt-5 border-t-[1px] border-[var(--divider-color)] pt-5">
               <h5 className="text-center">請選擇群組成員</h5>
-              <input
-                type="text"
-                className="formInput my-2 px-4"
-                value={searchValue}
-                placeholder="搜尋好友"
-                onChange={(e) => {
-                  setSearchValue(e.target.value);
-                  handleSearch(e);
-                }}
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  className="formInput px-4"
+                  value={searchValue}
+                  placeholder="搜尋好友"
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
+                />
+                {searchValue.length > 0 && (
+                  <button
+                    type="button"
+                    className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
+                    onClick={() => {
+                      setSearchValue("")
+                      handleSearch("");
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                  </button>
+                )}
+              </div>
               <div className="flex flex-col gap-2 h-[calc(100%-55px)] md:max-h-[350px] overflow-y-auto">
                 {memberList?.map((friend) => (
                   <UserItem

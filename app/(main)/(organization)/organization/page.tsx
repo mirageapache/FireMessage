@@ -49,7 +49,9 @@ function Organization() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const orgList = orgListData.map((item) => (
+  const orgList = (orgListData.length === 0 && uid && !isLoading) ? (
+    <p className="text-center my-2">-尚無群組-</p>
+  ) : orgListData.map((item) => (
     <div
       key={item.orgId}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
@@ -155,9 +157,9 @@ function Organization() {
 
   return (
     <div className="relative pt-3 sm:px-5">
-      <div className="m-2 border-b border-[var(--divider-color)]">
+      <div className="m-2">
         <h4 className="my-1">群組列表</h4>
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-end mb-2 border-b border-[var(--divider-color)] pb-2">
           <button
             type="button"
             className="bg-[var(--brand-color)] w-full sm:w-40 text-white px-4 py-2 rounded-lg"

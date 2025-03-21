@@ -40,7 +40,7 @@ function Notification() {
         <h4 className="my-1">通知</h4>
       </div>
       {isLoading ? (
-        <div className="flex justify-center items-center h-full">
+        <div className="h-full">
           <ItemLoading />
           <ItemLoading />
           <ItemLoading />
