@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 "use client";
+
+/* eslint-disable jsx-a11y/label-has-associated-control */
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -10,17 +10,17 @@ import { RootState } from "@/store";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage, faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { sendVerification } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Avatar from "@/components/Avatar";
-import { deleteUserImage, uploadImage } from "@/lib/image";
 import { setUser } from "@/store/userSlice";
 import { userDataType } from "@/types/userType";
 import Spinner from "@/components/Spinner";
 import EditProfileModal from "@/components/EditProfileModal";
+import EditImageModal from "@/components/EditImageModal";
 
 function Profile() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
@@ -40,82 +40,21 @@ function Profile() {
     setAvatar(userData?.avatarUrl || "");
   }, [userData]);
 
-  /** 上傳圖片 */
-  const handleUploadImage = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    type: string,
-    publicId: string,
-  ) => {
-    if (type === "cover") {
-      setIsCoverLoading(true);
-      setShowCoverModal(false);
+  /** 更新userData (redux) */
+  const dispatchUserData = (result: { imageUrl: string, public_id: string }, imgType: string) => {
+    if (imgType === "cover") {
+      dispatch(setUser({
+        ...userData,
+        coverUrl: result.imageUrl || "",
+        coverPublicId: result.public_id || "",
+      } as userDataType));
     } else {
-      setIsAvatarLoading(true);
-      setShowAvatarModal(false);
+      dispatch(setUser({
+        ...userData,
+        avatarUrl: result.imageUrl || "",
+        avatarPublicId: result.public_id || "",
+      } as userDataType));
     }
-
-    const fileList = event.target.files;
-    if (!isEmpty(fileList) && fileList?.length) {
-      const file = fileList[0];
-      const result = await uploadImage(userData?.uid || "", type, publicId, file);
-      if (result.code === "ERROR") {
-        toast.error(result.error || "上傳失敗");
-      } else {
-        if (type === "cover") {
-          setCover(result.imageUrl);
-          dispatch(setUser({
-            ...userData,
-            coverUrl: result.imageUrl || "",
-            coverPublicId: result.public_id || "",
-          } as userDataType));
-        } else {
-          setAvatar(result.imageUrl);
-          dispatch(setUser({
-            ...userData,
-            avatarUrl: result.imageUrl || "",
-            avatarPublicId: result.public_id || "",
-          } as userDataType));
-        }
-        toast.success(`已更新${type === "cover" ? "封面" : "頭貼"}`);
-      }
-    }
-    setIsCoverLoading(false);
-    setIsAvatarLoading(false);
-  };
-
-  /** 刪除圖片 */
-  const handleDeleteImage = async (type: string, publicId: string) => {
-    if (type === "cover") {
-      setIsCoverLoading(true);
-      setShowCoverModal(false);
-    } else {
-      setIsAvatarLoading(true);
-      setShowAvatarModal(false);
-    }
-
-    const res = await deleteUserImage(userData?.uid || "", type, publicId);
-    if (res.code === "ERROR") {
-      toast.error(res.error || "刪除失敗，請稍後再試");
-    } else {
-      if (type === "cover") {
-        setCover("");
-        dispatch(setUser({
-          ...userData,
-          coverUrl: "",
-          coverPublicId: "",
-        } as userDataType));
-      } else {
-        setAvatar("");
-        dispatch(setUser({
-          ...userData,
-          avatarUrl: "",
-          avatarPublicId: "",
-        } as userDataType));
-      }
-      toast.success(`已移除${type === "cover" ? "封面" : "頭貼"}`);
-    }
-    setIsCoverLoading(false);
-    setIsAvatarLoading(false);
   };
 
   return (
@@ -303,71 +242,27 @@ function Profile() {
       )}
       {/* 修改封面modal */}
       {showCoverModal && (
-        <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
-          <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] p-5 rounded-lg shadow-lg z-20">
-            <div className="relative w-full flex justify-center items-center">
-              <h4 className="text-lg">編輯封面</h4>
-              <button type="button" aria-label="關閉封面選單" className="absolute top-0 right-0" onClick={() => setShowCoverModal(false)}>
-                <FontAwesomeIcon icon={faXmark} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
-              </button>
-            </div>
-            <input
-              id="coverInput"
-              type="file"
-              className="hidden"
-              onChange={(e) => handleUploadImage(e, "cover", userData?.coverPublicId || "")}
-            />
-            <label aria-label="上傳封面" htmlFor="coverInput" className="w-full text-center text-lg text-white bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳封面</label>
-            <button
-              aria-label="刪除封面"
-              type="button"
-              className="w-full text-center text-lg text-white bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
-              onClick={() => handleDeleteImage("cover", userData?.coverPublicId || "")}
-            >
-              刪除封面
-            </button>
-          </div>
-          <button
-            aria-label="關閉封面選單"
-            type="button"
-            className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60"
-            onClick={() => setShowCoverModal(false)}
-          />
-        </div>
+        <EditImageModal
+          imgType="cover"
+          userType="user"
+          publicId={userData?.coverPublicId || ""}
+          setShowImageModal={setShowCoverModal}
+          setIsLoading={setIsCoverLoading}
+          setImageUrl={setCover}
+          handleCallBack={dispatchUserData}
+        />
       )}
       {/* 修改頭貼modal */}
       {showAvatarModal && (
-        <div className="fixed bottom-0 left-0 w-screen h-screen flex justify-center items-center z-50">
-          <div className="flex flex-col justify-center items-center gap-5 w-80 bg-[var(--card-bg-color)] text-white p-5 rounded-lg shadow-lg z-20">
-            <div className="relative w-full flex justify-center items-center">
-              <h4 className="text-lg">編輯頭貼</h4>
-              <button type="button" aria-label="關閉頭貼選單" className="absolute top-0 right-0" onClick={() => setShowAvatarModal(false)}>
-                <FontAwesomeIcon icon={faXmark} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
-              </button>
-            </div>
-            <input
-              id="avatarInput"
-              type="file"
-              className="hidden"
-              onChange={(e) => handleUploadImage(e, "avatar", userData?.avatarPublicId || "")}
-            />
-            <label aria-label="上傳頭貼" htmlFor="avatarInput" className="w-full text-center text-lg text-white bg-[var(--success)] rounded-lg p-2 cursor-pointer hover:shadow-lg">上傳頭貼</label>
-            <button
-              aria-label="刪除頭貼"
-              type="button"
-              className="w-full text-center text-lg text-white bg-[var(--error)] rounded-lg p-2 hover:shadow-lg"
-              onClick={() => handleDeleteImage("avatar", userData?.avatarPublicId || "")}
-            >
-              刪除頭貼
-            </button>
-          </div>
-          <button
-            aria-label="關閉頭貼選單"
-            type="button"
-            className="fixed top-0 left-0 w-screen h-screen cursor-default z-10 bg-gray-900 opacity-60"
-            onClick={() => setShowAvatarModal(false)}
-          />
-        </div>
+        <EditImageModal
+          imgType="avatar"
+          userType="user"
+          publicId={userData?.avatarPublicId || ""}
+          setShowImageModal={setShowAvatarModal}
+          setIsLoading={setIsAvatarLoading}
+          setImageUrl={setAvatar}
+          handleCallBack={dispatchUserData}
+        />
       )}
     </div>
   );

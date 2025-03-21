@@ -1,7 +1,11 @@
 "use client";
 
-import Avatar from '@/components/Avatar';
-import Spinner from '@/components/Spinner';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
 import { getFriendList, updateBothFriendStatus } from '@/lib/friend';
 import { cn } from '@/lib/utils';
 import { RootState } from '@/store';
@@ -9,20 +13,16 @@ import { setFriendList } from '@/store/friendSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setActiveChatRoom } from '@/store/chatSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isEmpty } from 'lodash';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import Avatar from '@/components/Avatar';
 
 function Friend() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
-  const FriendListData = useAppSelector((state: RootState) => state.friend.friendList);
+  const friendListData = useAppSelector((state: RootState) => state.friend.friendList);
   const [isLoading, setIsLoading] = useState(true);
   const [friendData, setFriendData] = useState<friendDataType[]>([]);
   const [friendRequestList, setFriendRequestList] = useState<friendDataType[]>([]);
   const [openDropdownUid, setOpenDropdownUid] = useState<string>(""); // 判斷開啟選單的選項
+  const [linkUrl, setLinkUrl] = useState("/chat");
   const dispatch = useAppDispatch();
   const dropdownItemStyle = "w-full text-left hover:text-[var(--active)] hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg";
 
@@ -56,16 +56,23 @@ function Friend() {
   };
 
   useEffect(() => {
-    if (!isEmpty(FriendListData)) {
-      setFriendData(FriendListData!);
-    }
-    setIsLoading(false);
-  }, [FriendListData]);
+    setFriendData(friendListData!);
+  }, [friendListData]);
 
   useEffect(() => {
     if (userData?.uid) {
-      handleGetFriendRequestList();
+      setIsLoading(false);
     }
+  }, [userData?.uid]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
+    };
+    handleResize();
+    // 監聽視窗大小變化，調整聊天室顯示路徑
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   /** 好友邀請列表 */
@@ -107,13 +114,15 @@ function Friend() {
   ));
 
   /** 好友列表 */
-  const FriendList = (isEmpty(friendData)) ? <p className="text-center my-2">-尚無好友-</p> : friendData!.map((item) => (
+  const FriendList = (friendData.length === 0 && userData?.uid && !isLoading) ? (
+    <p className="text-center my-2">-尚無好友-</p>
+  ) : friendData!.map((item) => (
     <div
       key={item.uid}
       className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] rounded-lg cursor-pointer"
     >
       <Link
-        href="/chat"
+        href={linkUrl}
         className="flex items-center gap-2 w-full p-2"
         onClick={() => {
           dispatch(setActiveChatRoom({
@@ -143,7 +152,7 @@ function Friend() {
           <strong>{item.sourceUserData.userName}</strong>
         </p>
       </Link>
-      <div className="relative flex justify-center items-center gap-2 z-20">
+      <div className="relative flex justify-center items-center gap-2">
         <button
           type="button"
           className="mr-2 hover:bg-gray-500 dark:hover:bg-gray-800 rounded-lg p-1 text-[var(--secondary-text-color)] hover:text-[var(--active)]"
@@ -152,34 +161,43 @@ function Friend() {
           <FontAwesomeIcon icon={faEllipsis} className="w-6 h-5 translate-y-[2px]" />
         </button>
         {openDropdownUid === item.uid && (
-          <div className="absolute top-10 right-0 w-4/5 sm:w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2">
-            <Link
-              href="/chat"
-              className={cn(dropdownItemStyle)}
-              onClick={() => {
-                dispatch(setActiveChatRoom({
-                  chatRoom: {
-                    chatRoomId: item.chatRoomId,
-                    chatRoomName: item.userName,
-                    members: [item.uid, userData?.uid || ""],
-                    type: 0,
-                    avatarUrl: item.avatarUrl,
-                    bgColor: item.bgColor,
-                    lastMessage: "",
-                    lastMessageTime: "",
-                    createdAt: "",
-                    unreadCount: 0,
-                  },
-                }));
-              }}
-            >
-              聊天
-            </Link>
-            <Link href={`/userProfile/${item.uid}`} className={cn(dropdownItemStyle)}>查看好友資訊</Link>
-            <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
-            <button type="button" className={cn(dropdownItemStyle)}>封鎖</button>
-            <button type="button" className={cn(dropdownItemStyle)}>刪除</button>
-          </div>
+          <button
+            type="button"
+            className="fixed sm:absolute w-full sm:w-40 top-20 sm:top-10 right-0 flex justify-center items-center sm:justify-end z-20"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenDropdownUid("");
+            }}
+          >
+            <div className="relative w-4/5 sm:w-40 flex flex-col gap-2 justify-center items-center bg-[var(--card-bg-color)] rounded-lg p-2 z-10">
+              <Link
+                href={linkUrl}
+                className={cn(dropdownItemStyle)}
+                onClick={() => {
+                  dispatch(setActiveChatRoom({
+                    chatRoom: {
+                      chatRoomId: item.chatRoomId,
+                      chatRoomName: item.userName,
+                      members: [item.uid, userData?.uid || ""],
+                      type: 0,
+                      avatarUrl: item.avatarUrl,
+                      bgColor: item.bgColor,
+                      lastMessage: "",
+                      lastMessageTime: "",
+                      createdAt: "",
+                      unreadCount: 0,
+                    },
+                  }));
+                }}
+              >
+                聊天
+              </Link>
+              <Link href={`/userProfile/${item.uid}`} className={cn(dropdownItemStyle)}>查看好友資訊</Link>
+              <span className="flex justify-center before:[''] before:absolute before:w-full before:h-[1px] before:bg-[var(--divider-color)]" />
+              <button type="button" className={cn(dropdownItemStyle)}>封鎖</button>
+              <button type="button" className={cn(dropdownItemStyle, "text-red-500 hover:text-red-500")}>刪除</button>
+            </div>
+          </button>
         )}
       </div>
     </div>
@@ -189,15 +207,15 @@ function Friend() {
     <div className="relative pt-3 sm:px-5">
       {!isEmpty(RequestList) && (
         <div className="m-2 border-b border-[var(--divider-color)]">
-          <h4 className="my-1">好友邀請</h4>
+          <h4 className="my-1 border-b border-[var(--divider-color)] pb-2">好友邀請</h4>
           {RequestList}
         </div>
       )}
-      <div className="m-2 border-b border-[var(--divider-color)]">
-        <h4 className="my-1">好友列表</h4>
+      <div className="m-2">
+        <h4 className="my-1 border-b border-[var(--divider-color)] pb-2">好友列表</h4>
         {isLoading ? (
           <div className="my-2">
-            <Spinner />
+            {/* <ItemLoading /> */}
           </div>
         ) : (
           FriendList
@@ -207,7 +225,7 @@ function Friend() {
         <button
           aria-label="關閉選單"
           type="button"
-          className="fixed top-0 left-0 w-screen h-screen cursor-default z-10"
+          className="fixed top-0 left-0 w-screen h-screen bg-gray-900 opacity-60 sm:bg-transparent cursor-default z-10"
           onClick={() => setOpenDropdownUid("")}
         />
       )}

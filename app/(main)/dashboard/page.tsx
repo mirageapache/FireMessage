@@ -57,6 +57,7 @@ function Dashboard() {
                   lastMessageTime={item.lastMessageTime}
                   unreadCount={item.unreadCount}
                   showCount={item.unreadCount > 0}
+                  type={item.type}
                 />
               ))}
             </div>

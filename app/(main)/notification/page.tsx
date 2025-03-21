@@ -7,7 +7,7 @@ import { useAppSelector } from '@/store/hooks';
 import { RootState } from '@/store';
 import { isEmpty } from 'lodash';
 import NotificationItem from '@/components/NotificationItem';
-import Spinner from '@/components/Spinner';
+import ItemLoading from '@/components/ItemLoading';
 
 function Notification() {
   const userData = useAppSelector((state: RootState) => state.user.userData);
@@ -40,8 +40,10 @@ function Notification() {
         <h4 className="my-1">通知</h4>
       </div>
       {isLoading ? (
-        <div className="flex justify-center items-center h-full">
-          <Spinner />
+        <div className="h-full">
+          <ItemLoading />
+          <ItemLoading />
+          <ItemLoading />
         </div>
       ) : (
         <div className="flex flex-col gap-2 m-2">

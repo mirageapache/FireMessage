@@ -9,3 +9,11 @@ export const editProfileSchema = z.object({
   bio: z.string()
     .max(200, { message: '最多 200 個字元' }),
 });
+
+/** 編輯群組資料驗證 */
+export const editOrgProfileSchema = z.object({
+  organizationName: z.string()
+    .nonempty('請輸入群組名稱'),
+  description: z.string()
+    .max(200, { message: '最多 200 個字元' }),
+});

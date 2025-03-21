@@ -4,17 +4,23 @@ import React, { useRef, useState } from 'react';
 import UserItem from '@/components/UserItem';
 import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { searchUser } from '@/lib/search';
+import { searchOrganization, searchUser } from '@/lib/search';
 import { userDataType } from '@/types/userType';
 import { useAppSelector } from '@/store/hooks';
 import { isEmpty } from 'lodash';
 import Swal from 'sweetalert2';
+import { organizationDataType } from '@/types/organizationType';
+import { cn } from '@/lib/utils';
+import OrgItem from '@/components/OrgItem';
 
 function Search() {
   const userData = useAppSelector((state) => state.user.userData);
   const [keyword, setKeyword] = useState("");
-  const [searchResult, setSearchResult] = useState<number | undefined>(); // 搜尋結果數量
+  const [userCount, setUserCount] = useState<number | undefined>(); // 用戶搜尋結果數量
   const [data, setData] = useState<userDataType[] | undefined>(); // 搜尋結果(資料)
+  const [orgCount, setOrgCount] = useState<number | undefined>(); // 群組搜尋結果數量
+  const [orgData, setOrgData] = useState<organizationDataType[] | undefined>(); // 搜尋結果(群組資料)
+  const [activeTab, setActiveTab] = useState<string>("user"); // 搜尋結果(群組資料)
   const existingHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]'); // 搜尋紀錄
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -22,12 +28,21 @@ function Search() {
   const handleSearch = async (searchString: string) => {
     const result = await searchUser(searchString.trim(), userData?.uid || "");
     const dataList = result.data as userDataType[];
+    const orgResult = await searchOrganization(searchString.trim());
+    const orgDataList = orgResult.data as organizationDataType[];
 
     if (result.code === "SUCCESS") {
-      setSearchResult(result.count);
+      setUserCount(result.count);
       setData(dataList);
     } else {
-      setSearchResult(result.count);
+      setUserCount(result.count);
+    }
+
+    if (orgResult.code === "SUCCESS") {
+      setOrgCount(orgResult.count);
+      setOrgData(orgDataList);
+    } else {
+      setOrgCount(orgResult.count);
     }
   };
 
@@ -66,7 +81,7 @@ function Search() {
         localStorage.removeItem('searchHistory');
         setKeyword("");
         setData([]);
-        setSearchResult(undefined);
+        setUserCount(undefined);
       }
     });
   };
@@ -84,7 +99,7 @@ function Search() {
           onChange={(e) => {
             setKeyword(e.target.value.trim());
             setData([]);
-            setSearchResult(undefined);
+            setUserCount(undefined);
             handleSearch(e.target.value);
           }}
           onKeyDown={(e) => handleSearchHistory(e)}
@@ -99,7 +114,7 @@ function Search() {
             }
             setKeyword("");
             setData([]);
-            setSearchResult(undefined);
+            setUserCount(undefined);
           }}
         >
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
@@ -133,28 +148,69 @@ function Search() {
           </div>
         )}
 
-        {keyword !== "" && searchResult === 0 && <h2>找不到符合的用戶</h2>}
-        {keyword !== "" && searchResult !== 0 && data && (
+        {keyword !== "" && userCount === 0 && orgCount === 0 && <h2>找不到符合的用戶</h2>}
+        {keyword !== "" && (userCount !== 0 && data) && (orgCount !== 0 && orgData) && (
           <>
-            <div className="w-full flex justify-start items-center mb-4 border-b border-[var(--divider-color)] text-xl">
-              <button type="button" className="py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md">用戶</button>
-              <button type="button" className="py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md">群組</button>
+            <div className="w-full flex justify-start items-center gap-1 mb-4 border-b border-[var(--divider-color)] text-xl">
+              <button
+                type="button"
+                className={cn(
+                  "w-full sm:w-auto py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md",
+                  activeTab === "user" && "bg-[var(--hover-bg-color)]",
+                )}
+                onClick={() => setActiveTab("user")}
+              >
+                用戶
+                <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
+                  {userCount! > 999 ? '999+' : userCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  "w-full sm:w-auto py-2 px-3 hover:bg-[var(--hover-bg-color)] rounded-t-md",
+                  activeTab === "org" && "bg-[var(--hover-bg-color)]",
+                )}
+                onClick={() => setActiveTab("org")}
+              >
+                群組
+                <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
+                  {orgCount! > 999 ? '999+' : orgCount}
+                </span>
+              </button>
             </div>
-            {data.map((item) => {
-              if (item.uid === userData?.uid) return null;
-              return (
-                <UserItem
-                  key={item.uid}
-                  uid={item.uid}
-                  userName={item.userName}
-                  avatarUrl={item.avatarUrl}
-                  userAccount={item.userAccount}
-                  status={item.friendStatus}
-                  bgColor={item.bgColor}
-                  chatRoomId=""
-                />
-              );
-            })}
+            {activeTab === "user" ? (
+              <>
+                {data.map((item) => {
+                  if (item.uid === userData?.uid) return null;
+                  return (
+                    <UserItem
+                      key={item.uid}
+                      uid={item.uid}
+                      userName={item.userName}
+                      avatarUrl={item.avatarUrl}
+                      userAccount={item.userAccount}
+                      status={item.friendStatus}
+                      bgColor={item.bgColor}
+                      chatRoomId=""
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {orgData.map((item) => (
+                  <OrgItem
+                    key={item.orgId}
+                    organizationName={item.organizationName}
+                    avatarUrl={item.avatarUrl}
+                    bgColor={item.bgColor}
+                    members={item.members}
+                    chatRoomId={item.chatRoomId}
+                  />
+                ))}
+              </>
+            )}
           </>
         )}
       </div>

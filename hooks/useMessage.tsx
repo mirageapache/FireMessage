@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useEffect } from "react";
+import Cookies from 'universal-cookie';
 import { ref, onValue, update } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { realtimeDb } from '@/firebase';
@@ -15,8 +16,11 @@ export const useMessage = (
   handleGetMessage: (values: string, values2: string) => void,
   handleGetChatList: () => void,
 ) => {
+  const cookies = new Cookies();
+  const isLogin = !isEmpty(cookies.get("UAT"));
+
   useEffect(() => {
-    if (!uid) return;
+    if (!uid || !isLogin) return;
     const messageRef = ref(realtimeDb, `messages/${uid}`);
     onValue(messageRef, (snapshot) => {
       const data = snapshot.val();
@@ -42,6 +46,8 @@ export const useMessage = (
                 lastMessageTime={messageData.createdAt}
                 unreadCount={0}
                 showCount={false}
+                type={messageData.chatRoomType}
+                isNoti={true}
               />,
               { toastId: latestId },
             );

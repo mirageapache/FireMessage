@@ -21,6 +21,11 @@
   }
 }
 
+.main-panel-chat {
+  height: calc(100vh - 50px);
+  margin-top: 50px;
+}
+
 .left-radius {
   border-radius: 8px 8px 0 8px; 
 }
@@ -99,6 +104,14 @@
   h5 {
     @apply text-xl block text-center;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    /* 使用 transition-delay 來保持背景色 */
+    transition: background-color 5000s ease-in-out 0s;
+}
 }
 
 @layer utilities {

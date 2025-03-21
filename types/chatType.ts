@@ -44,6 +44,7 @@ export type immediateMessageDataType = {
   chatRoomName: string;
   chatRoomAvatar: string;
   chatRoomBgColor: string;
+  chatRoomType: number;
   message: string;
   createdAt: string;
   type: string;

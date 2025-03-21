@@ -1,37 +1,50 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
 import { chatListInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
+import { organizationDataType } from "@/types/organizationType";
 import ChatItem from "./ChatItem";
 import UserItem from "./UserItem";
+import OrgItem from "./OrgItem";
 
 function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const FriendListData = useAppSelector((state) => state.friend.friendList);
   const chatListData = useAppSelector((state) => state.chat.chatList);
+  const organizationListData = useAppSelector(
+    (state) => state.organization.organizationList,
+  );
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
   const [chatList, setChatList] = useState<chatListInfoType[]>([]);
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
-  const [orgList, setOrgList] = useState<chatListInfoType[]>([]);
+  const [orgList, setOrgList] = useState<organizationDataType[]>([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  /** 處理搜尋功能 */
+  const handleSearch = (value: string) => {
+    setChatList(chatListData!.filter((item) => item.chatRoomName.includes(value)));
+    setFriendList(FriendListData!.filter((item) => item.sourceUserData.userName.includes(value)));
+    setOrgList(organizationListData!.filter((item) => item.organizationName.includes(value)));
+  };
 
   useEffect(() => {
-    setOrgList([]);
-  }, []);
+    setChatList(chatListData!);
+    if (uid && isEmpty(chatListData)) handleGetChatList();
+  }, [uid, chatListData]);
 
   useEffect(() => {
     setFriendList(FriendListData!);
   }, [FriendListData]);
 
   useEffect(() => {
-    setChatList(chatListData!);
-    if (uid && isEmpty(chatListData)) handleGetChatList();
-  }, [uid, chatListData]);
+    setOrgList(organizationListData!);
+  }, [organizationListData]);
 
   useEffect(() => {
     switch (activeTab) {
@@ -81,12 +94,29 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           />
         </div>
       </div>
-      <div className="my-2">
+      <div className="relative my-2">
         <input
           type="text"
           placeholder="搜尋"
           className="formInput w-full p-1 rounded-lg pl-3"
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            handleSearch(e.target.value);
+          }}
         />
+        {searchValue.length > 0 && (
+          <button
+            type="button"
+            className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
+            onClick={() => {
+              setSearchValue("");
+              handleSearch("");
+            }}
+          >
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        )}
       </div>
       <div>
         {/* 聊天室 */}
@@ -94,7 +124,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
           <div>
             {chatList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無聊天紀錄-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  {searchValue.length > 0 ? "-找不到聊天紀錄-" : "-尚無聊天紀錄-"}
+                </p>
               </div>
             ) : (
               chatList?.map((item) => (
@@ -109,17 +141,21 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
                   lastMessageTime={item.lastMessageTime}
                   unreadCount={item.unreadCount}
                   showCount={item.unreadCount > 0}
+                  type={item.type}
                 />
               ))
             )}
           </div>
         )}
+
         {/* 好友 */}
         {activeTab === "friend" && (
           <div>
             {friendList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無好友資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  {searchValue.length > 0 ? "-找不到好友-" : "-尚無好友資料-"}
+                </p>
               </div>
             ) : (
               friendList!.map((item) => (
@@ -140,24 +176,22 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
 
         {/* 群組 */}
         {activeTab === "group" && (
-          <div>
+          <div className="relative">
             {orgList?.length === 0 ? (
               <div className="flex justify-center items-center h-full">
-                <p className="mt-4 text-lg text-[var(--secondary-text-color)]"> -尚無群組資料-</p>
+                <p className="mt-4 text-lg text-[var(--secondary-text-color)]">
+                  {searchValue.length > 0 ? "-找不到群組-" : "-尚無群組資料-"}
+                </p>
               </div>
             ) : (
               orgList!.map((item) => (
-                <ChatItem
-                  key={item.chatRoomId}
+                <OrgItem
+                  key={item.orgId}
                   chatRoomId={item.chatRoomId}
                   members={item.members}
-                  chatRoomName={item.chatRoomName}
+                  organizationName={item.organizationName}
                   avatarUrl={item.avatarUrl}
                   bgColor={item.bgColor}
-                  lastMessage={item.lastMessage}
-                  lastMessageTime={item.lastMessageTime}
-                  unreadCount={item.unreadCount}
-                  showCount={item.unreadCount > 0}
                 />
               ))
             )}

@@ -25,16 +25,22 @@ import { userDataType } from "@/types/userType";
 import { getSimpleUserData } from "./user";
 
 /** 建立聊天室 */
-export const createChatRoom = async (members: string[], type: number) => {
+export const createChatRoom = async (
+  members: string[],
+  chatRoomName:string,
+  avatarUrl:string,
+  bgColor:string,
+  type: number,
+) => {
   const chatRoomRef = collection(db, "chatRooms");
   await addDoc(chatRoomRef, {
     members,
     type,
-    chatRoomName: "",
-    avatarUrl: "",
-    bgColor: "",
+    chatRoomName,
+    avatarUrl,
+    bgColor,
     lastMessage: "",
-    lastMessageTime: "",
+    lastMessageTime: new Date(),
     createdAt: new Date(),
   });
   return chatRoomRef.id;
@@ -88,9 +94,9 @@ export const getChatList = async (uid: string) => {
       };
     });
     const chatList = await Promise.all(chatListPromise);
-    return { code: "success", chatList };
+    return { code: "SUCCESS", chatList };
   } catch (error) {
-    return { code: "error", message: "取得聊天室列表失敗", error };
+    return { code: "ERROR", message: "取得聊天室列表失敗", error };
   }
 };
 
@@ -160,9 +166,9 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
     });
 
     const messageData = await Promise.all(messageDataPromise);
-    return { code: "success", messageData };
+    return { code: "SUCCESS", messageData };
   } catch (error) {
-    return { code: "error", message: "取得聊天訊息失敗", error };
+    return { code: "ERROR", message: "取得聊天訊息失敗", error };
   }
 };
 
@@ -171,17 +177,18 @@ export const sendMessage = async (
   chatRoomInfo: chatListInfoType,
   userData: userDataType,
   message: string,
+  sendingType: string = "text",
 ) => {
   try {
-    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "text");
+    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, sendingType);
     const {
       chatRoomId,
       members,
       chatRoomName,
       avatarUrl,
       bgColor,
+      type,
     } = chatRoomInfo;
-
     // 建立即時通知
     members.forEach(async (memberId) => {
       // 更新該使用者於聊天室內未讀即時訊息(先刪除舊資料，再建立)
@@ -196,17 +203,18 @@ export const sendMessage = async (
         members,
         chatRoomId,
         // 註：因為即時訊息通知是通知接收方，所以好友類型的聊天室名稱&頭貼設定發送者的頭貼
-        chatRoomName: chatRoomInfo.type === 0 ? userData.userName : chatRoomName,
-        chatRoomAvatar: chatRoomInfo.type === 0 ? userData.avatarUrl : avatarUrl,
-        chatRoomBgColor: chatRoomInfo.type === 0 ? userData.bgColor : bgColor,
+        chatRoomName: type === 0 ? userData.userName : chatRoomName,
+        chatRoomAvatar: type === 0 ? userData.avatarUrl : avatarUrl,
+        chatRoomBgColor: type === 0 ? userData.bgColor : bgColor,
         type: "sendMessage",
+        chatRoomType: type,
         createdAt: serverTimestamp(),
         isRead: false,
       });
     });
 
-    return { code: "success", message: "訊息發送成功" };
+    return { code: "SUCCESS", message: "訊息發送成功" };
   } catch (error) {
-    return { code: "error", message: "訊息發送失敗", error };
+    return { code: "ERROR", message: "訊息發送失敗", error };
   }
 };
