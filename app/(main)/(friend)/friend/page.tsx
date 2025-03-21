@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setActiveChatRoom } from '@/store/chatSlice';
 import { friendDataType, friendResponseType } from '@/types/friendType';
 import Avatar from '@/components/Avatar';
-import ItemLoading from '@/components/ItemLoading';
 
 function Friend() {
   const userData = useAppSelector((state: RootState) => state.user.userData);

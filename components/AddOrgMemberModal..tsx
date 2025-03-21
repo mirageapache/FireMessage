@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable arrow-body-style */
+
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -21,22 +23,21 @@ function AddOrgMemberModal({
   setAddMemberModal: (addMemberModal: boolean) => void;
 }) {
   const friendList = useAppSelector((state) => state.friend.friendList);
-  const [friendBMList, setFriendBMList] = useState<memberListType[]>([]); // Friend Beyond Member List　(不在群組中的好友)
+  // Friend Beyond Member List (不在群組中的好友)
+  const [friendBMList, setFriendBMList] = useState<memberListType[]>([]);
   const [newMemberList, setNewMemberList] = useState<memberListType[]>([]);
   const [searchValue, setSearchValue] = useState("");
 
   /** 確定新增成員 */
   const handleAddMember = async () => {
     const tempList = newMemberList.filter((member) => member.isSelected)
-    .map((member) => {
-      return {
+      .map((member) => ({
         uid: member.uid,
         userName: member.sourceUserData.userName,
         avatarUrl: member.sourceUserData.avatarUrl,
         bgColor: member.sourceUserData.bgColor,
         isSelected: true,
-      };
-    }) as memberListType[];
+      })) as memberListType[];
 
     setMemberList([...orgMemberList, ...tempList]);
     setAddMemberModal(false);
@@ -58,15 +59,19 @@ function AddOrgMemberModal({
 
   /** 處理搜尋功能 */
   const handleSearch = (value: string) => {
-    const tempList = friendBMList?.filter((friend) => friend.sourceUserData.userName.includes(value));
+    const tempList = friendBMList?.filter((friend) => {
+      return (friend.sourceUserData.userName.includes(value));
+    });
     setNewMemberList(tempList as memberListType[]);
   };
 
   useEffect(() => {
-    const tempList = friendList?.filter((friend) => !orgMemberList.some((member) => member.uid === friend.uid)).map((friend) => ({
-      ...friend,
-      isSelected: false,
-    }));
+    const tempList = friendList
+      ?.filter((friend) => !orgMemberList.some((member) => member.uid === friend.uid))
+      .map((friend) => ({
+        ...friend,
+        isSelected: false,
+      }));
     setNewMemberList(tempList || []);
     setFriendBMList(tempList || []);
   }, []);
@@ -107,7 +112,7 @@ function AddOrgMemberModal({
                   type="button"
                   className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
                   onClick={() => {
-                    setSearchValue("")
+                    setSearchValue("");
                     handleSearch("");
                   }}
                 >
@@ -117,11 +122,9 @@ function AddOrgMemberModal({
             </div>
             <div className="flex flex-col gap-2 h-[calc(100%-55px)] md:max-h-[350px] overflow-y-auto">
               {newMemberList.length === 0 ? (
-                searchValue.length > 0 ? (
-                  <p className="text-center text-gray-500">-找不到好友-</p>
-                ) : (
-                  <p className="text-center text-gray-500">-好友似乎都在群組中了-</p>
-                )
+                <p className="text-center text-gray-500">
+                  {searchValue.length > 0 ? "-找不到好友-" : "-好友似乎都在群組中了-"}
+                </p>
               ) : (
                 newMemberList?.map((friend) => (
                   <UserItem

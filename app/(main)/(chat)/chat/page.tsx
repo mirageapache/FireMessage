@@ -10,7 +10,7 @@ import { RootState } from '@/store';
 import { getChatList } from '@/lib/chat';
 import { chatListInfoType } from '@/types/chatType';
 import { useMessage } from '@/hooks/useMessage';
-import { setChatList } from '@/store/chatSlice';
+import { setActiveChatRoom, setChatList } from '@/store/chatSlice';
 import { setUnReadMessageCount } from '@/store/sysSlice';
 import { useChatRoom } from '@/hooks/useChatRoom';
 
@@ -35,6 +35,11 @@ function Chat() {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
+      const currentChatRoomInfo = result.chatList
+        ?.find((item) => item.chatRoomId === currentRoomId);
+      if (currentChatRoomInfo) {
+        dispatch(setActiveChatRoom({ chatRoom: currentChatRoomInfo })); // 更新當前開啟的聊天室資料
+      }
     }
   };
 

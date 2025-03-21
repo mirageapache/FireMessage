@@ -28,9 +28,9 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
 
   /** 處理搜尋功能 */
   const handleSearch = (value: string) => {
-      setChatList(chatListData!.filter((item) => item.chatRoomName.includes(value)));
-      setFriendList(FriendListData!.filter((item) => item.sourceUserData.userName.includes(value)));
-      setOrgList(organizationListData!.filter((item) => item.organizationName.includes(value)));
+    setChatList(chatListData!.filter((item) => item.chatRoomName.includes(value)));
+    setFriendList(FriendListData!.filter((item) => item.sourceUserData.userName.includes(value)));
+    setOrgList(organizationListData!.filter((item) => item.organizationName.includes(value)));
   };
 
   useEffect(() => {
@@ -110,7 +110,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
             type="button"
             className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
             onClick={() => {
-              setSearchValue("")
+              setSearchValue("");
               handleSearch("");
             }}
           >

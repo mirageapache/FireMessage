@@ -20,7 +20,7 @@ function CreateOrgModal({
 }: {
   setCreateOrgModal: (createOrgModal: boolean) => void;
 }) {
-  const uid = useAppSelector((state) => state.user.userData?.uid);
+  const userData = useAppSelector((state) => state.user.userData);
   const friendList = useAppSelector((state) => state.friend.friendList);
   const [isLoading, setIsLoading] = useState(false);
   const [orgName, setOrgName] = useState("");
@@ -32,7 +32,7 @@ function CreateOrgModal({
     setIsLoading(true);
     if (orgName.length > 20) return;
     const members = memberList.filter((member) => member.isSelected).map((member) => member.uid);
-    const res = await createOrganization(uid!, orgName, members);
+    const res = await createOrganization(userData!, orgName, members);
     if (res.code === "SUCCESS") {
       setCreateOrgModal(false);
       toast.success(res.message);
@@ -128,7 +128,7 @@ function CreateOrgModal({
                     type="button"
                     className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
                     onClick={() => {
-                      setSearchValue("")
+                      setSearchValue("");
                       handleSearch("");
                     }}
                   >

@@ -5,7 +5,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface ChatState {
   chatData: chatListInfoType | null;
   activeChatRoom: chatListInfoType | null;
-  chatRoomInfo: chatRoomInfoType | null;
   chatList: chatListInfoType[] | null;
 }
 
@@ -13,7 +12,6 @@ interface ChatState {
 const initialState: ChatState = {
   chatData: null,
   activeChatRoom: null, // 開啟的聊天室ID
-  chatRoomInfo: null, // 聊天室資訊
   chatList: null, // 聊天室列表
 };
 

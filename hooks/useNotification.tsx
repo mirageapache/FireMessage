@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { useEffect } from 'react';
+import Cookies from 'universal-cookie';
 import { ref, onValue, update } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { realtimeDb } from '@/firebase';
@@ -12,8 +13,11 @@ export const useNotification = (
   handleGetNotification: () => void,
   handleUpdateFriend: () => void,
 ) => {
+  const cookies = new Cookies();
+  const isLogin = !isEmpty(cookies.get("UAT"));
+
   useEffect(() => {
-    if (!uid) return;
+    if (!uid || !isLogin) return;
     const notificationRef = ref(realtimeDb, `notifications/${uid}`);
     onValue(notificationRef, (snapshot) => { // 監聽資料變化的方法，當資料發生變化時會觸發回調函數
       const data = snapshot.val();

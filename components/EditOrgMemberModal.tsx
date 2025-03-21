@@ -7,9 +7,10 @@ import Swal from "sweetalert2";
 import { updateOrganizationData } from "@/lib/organization";
 import { organizationDataType } from "@/types/organizationType";
 import { friendDataType } from "@/types/friendType";
+import { useAppSelector } from "@/store/hooks";
+import { getSimpleUserData } from "@/lib/user";
 import Spinner from "./Spinner";
 import UserItem from "./UserItem";
-import { getSimpleUserData } from "@/lib/user";
 import { Button } from "./ui/button";
 import AddOrgMemberModal from "./AddOrgMemberModal.";
 
@@ -20,29 +21,45 @@ interface memberListType extends friendDataType {
 function EditOrgMemberModal({
   setEditmode,
   orgData,
-  setOrgData
+  setOrgData,
 }: {
   setEditmode: (editmode: boolean) => void;
   orgData: organizationDataType;
   setOrgData: (orgData: organizationDataType) => void;
 }) {
+  const userData = useAppSelector((state) => state.user.userData);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [memberList, setMemberList] = useState<memberListType[]>([]); // 調整用的成員列表
-  const [tempMemberList, setTempMemberList] = useState<memberListType[]>([]); // 變更前的成員列表
+  const [memberList, setMemberList] = useState<memberListType[]>([]); // 調整(顯示)用的成員列表
+  const [tempMemberList, setTempMemberList] = useState<memberListType[]>([]); // 紀錄調整過程的成員列表
+  const [originalMemberList, setOriginalMemberList] = useState<memberListType[]>([]); // 原始成員列表
   const [addMemberModal, setAddMemberModal] = useState(false);
 
   /** 更新群組成員 */
   const handleUpdateOrgMember = async () => {
     setIsLoading(true);
-    const newMemberList = memberList.filter((member) => member.isSelected).map((member) => member.uid);
-    const result = await updateOrganizationData(orgData.orgId, {
-      ...orgData,
-      members: newMemberList,
-    });
+    const updateMemberList = memberList.filter((member) => member.isSelected);
+    const newMemeberList = updateMemberList // 新增成員
+      .filter((member) => !orgData.members.includes(member.uid))
+      .map((member) => member.userName);
+    const removeMemberList = originalMemberList // 移除成員
+      .filter((member) => !updateMemberList.includes(member))
+      .map((member) => member.userName);
+    const result = await updateOrganizationData(
+      orgData.orgId,
+      userData!,
+      {
+        ...orgData,
+        members: updateMemberList.map((member) => member.uid),
+      },
+      "editOrgMember",
+      userData?.userName || "",
+      newMemeberList,
+      removeMemberList,
+    );
 
     if (result.code === "SUCCESS") {
-      setOrgData({ ...orgData, members: newMemberList });
+      setOrgData({ ...orgData, members: updateMemberList.map((member) => member.uid) });
     }
     setIsLoading(false);
     setEditmode(false);
@@ -82,9 +99,10 @@ function EditOrgMemberModal({
         isSelected: true,
       };
     });
-    const memberList = await Promise.all(tempList);
-    setMemberList(memberList as memberListType[]);
-    setTempMemberList(memberList as memberListType[]);
+    const memberList = await Promise.all(tempList) as memberListType[];
+    setMemberList(memberList);
+    setTempMemberList(memberList);
+    setOriginalMemberList(memberList);
   };
 
   useEffect(() => {
@@ -148,7 +166,7 @@ function EditOrgMemberModal({
                   type="button"
                   className="absolute right-2 top-0 h-full px-2 text-[var(--disable)] hover:text-[var(--active)]"
                   onClick={() => {
-                    setSearchValue("")
+                    setSearchValue("");
                     handleSearch("");
                   }}
                 >

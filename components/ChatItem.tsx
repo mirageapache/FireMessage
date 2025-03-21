@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setActiveChatRoom } from "@/store/chatSlice";
 import { useAppSelector } from "@/store/hooks";
-import { formatDateTime } from "@/lib/utils";
+import { cn, formatDateTime } from "@/lib/utils";
 import { updateReadStatus } from "@/lib/chat";
 import Avatar from "./Avatar";
 
@@ -20,6 +20,7 @@ interface ChatItemProps {
   unreadCount: number;
   showCount: boolean;
   type: number;
+  isNoti?: boolean; // 判斷是否為即時通知
 }
 
 function ChatItem({
@@ -33,6 +34,7 @@ function ChatItem({
   unreadCount,
   showCount,
   type,
+  isNoti = false,
 }: ChatItemProps) {
   const dispatch = useDispatch();
   const uid = useAppSelector((state) => state.user.userData?.uid);
@@ -82,13 +84,13 @@ function ChatItem({
           bgColor={bgColor}
         />
       </div>
-      <div className="w-full px-2 leading-5">
-        <p>{chatRoomName}</p>
+      <div className={cn("w-full px-2 leading-5", !isNoti && "md:max-w-[85px] lg:max-w-[170px]")}>
+        <p className="w-full truncate">{chatRoomName}</p>
         <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
       </div>
       <div className="relative flex flex-col gap-2 justify-space items-end h-[50px]">
         {lastMessage.length > 0 && (
-          <p className="top-0 right-0 w-16 text-[var(--secondary-text-color)] text-xs text-right">{formatDateTime(lastMessageTime)}</p>
+          <p className="top-0 right-0 w-12 text-[var(--secondary-text-color)] text-xs text-right truncate">{formatDateTime(lastMessageTime)}</p>
         )}
         {showCount && unreadCount > 0 && (
           <p className="bg-orange-500 text-white rounded-full px-2 text-sm">

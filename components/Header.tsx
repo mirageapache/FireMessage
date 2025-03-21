@@ -97,12 +97,11 @@ function Header() {
     setShowNotificationModal(true);
   };
 
-  if (isLogin) {
-    // 監聽通知
-    useNotification(userData?.uid || "", handleGetNotification, handleUpdateFriend);
-    // 監聽即時訊息
-    useMessage(userData?.uid || "", "header", activeChatRoomId || "", () => {}, handleGetChatList);
-  }
+  // 監聽通知
+  useNotification(userData?.uid || "", handleGetNotification, handleUpdateFriend);
+
+  // 監聽即時訊息
+  useMessage(userData?.uid || "", "header", activeChatRoomId || "", () => {}, handleGetChatList);
 
   // 取得通知及訊息未讀數
   useEffect(() => {

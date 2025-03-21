@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { updateOrganizationData } from "@/lib/organization";
 import { organizationDataType } from "@/types/organizationType";
+import { useAppSelector } from "@/store/hooks";
 import {
   Form,
   FormControl,
@@ -43,6 +44,7 @@ function EditOrgProfileModal({
   setCover: (cover: string) => void;
   setAvatar: (avatar: string) => void;
 }) {
+  const userData = useAppSelector((state) => state.user.userData);
   const [isLoading, setIsLoading] = useState(false);
   const [showCoverModal, setShowCoverModal] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -69,7 +71,10 @@ function EditOrgProfileModal({
 
     const result = await updateOrganizationData(
       orgData?.orgId || "",
+      userData!,
       variable,
+      values.organizationName !== orgData.organizationName ? "editOrgName" : "none",
+      userData?.userName || "",
     );
     if (result.code === "SUCCESS") {
       setOrgData(variable);

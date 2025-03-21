@@ -109,6 +109,21 @@ function ChatRoom({
                     }
                     const isSameYear = moment(currentDate).isSame(moment(messageData.createdAt), 'year');
                     const isToday = moment(currentDate).isSame(moment(messageData.createdAt), 'day');
+
+                    // 系統訊息
+                    if (messageData.type === "system_message") {
+                      return (
+                        <div key={messageData.messageId} className="flex justify-center items-center w-full">
+                          <p className="text-sm bg-gray-200 text-center text-[var(--disable-text-color)] my-2 py-1 px-3 rounded-md max-w-[70%] whitespace-pre-wrap">
+                            {isSameYear ? moment(messageData.createdAt).format("MM/DD HH:mm") : moment(messageData.createdAt).format("YYYY/MM/DD HH:mm")}
+                            <br />
+                            {messageData.message}
+                          </p>
+                        </div>
+                      );
+                    }
+
+                    // 一般訊息
                     return (
                       <div key={messageData.messageId}>
                         {!isSameDay && (

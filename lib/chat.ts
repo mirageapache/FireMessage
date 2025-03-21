@@ -177,9 +177,10 @@ export const sendMessage = async (
   chatRoomInfo: chatListInfoType,
   userData: userDataType,
   message: string,
+  sendingType: string = "text",
 ) => {
   try {
-    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, "text");
+    await createMessage(chatRoomInfo.chatRoomId, userData.uid, message, sendingType);
     const {
       chatRoomId,
       members,
