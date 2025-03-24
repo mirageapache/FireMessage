@@ -9,7 +9,7 @@ function HomeAuthSection() {
     <section className="flex flex-col lg:flex-row justify-center w-screen h-screen lg:px-8">
       <div className="flex justify-center items-center">
         <Image
-          className="w-[400px] sm:w-80 lg:w-full"
+          className="w-80 lg:w-full"
           src="/images/mobileImg.png"
           alt="mobileImg"
           width={500}

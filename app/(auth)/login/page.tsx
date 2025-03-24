@@ -59,14 +59,14 @@ function LoginPage() {
       <h2 className="mb-[30px]">歡迎回來</h2>
       <Form {...form}>
         <form
-          className="flex flex-col justify-center"
+          className="flex flex-col justify-center items-center"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="my-[5px]">
+              <FormItem className="w-full my-[5px]">
                 <FormControl>
                   <Input
                     type="email"
@@ -88,7 +88,7 @@ function LoginPage() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="my-[5px]">
+              <FormItem className="w-full my-[5px]">
                 <FormControl>
                   <Input
                     type="password"
