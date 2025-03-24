@@ -165,9 +165,9 @@ export const loginOAuth = async (source: string) => {
 
     const token = await user.getIdToken();
     cookies.set("UAT", token);
-    return user;
+    return { code: "SUCCESS", data: user, isNewUser: !isNewUser.exists() };
   } catch (error) {
-    return error;
+    return { code: "ERROR", error };
   }
 };
 

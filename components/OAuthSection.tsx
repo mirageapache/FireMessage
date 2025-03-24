@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { loginOAuth } from "@/lib/auth";
 import { authResponseType } from "@/types/authType";
 import { authErrorHandle } from "@/lib/error";
+import { toast } from "react-toastify";
 
 function OAuthSection() {
   const btnStyle = "flex justify-center items-center rounded-[6px] cursor-pointer";
@@ -14,6 +15,11 @@ function OAuthSection() {
     const result = (await loginOAuth(provider)) as authResponseType;
     if (result.code === "SUCCESS") {
       router.push("/dashboard");
+      if (result.isNewUser) {
+        toast.success("歡迎加入FireMessage！");
+      } else {
+        toast.success("歡迎回來！");
+      }
     } else {
       const msg = authErrorHandle(result.error.code);
       if (msg !== "") {
