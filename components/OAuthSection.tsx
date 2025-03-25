@@ -24,7 +24,8 @@ function OAuthSection() {
       const msg = authErrorHandle(result.error.code);
       if (msg !== "") {
         Swal.fire({
-          title: "發生錯誤",
+          title: "登入失敗",
+          text: msg,
           icon: "error",
           confirmButtonText: "確定",
         });
