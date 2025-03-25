@@ -140,6 +140,8 @@ export const loginOAuth = async (source: string) => {
       break;
     case "facebook":
       provider = new FacebookAuthProvider();
+      provider.addScope('email');
+      provider.addScope('public_profile');
       break;
     case "github":
       provider = new GithubAuthProvider();
@@ -149,7 +151,10 @@ export const loginOAuth = async (source: string) => {
   }
   try {
     const result: UserCredential = await signInWithPopup(auth, provider);
-    const { user } = result;
+    const user = {
+      ...result.user,
+      avatarUrl: result.user.photoURL || "",
+    };
 
     const isNewUser = await getDoc(doc(db, "users", user.uid));
     if (!isNewUser.exists()) {
@@ -163,11 +168,11 @@ export const loginOAuth = async (source: string) => {
       store.dispatch(setUser(userData)); // 存儲序列化後的用戶數據
     }
 
-    const token = await user.getIdToken();
+    const token = await result.user.getIdToken();
     cookies.set("UAT", token);
-    return user;
+    return { code: "SUCCESS", data: user, isNewUser: !isNewUser.exists() };
   } catch (error) {
-    return error;
+    return { code: "ERROR", error };
   }
 };
 
