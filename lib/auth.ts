@@ -55,7 +55,7 @@ const createUser = async (
       email: user.email,
       userName,
       userAccount,
-      avatarUrl: "",
+      avatarUrl: user.photoURL || "",
       bgColor: getRandomColor(), // 頭貼背景色
       biography: "",
       coverUrl: "",
@@ -67,7 +67,7 @@ const createUser = async (
       uid: user.uid,
       darkMode: "dark",
       toastifyPosition: "top-center",
-      template: "default",
+      template: "left",
       language: "zh-TW",
     });
 
@@ -123,6 +123,9 @@ export const loginWithEmailAndPassword = async (
 
     const userSettings = await getUserSettings(user.uid) as userSettingsType;
     localStorage.setItem("darkMode", userSettings.darkMode);
+    localStorage.setItem("template", userSettings.template);
+    localStorage.setItem("toastifyPosition", userSettings.toastifyPosition);
+    localStorage.setItem("language", userSettings.language);
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };
@@ -151,10 +154,7 @@ export const loginOAuth = async (source: string) => {
   }
   try {
     const result: UserCredential = await signInWithPopup(auth, provider);
-    const user = {
-      ...result.user,
-      avatarUrl: result.user.photoURL || "",
-    };
+    const { user } = result;
 
     const isNewUser = await getDoc(doc(db, "users", user.uid));
     if (!isNewUser.exists()) {
@@ -168,7 +168,7 @@ export const loginOAuth = async (source: string) => {
       store.dispatch(setUser(userData)); // 存儲序列化後的用戶數據
     }
 
-    const token = await result.user.getIdToken();
+    const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user, isNewUser: !isNewUser.exists() };
   } catch (error) {

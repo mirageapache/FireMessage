@@ -202,27 +202,6 @@ function Profile() {
         </div>
       </section>
 
-      {/* 設定 */}
-      <section className="flex flex-col gap-4 mb-4 pb-4 px-4 border-b border-[var(--divider-color)]">
-        <h5 className="sm:text-left">設定</h5>
-        <div className={cn(listItemStyle)}>
-          <p>好友管理</p>
-          <p>開啟</p>
-        </div>
-        <div className={cn(listItemStyle)}>
-          <p>語言</p>
-          <p>繁體中文</p>
-        </div>
-        <div className={cn(listItemStyle)}>
-          <p>提示訊息位置</p>
-          <p>中間上方</p>
-        </div>
-        <div className={cn(listItemStyle)}>
-          <p>版面</p>
-          <p>預設</p>
-        </div>
-      </section>
-
       {/* 刪除帳號 */}
       <section className="flex flex-col gap-4 mb-4 pb-4 px-4">
         <div className="flex justify-between items-center">
