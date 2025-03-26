@@ -33,6 +33,7 @@ function ChatRoom({
 }) {
   const roomInfo = useAppSelector((state: RootState) => state.chat.activeChatRoom);
   const userData = useAppSelector((state: RootState) => state.user.userData);
+  const template = useAppSelector((state: RootState) => state.system.userSettings.template);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [message, setMessage] = useState("");
@@ -83,7 +84,11 @@ function ChatRoom({
         <PanelGroup direction="vertical">
           <Panel defaultSize={85} minSize={60}>
             {/* 頁首區塊 header */}
-            <div className="absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] rounded-tr-lg px-2 bg-[var(--card-bg-color)] z-20">
+            <div className={cn(
+              "absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)] z-20",
+              template === "left" ? "rounded-tr-lg" : "rounded-tl-lg",
+            )}
+            >
               <button
                 type="button"
                 className="p-1"

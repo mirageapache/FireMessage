@@ -67,7 +67,7 @@ const createUser = async (
       uid: user.uid,
       darkMode: "dark",
       toastifyPosition: "top-center",
-      template: "default",
+      template: "left",
       language: "zh-TW",
     });
 
@@ -123,6 +123,9 @@ export const loginWithEmailAndPassword = async (
 
     const userSettings = await getUserSettings(user.uid) as userSettingsType;
     localStorage.setItem("darkMode", userSettings.darkMode);
+    localStorage.setItem("template", userSettings.template);
+    localStorage.setItem("toastifyPosition", userSettings.toastifyPosition);
+    localStorage.setItem("language", userSettings.language);
     const token = await user.getIdToken();
     cookies.set("UAT", token);
     return { code: "SUCCESS", data: user };

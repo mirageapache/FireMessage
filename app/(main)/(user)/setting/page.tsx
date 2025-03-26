@@ -6,7 +6,13 @@ import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getUserSettings, updateUserSettings } from "@/lib/user";
-import { setDarkMode, setSetting } from "@/store/sysSlice";
+import {
+  setDarkMode,
+  setLanguage,
+  setSetting,
+  setTemplate,
+  setToastifyPosition,
+} from "@/store/sysSlice";
 import { userSettingsType } from "@/types/userType";
 import { toast } from "react-toastify";
 
@@ -15,7 +21,12 @@ function UserSetting() {
   const uid = useAppSelector((state) => state.user.userData?.uid);
   const listItemStyle = "flex justify-between items-center";
   const selectStyle = "bg-[var(--card-bg-color)] w-40 p-1 rounded-lg";
-  const [userSetting, setUserSetting] = useState<userSettingsType>();
+  const [userSetting, setUserSetting] = useState<userSettingsType>({
+    darkMode: localStorage.getItem("darkMode") || "",
+    language: localStorage.getItem("language") || "",
+    toastifyPosition: localStorage.getItem("toastifyPosition") || "",
+    template: localStorage.getItem("template") || "",
+  });
 
   /** 取得設定 */
   const getSetting = async () => {
@@ -36,12 +47,15 @@ function UserSetting() {
         darkMode = value === "dark" ? "" : "dark";
         break;
       case "language":
+        dispatch(setLanguage(value));
         language = value;
         break;
       case "toastifyPosition":
+        dispatch(setToastifyPosition(value));
         toastifyPosition = value;
         break;
       case "template":
+        dispatch(setTemplate(value));
         template = value;
         break;
       default:
@@ -116,17 +130,26 @@ function UserSetting() {
           </select>
         </div>
         <div className={cn(listItemStyle)}>
-          <p>版面</p>
+          <p>聊天室訊息列表位置</p>
           <select
             className={selectStyle}
             value={userSetting?.template}
             onChange={(e) => handleUpdateSetting("template", e.target.value)}
           >
-            <option value="default">預設</option>
+            <option value="left">左側</option>
+            <option value="right">右側</option>
           </select>
         </div>
 
-        <button type="button" onClick={() => toast.success("測試成功")}>測試toastify</button>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            className="w-40 p-1 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white"
+            onClick={() => toast.success("測試訊息")}
+          >
+            測試提示訊息
+          </button>
+        </div>
       </section>
     </div>
   );

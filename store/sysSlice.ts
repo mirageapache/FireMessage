@@ -33,6 +33,21 @@ const sysSlice = createSlice({
       state.userSettings.darkMode = newState;
       localStorage.setItem("darkMode", newState);
     },
+    // 設定訊息列表位置
+    setTemplate: (state, action: PayloadAction<string>) => {
+      state.userSettings.template = action.payload;
+      localStorage.setItem("template", action.payload);
+    },
+    // 設定toastify位置
+    setToastifyPosition: (state, action: PayloadAction<string>) => {
+      state.userSettings.toastifyPosition = action.payload;
+      localStorage.setItem("toastifyPosition", action.payload);
+    },
+    // 設定語言
+    setLanguage: (state, action: PayloadAction<string>) => {
+      state.userSettings.language = action.payload;
+      localStorage.setItem("language", action.payload);
+    },
     // 清除userSettings
     clearUserSettings: (state) => {
       state.userSettings = initialState.userSettings;
@@ -51,6 +66,9 @@ const sysSlice = createSlice({
 export const {
   setSetting,
   setDarkMode,
+  setTemplate,
+  setToastifyPosition,
+  setLanguage,
   clearUserSettings,
   setUnCheckedNotiCount,
   setUnReadMessageCount,

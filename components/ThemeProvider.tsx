@@ -7,11 +7,13 @@ import { Bounce, ToastContainer, ToastPosition } from "react-toastify";
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const reduxDarkMode = useSelector((state: RootState) => state.system.userSettings.darkMode);
-  const position = useSelector(
-    (state: RootState) => state.system.userSettings.toastifyPosition,
-  ) as ToastPosition;
   const localDarkMode = localStorage.getItem("darkMode");
   const darkMode = localDarkMode || reduxDarkMode;
+  const reduxPosition = useSelector(
+    (state: RootState) => state.system.userSettings.toastifyPosition,
+  ) as ToastPosition;
+  const localPosition = localStorage.getItem("toastifyPosition") as ToastPosition;
+  const position = localPosition || reduxPosition;
 
   useEffect(() => {
     if (darkMode === "dark") {
