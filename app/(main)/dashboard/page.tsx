@@ -1,19 +1,34 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import ChatItem from "@/components/ChatItem";
 import ProfileCard from "@/components/ProfileCard";
 import UserItem from "@/components/UserItem";
-import { checkNewFriend } from "@/lib/friend";
+import { checkNewFriend, getFriendList } from "@/lib/friend";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
-import React from "react";
+import { friendDataType, friendResponseType } from "@/types/friendType";
 
 function Dashboard() {
   const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-[var(--card-bg-color)] rounded-lg";
+  const userData = useAppSelector((state) => state.user.userData);
   const friendList = useAppSelector((state) => state.friend.friendList);
   const newFriendList = checkNewFriend(friendList);
   const chatList = useAppSelector((state) => state.chat.chatList);
   const recentChatList = chatList?.slice(0, 3);
+  const [friendRequestList, setFriendRequestList] = useState<friendDataType[]>([]);
+
+  /** 取得好友邀請 */
+  const handleGetFriendRequestList = async () => {
+    const result = await getFriendList(userData?.uid || "", 2) as friendResponseType;
+    if (result.code === "SUCCESS") {
+      setFriendRequestList(result.data);
+    }
+  };
+
+  useEffect(() => {
+    handleGetFriendRequestList();
+  }, []);
 
   return (
     <div className="w-full p-5">
@@ -21,6 +36,26 @@ function Dashboard() {
         <ProfileCard />
       </section>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 content-start w-full">
+        {friendRequestList.length > 0 && (
+          <section>
+            <h4 className="text-left mb-2">好友邀請</h4>
+            <div className={sectionStyle}>
+              {friendRequestList.map((friend) => (
+                <UserItem
+                  key={friend.uid}
+                  uid={friend.uid}
+                  userName={friend.sourceUserData.userName}
+                  avatarUrl={friend.sourceUserData.avatarUrl}
+                  userAccount=""
+                  bgColor={friend.sourceUserData.bgColor}
+                  status={5}
+                  chatRoomId={friend.chatRoomId}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
         {newFriendList.length > 0 && (
           <section>
             <h4 className="text-left mb-2">最新好友</h4>
@@ -63,33 +98,6 @@ function Dashboard() {
             </div>
           </section>
         )}
-
-        {/* <section>
-          <h4 className="text-left mb-2">推薦好友</h4>
-          <div className={sectionStyle}>
-            <UserItem
-              uid="Test_1"
-              userName="Test"
-              avatarUrl=""
-              userAccount="Test_1"
-              bgColor="#3b82f6"
-            />
-            <UserItem
-              uid="Test_2"
-              userName="Test"
-              avatarUrl=""
-              userAccount="Test_2"
-              bgColor="#3b82f6"
-            />
-            <UserItem
-              uid="Test_3"
-              userName="Test"
-              avatarUrl=""
-              userAccount="Test_3"
-              bgColor="#3b82f6"
-            />
-          </div>
-        </section> */}
       </div>
     </div>
   );
