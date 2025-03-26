@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { getChatList, getMessages, updateReadStatus } from '@/lib/chat';
-import { getOrganizationData } from '@/lib/organization';
-import { chatListInfoType, messageDataType } from '@/types/chatType';
-import { setActiveChatRoom, setChatList } from '@/store/chatSlice';
-import { setUnReadMessageCount } from '@/store/sysSlice';
-import { setOrganizationList } from '@/store/organizationSlice';
-import { organizationDataType } from '@/types/organizationType';
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { getChatList, getMessages, updateReadStatus } from "@/lib/chat";
+import { getOrganizationData } from "@/lib/organization";
+import { chatListInfoType, messageDataType } from "@/types/chatType";
+import { setActiveChatRoom, setChatList } from "@/store/chatSlice";
+import { setUnReadMessageCount } from "@/store/sysSlice";
+import { setOrganizationList } from "@/store/organizationSlice";
+import { organizationDataType } from "@/types/organizationType";
 
 export const useChatRoom = (uid: string, currentRoomId: string) => {
   const dispatch = useAppDispatch();
@@ -32,8 +32,12 @@ export const useChatRoom = (uid: string, currentRoomId: string) => {
       dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
-      const currentChatRoomInfo = result.chatList?.find((item) => item.chatRoomId === currentRoomId);
-      if (currentChatRoomInfo) dispatch(setActiveChatRoom({ chatRoom: currentChatRoomInfo })); // 更新當前開啟的聊天室資料
+      const currentChatRoomInfo = result.chatList?.find(
+        (item) => item.chatRoomId === currentRoomId,
+      );
+      if (currentChatRoomInfo) {
+        dispatch(setActiveChatRoom({ chatRoom: currentChatRoomInfo })); // 更新當前開啟的聊天室資料
+      }
     }
   };
 
@@ -41,7 +45,9 @@ export const useChatRoom = (uid: string, currentRoomId: string) => {
   const handleGetOrgList = async () => {
     const result = await getOrganizationData(uid!);
     if (result.code === "SUCCESS") {
-      dispatch(setOrganizationList(result.data as unknown as organizationDataType[]));
+      dispatch(
+        setOrganizationList(result.data as unknown as organizationDataType[]),
+      );
     }
   };
 
