@@ -24,6 +24,6 @@ export type userDataType = Omit<User, 'providerData'> & {
 export type userSettingsType = {
   darkMode: string;
   toastifyPosition: string;
-  themeMode: string;
+  template: string;
   language: string;
 };
