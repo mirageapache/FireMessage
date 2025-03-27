@@ -104,7 +104,7 @@ function LoginPage() {
                   />
                 </FormControl>
                 <FormMessage className="inputErrorMsg" style={{ margin: 0 }}>
-                  {errorMsg && <p>{errorMsg}</p>}
+                  {errorMsg && <p data-testid="error-msg">{errorMsg}</p>}
                 </FormMessage>
               </FormItem>
             )}

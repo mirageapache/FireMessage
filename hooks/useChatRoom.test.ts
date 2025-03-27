@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { getChatList, getMessages, updateReadStatus } from '@/lib/chat';
 import { getOrganizationData } from '@/lib/organization';
-import { useChatRoom } from '../useChatRoom';
+import { useChatRoom } from './useChatRoom';
 
 // 模擬 API 調用
 jest.mock('@/lib/chat');
@@ -16,7 +16,7 @@ describe('useChatRoom', () => {
     jest.clearAllMocks();
   });
 
-  test('應該正確初始化聊天室', async () => {
+  test('是否正確初始化聊天室', async () => {
     (getChatList as jest.Mock).mockResolvedValue({
       code: 'SUCCESS',
       chatList: [
@@ -55,7 +55,7 @@ describe('useChatRoom', () => {
     expect(getOrganizationData).toHaveBeenCalledWith(mockUid);
   });
 
-  test('應該正確處理未讀消息', async () => {
+  test('是否正確處理未讀消息', async () => {
     const mockUnreadCount = 5;
     (getChatList as jest.Mock).mockResolvedValue({
       code: 'SUCCESS',
@@ -81,7 +81,7 @@ describe('useChatRoom', () => {
     expect(getChatList).toHaveBeenCalledWith(mockUid);
   });
 
-  test('應該正確處理發送消息後的讀取狀態更新', async () => {
+  test('是否正確處理發送消息後的讀取狀態更新', async () => {
     const { result } = renderHook(() => useChatRoom(mockUid, mockRoomId));
 
     await act(async () => {
@@ -91,7 +91,7 @@ describe('useChatRoom', () => {
     expect(updateReadStatus).toHaveBeenCalledWith(mockRoomId, mockUid);
   });
 
-  test('應該正確處理獲取消息列表', async () => {
+  test('是否正確處理獲取消息列表', async () => {
     const mockMessages = [
       { id: 1, content: '測試訊息 1' },
       { id: 2, content: '測試訊息 2' },
