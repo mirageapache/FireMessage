@@ -18,7 +18,7 @@ export default function AuthLayout({
       <div
         className={cn(
           "fixed flex justify-center items-center w-full h-full overflow-y-auto",
-          currentPath === "chatRoom" ? "main-panel-chat" : "main-panel",
+          currentPath === "chatRoom" ? "h-svh" : "main-panel",
         )}
       >
         <div className="w-full h-full md:max-w-[1200px]">{children}</div>
