@@ -20,8 +20,8 @@ jest.mock('next/navigation', () => ({
 jest.mock('sweetalert2', () => ({
   __esModule: true,
   default: {
-    fire: jest.fn().mockResolvedValue({ isConfirmed: true })
-  }
+    fire: jest.fn().mockResolvedValue({ isConfirmed: true }),
+  },
 }));
 
 describe('註冊頁面', () => {
@@ -90,8 +90,8 @@ describe('註冊頁面', () => {
         code: 'ERROR',
         error: {
           code: 'auth/email-already-in-use',
-          message: '註冊失敗'
-        }
+          message: '註冊失敗',
+        },
       });
 
       await user.type(screen.getByPlaceholderText('請輸入E-mail'), 'test@example.com');
@@ -104,8 +104,8 @@ describe('註冊頁面', () => {
         expect(Swal.fire).toHaveBeenCalledWith(
           expect.objectContaining({
             icon: 'error',
-            confirmButtonText: '確定'
-          })
+            confirmButtonText: '確定',
+          }),
         );
       });
     });
