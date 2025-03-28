@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { logout } from "@/lib/auth";
 import { authResponseType } from "@/types/authType";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Cookies from "universal-cookie";
 import { isEmpty } from "lodash";
 import { cn } from "@/lib/utils";
@@ -54,6 +54,8 @@ function Header() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationData, setNotificationData] = useState<notificationDataType[]>([]);
   const [unReadCount, setUnReadCount] = useState(0);
+  const path = usePathname();
+  const currentPath = path?.slice(1);
 
   /** 取得通知訊息 */
   const handleGetNotification = async () => {
@@ -127,7 +129,10 @@ function Header() {
   }, [showDropdown, showNotificationModal]);
 
   return (
-    <header className="fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-gray-700 shadow-sm sm:flex justify-center items-center py-2 px-5 z-50">
+    <header className={cn(
+      "fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-gray-700 shadow-sm sm:flex justify-center items-center py-2 px-5 z-50",
+      currentPath === "chatRoom" ? "hidden" : "block",
+    )}>
       <nav className="relative flex justify-between items-center md:mr-4 w-full md:max-w-[1200px]">
         <div className="flex justify-center items-center w-full sm:w-auto">
           <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
