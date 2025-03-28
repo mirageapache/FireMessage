@@ -81,27 +81,26 @@ function ChatRoom({
       onClick={() => handleUpdateReadStatus(false)}
     >
       <div className="relative h-full">
+        {/* 頁首區塊 header */}
+        <div className={cn(
+          "absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)] z-20",
+          template === "left" ? "rounded-tr-lg" : "rounded-tl-lg",
+        )}
+        >
+          <button
+            type="button"
+            className="p-1"
+            onClick={() => {
+              dispatch(clearActiveChatRoom());
+              if (currentPath === "chatRoom") router.back();
+            }}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
+          </button>
+          <p className="text-lg w-full text-center text-xl">{roomInfo.chatRoomName}</p>
+        </div>
         <PanelGroup direction="vertical">
           <Panel defaultSize={85} minSize={60}>
-            {/* 頁首區塊 header */}
-            <div className={cn(
-              "absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)] z-20",
-              template === "left" ? "rounded-tr-lg" : "rounded-tl-lg",
-            )}
-            >
-              <button
-                type="button"
-                className="p-1"
-                onClick={() => {
-                  dispatch(clearActiveChatRoom());
-                  if (currentPath === "chatRoom") router.back();
-                }}
-              >
-                <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
-              </button>
-              <p className="text-lg w-full text-center text-xl">{roomInfo.chatRoomName}</p>
-            </div>
-
             {/* 訊息顯示區塊 message panel */}
             <div className="h-[calc(100%-50px)] overflow-y-auto mt-[50px] p-5 flex flex-col-reverse">
               <div className="flex flex-col gap-2">
