@@ -77,14 +77,14 @@ function ChatRoom({
 
   return (
     <div
-      className="w-full h-full"
+      className="fixed top-0 left-0 md: relative w-full h-full"
       onClick={() => handleUpdateReadStatus(false)}
     >
       <div className="relative h-full">
         {/* 頁首區塊 header */}
         <div className={cn(
           "absolute top-0 left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)] z-20",
-          template === "left" ? "rounded-tr-lg" : "rounded-tl-lg",
+          template === "left" ? "md:rounded-tr-lg" : "md:rounded-tl-lg",
         )}
         >
           <button
