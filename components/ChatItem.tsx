@@ -20,7 +20,7 @@ interface ChatItemProps {
   unreadCount: number;
   showCount: boolean;
   type: number;
-  isNoti?: boolean; // 判斷是否為即時通知
+  isChatList?: boolean; // 判斷是否為聊天室列表
 }
 
 function ChatItem({
@@ -34,7 +34,7 @@ function ChatItem({
   unreadCount,
   showCount,
   type,
-  isNoti = false,
+  isChatList = false,
 }: ChatItemProps) {
   const dispatch = useDispatch();
   const uid = useAppSelector((state) => state.user.userData?.uid);
@@ -54,7 +54,7 @@ function ChatItem({
   return (
     <Link
       href={linkUrl}
-      className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
+      className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-2 py-2 rounded-lg"
       onClick={async () => {
         if (unreadCount > 0) {
           await updateReadStatus(chatRoomId, uid!);
@@ -75,22 +75,24 @@ function ChatItem({
         }));
       }}
     >
-      <div className="w-10 h-10">
-        <Avatar
-          userName={chatRoomName}
-          avatarUrl={avatarUrl}
-          classname="w-10 h-10 max-w-10 max-h-10"
-          textSize="text-md"
-          bgColor={bgColor}
-        />
-      </div>
-      <div className={cn("w-full px-2 leading-5", !isNoti && "md:max-w-[85px] lg:max-w-[170px]")}>
-        <p className="w-full truncate">{chatRoomName}</p>
-        <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
+      <div className="flex justify-start items-center w-full">
+        <div className="w-10 h-10">
+          <Avatar
+            userName={chatRoomName}
+            avatarUrl={avatarUrl}
+            classname="w-10 h-10 max-w-10 max-h-10"
+            textSize="text-md"
+            bgColor={bgColor}
+          />
+        </div>
+        <div className={cn("w-full px-2 leading-5", isChatList && "md:max-w-[95px] lg:max-w-[170px]")}>
+          <p className="w-full truncate">{chatRoomName}</p>
+          <p className="text-[var(--secondary-text-color)] text-sm line-clamp-1">{lastMessage}</p>
+        </div>
       </div>
       <div className="relative flex flex-col gap-2 justify-space items-end h-[50px]">
         {lastMessage.length > 0 && (
-          <p className="top-0 right-0 w-12 text-[var(--secondary-text-color)] text-xs text-right truncate">{formatDateTime(lastMessageTime)}</p>
+          <p className="top-0 right-0 w-auto text-[var(--secondary-text-color)] text-xs text-right truncate">{formatDateTime(lastMessageTime)}</p>
         )}
         {showCount && unreadCount > 0 && (
           <p className="bg-orange-500 text-white rounded-full px-2 text-sm">

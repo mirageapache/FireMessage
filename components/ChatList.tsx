@@ -142,6 +142,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
                   unreadCount={item.unreadCount}
                   showCount={item.unreadCount > 0}
                   type={item.type}
+                  isChatList
                 />
               ))
             )}

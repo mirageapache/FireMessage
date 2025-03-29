@@ -47,7 +47,6 @@ export const useMessage = (
                 unreadCount={0}
                 showCount={false}
                 type={messageData.chatRoomType}
-                isNoti={true}
               />,
               { toastId: latestId },
             );
