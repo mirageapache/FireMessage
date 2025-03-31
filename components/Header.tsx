@@ -111,7 +111,7 @@ function Header() {
       handleGetNotification();
       handleGetChatList();
     }
-  }, []);
+  }, [userData?.uid]);
 
   // 更新訊息未讀數
   useEffect(() => {

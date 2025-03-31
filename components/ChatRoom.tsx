@@ -13,7 +13,7 @@ import moment from 'moment';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { cn } from '@/lib/utils';
+import { cn, detectInputMethod } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearActiveChatRoom } from '@/store/chatSlice';
@@ -39,6 +39,7 @@ function ChatRoom({
   const screenWidth = window.innerWidth;
 
   const [message, setMessage] = useState("");
+  const [isBottom, setIsBottom] = useState(false); // 判斷訊息區塊是否在最底部
   const dispatch = useAppDispatch();
   const router = useRouter();
   const path = usePathname();
@@ -80,6 +81,21 @@ function ChatRoom({
     handleUpdateReadStatus(false);
   }, [messageList]);
 
+  useEffect(() => {
+    if (panelRef.current) {
+      const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = panelRef.current!;
+        // 如果滾動位置 + 可視區域高度 >= 內容總高度 - 20px (添加一些容差值)
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20;
+        setIsBottom(isAtBottom);
+      };
+      handleScroll();
+      panelRef.current.addEventListener("scroll", handleScroll);
+      return () => panelRef.current?.removeEventListener("scroll", handleScroll);
+    }
+    return () => {};
+  }, []);
+
   if (!roomInfo) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -115,7 +131,16 @@ function ChatRoom({
         <PanelGroup direction="vertical">
           <Panel defaultSize={screenWidth < 640 ? 75 : 85} minSize={60}>
             {/* 訊息顯示區塊 message panel */}
-            <div ref={panelRef} className="h-full md:h-[calc(100%-50px)] overflow-y-auto md:mt-[50px] p-5 flex flex-col-reverse">
+            <div ref={panelRef} className="relative h-full md:h-[calc(100%-50px)] overflow-y-auto md:mt-[50px] p-5 flex flex-col-reverse">
+              {!isBottom && (
+                <button
+                  type="button"
+                  onClick={scrollToBottom}
+                  className="fixed bottom-5 right-5 bg-[var(--brand-color)] text-white px-4 py-2 rounded-full shadow-lg hover:bg-[var(--active)] transition-colors"
+                >
+                  移動至底部
+                </button>
+              )}
               <div className="flex flex-col gap-2">
                 {messageList && (
                   messageList.map((messageData, index) => {
@@ -179,8 +204,11 @@ function ChatRoom({
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                    e.preventDefault(); // 防止預設的換行行為
-                    handleSendMessage();
+                    if (detectInputMethod()) { // 判斷是否為觸控輸入
+                      e.preventDefault(); // 觸控輸入 => 換行
+                    } else {
+                      handleSendMessage();
+                    }
                   }
                 }}
               />

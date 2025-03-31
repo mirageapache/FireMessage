@@ -87,7 +87,7 @@ export const calcTimeDiff = (currentTime: number, inputTime: number) => {
 };
 
 /**
- * 文章、貼文顯示日期時間轉換
+ * 顯示日期時間轉換
  * @param datetime (時間戳)日期時間
  */
 export const formatDateTime = (datetime: string) => {
@@ -109,4 +109,20 @@ export const formatDateTime = (datetime: string) => {
     return `${inputDate.getMonth() + 1}月${inputDate.getDate()}日`;
   }
   return `${inputDate.getFullYear()}年${inputDate.getMonth() + 1}月${inputDate.getDate()}日`;
+};
+
+/** 判斷是否為觸控按鍵 */
+export const detectInputMethod = () => {
+  let isVirtual = false;
+
+  // 檢查是否為行動裝置
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // 檢查是否為觸控設備
+  const isTouch = 'ontouchstart' in window;
+  // 如果是行動裝置且支援觸控，很可能使用虛擬鍵盤
+  if (isMobile && isTouch) {
+    isVirtual = true;
+  }
+
+  return isVirtual;
 };
