@@ -18,8 +18,8 @@ jest.mock('next/navigation', () => ({
 jest.mock('sweetalert2', () => ({
   __esModule: true,
   default: {
-    fire: jest.fn().mockResolvedValue({ isConfirmed: true })
-  }
+    fire: jest.fn().mockResolvedValue({ isConfirmed: true }),
+  },
 }));
 
 describe('登入頁面', () => {
@@ -32,7 +32,7 @@ describe('登入頁面', () => {
     test('驗證必填欄位', async () => {
       render(<RegisterPage />);
       const submitButton = screen.getByRole('button', { name: '登入' });
-      
+
       fireEvent.click(submitButton);
       expect(await screen.findByText('請輸入電子郵件')).toBeInTheDocument();
       expect(await screen.findByText('請輸入密碼')).toBeInTheDocument();
@@ -60,8 +60,8 @@ describe('登入頁面', () => {
         code: 'ERROR',
         error: {
           code: 'auth/email-already-in-use',
-          message: '登入失敗'
-        }
+          message: '登入失敗',
+        },
       });
 
       await user.type(screen.getByPlaceholderText('請輸入E-mail'), 'test@example.com');
