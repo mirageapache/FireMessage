@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -12,7 +13,7 @@ import {
 import moment from 'moment';
 import { usePathname, useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { cn, detectInputMethod } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -39,7 +40,8 @@ function ChatRoom({
   const screenWidth = window.innerWidth;
 
   const [message, setMessage] = useState("");
-  const [isBottom, setIsBottom] = useState(false); // 判斷訊息區塊是否在最底部
+  const [isBottom, setIsBottom] = useState(true); // 判斷訊息區塊是否在最底部
+  const [panelHeight, setPanelHeight] = useState<string>("0"); // 訊息區塊高度
   const dispatch = useAppDispatch();
   const router = useRouter();
   const path = usePathname();
@@ -82,19 +84,37 @@ function ChatRoom({
   }, [messageList]);
 
   useEffect(() => {
-    if (panelRef.current) {
-      const handleScroll = () => {
-        const { scrollTop, scrollHeight, clientHeight } = panelRef.current!;
-        // 如果滾動位置 + 可視區域高度 >= 內容總高度 - 20px (添加一些容差值)
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20;
-        setIsBottom(isAtBottom);
+    const handleScroll = () => { // 檢查訊息顯示區塊是否滾動至最下方
+      if (panelRef.current!.scrollTop === 0) {
+        setIsBottom(true);
+      } else {
+        setIsBottom(false);
+      }
+    };
+
+    const handleResize = (entries: ResizeObserverEntry[]) => { // 監聽訊息顯示區塊高度變動
+      const entry = entries[0];
+      const { height } = entry.contentRect;
+      if (height > 0) {
+        setPanelHeight(Math.ceil(height + 20).toString());
+      }
+    };
+
+    // 建立 ResizeObserver
+    const resizeObserver = new ResizeObserver(handleResize);
+
+    const panel = panelRef.current;
+    if (panel) {
+      handleScroll(); // 初始檢查
+      panel.addEventListener("scroll", handleScroll);
+      resizeObserver.observe(panel); // 開始觀察元素大小變化
+
+      return () => {
+        panel.removeEventListener("scroll", handleScroll);
+        resizeObserver.disconnect(); // 停止觀察
       };
-      handleScroll();
-      panelRef.current.addEventListener("scroll", handleScroll);
-      return () => panelRef.current?.removeEventListener("scroll", handleScroll);
     }
-    return () => {};
-  }, []);
+  }, [messageList]);
 
   if (!roomInfo) {
     return (
@@ -126,21 +146,27 @@ function ChatRoom({
           >
             <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
           </button>
-          <p className="text-lg w-full text-center text-xl">{roomInfo.chatRoomName}</p>
+          <p className="text-lg w-full text-center translate-x-[-20px] text-xl">{roomInfo.chatRoomName}</p>
         </div>
         <PanelGroup direction="vertical">
           <Panel defaultSize={screenWidth < 640 ? 75 : 85} minSize={60}>
             {/* 訊息顯示區塊 message panel */}
-            <div ref={panelRef} className="relative h-full md:h-[calc(100%-50px)] overflow-y-auto md:mt-[50px] p-5 flex flex-col-reverse">
-              {!isBottom && (
-                <button
-                  type="button"
-                  onClick={scrollToBottom}
-                  className="fixed bottom-5 right-5 bg-[var(--brand-color)] text-white px-4 py-2 rounded-full shadow-lg hover:bg-[var(--active)] transition-colors"
-                >
-                  移動至底部
-                </button>
+            <button
+              type="button"
+              style={{ top: `${panelHeight}px` }}
+              className={cn(
+                `absolute right-[calc(50%+10px)] translate-x-[50%] z-10`,
+                "bg-[var(--brand-color)] text-white p-2 rounded-full shadow-lg hover:bg-[var(--active)] transition-colors transition-opacity duration-500",
+                isBottom ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto",
               )}
+              onClick={() => {
+                if (!isBottom) scrollToBottom();
+              }}
+            >
+              <FontAwesomeIcon icon={faAngleDown} size="lg" className="w-6 h-6 text-white" />
+            </button>
+
+            <div ref={panelRef} className="relative h-full md:h-[calc(100%-50px)] overflow-y-auto md:mt-[50px] p-5 flex flex-col-reverse">
               <div className="flex flex-col gap-2">
                 {messageList && (
                   messageList.map((messageData, index) => {
