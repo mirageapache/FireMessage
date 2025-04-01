@@ -62,10 +62,10 @@ function Chat() {
   useMessage(uid!, "chatroom", currentRoomId || "", handleGetMessage, () => {});
 
   return (
-    <div className={cn("flex w-full h-full md:pt-5 md:px-5", template === "left" ? "flex-row" : "flex-row-reverse")}>
+    <div className={cn("flex w-full h-full md:pt-5 md:px-5", template === "right" ? "flex-row-reverse" : "flex-row")}>
       <aside className={cn(
         "hidden md:block w-full md:max-w-60 lg:max-w-80 bg-[var(--card-bg-color)] p-5",
-        template === "left" ? "md:rounded-tl-lg" : "md:rounded-tr-lg",
+        template === "right" ? "md:rounded-tr-lg" : "md:rounded-tl-lg",
       )}
       >
         <ChatList
@@ -74,7 +74,7 @@ function Chat() {
       </aside>
       <section className={cn(
         "hidden md:block w-full h-full border-[var(--divider-color)] bg-[var(--card-bg-color)]",
-        template === "left" ? "md:rounded-tr-lg border-l" : "md:rounded-tl-lg border-r",
+        template === "right" ? "md:rounded-tl-lg border-r" : "md:rounded-tr-lg border-l",
       )}
       >
         <ChatRoom
