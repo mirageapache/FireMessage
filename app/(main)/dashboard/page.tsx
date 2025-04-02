@@ -8,7 +8,7 @@ import { checkNewFriend, getFriendList } from "@/lib/friend";
 import { cn } from "@/lib/utils";
 import { useAppSelector } from "@/store/hooks";
 import { friendDataType, friendResponseType } from "@/types/friendType";
-import { chatListInfoType } from "@/types/chatType";
+import { chatRoomInfoType } from "@/types/chatType";
 
 function Dashboard() {
   const sectionStyle = "flex flex-col justify-center items-center h-fit py-4 px-4 bg-[var(--card-bg-color)] rounded-lg";
@@ -16,7 +16,7 @@ function Dashboard() {
   const friendList = useAppSelector((state) => state.friend.friendList);
   const newFriendList = checkNewFriend(friendList);
   const chatList = useAppSelector((state) => state.chat.chatList);
-  const [recentChatList, setRecentChatList] = useState<chatListInfoType[]>([]);
+  const [recentChatList, setRecentChatList] = useState<chatRoomInfoType[]>([]);
   const [friendRequestList, setFriendRequestList] = useState<friendDataType[]>([]);
 
   /** 取得好友邀請 */

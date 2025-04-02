@@ -17,11 +17,12 @@ import { faAngleDown, faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-
 import { cn, detectInputMethod } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearActiveChatRoom } from '@/store/chatSlice';
-import { sendMessage } from '@/lib/chat';
+import { clearActiveChatRoom, setActiveChatRoom } from '@/store/chatSlice';
+import { getMessages, sendMessage } from '@/lib/chat';
 import { messageDataType } from '@/types/chatType';
 import { Textarea } from './ui/textarea';
 import MessageItem from './MessageItem';
+import Spinner from './Spinner';
 
 function ChatRoom({
   messageList,
@@ -42,6 +43,8 @@ function ChatRoom({
   const [message, setMessage] = useState("");
   const [isBottom, setIsBottom] = useState(true); // 判斷訊息區塊是否在最底部
   const [panelHeight, setPanelHeight] = useState<string>("0"); // 訊息區塊高度
+  const [isLoading, setIsLoading] = useState(false); // 判斷是否正在載入更多訊息
+  const loadingRef = useRef(false); // 使用 ref 來追蹤實時狀態
   const dispatch = useAppDispatch();
   const router = useRouter();
   const path = usePathname();
@@ -79,19 +82,58 @@ function ChatRoom({
     }
   };
 
+  /** 載入更多訊息 */
+  const loadMoreMessages = async () => {
+    if (loadingRef.current) return;
+    loadingRef.current = true;
+    setIsLoading(true);
+
+    try {
+      const result = await getMessages(
+        roomInfo!.chatRoomId,
+        userData!.uid!,
+        roomInfo!.lastIndexTime,
+        10,
+      );
+      if (result.code === "SUCCESS") {
+        setMessageList((prev) => [...(result.messageData as messageDataType[]), ...prev]);
+        dispatch(setActiveChatRoom({
+          chatRoom: {
+            ...roomInfo!,
+            lastIndexTime: result.lastIndexTime,
+            hasMore: result.hasMore!,
+          },
+        }));
+      }
+    } finally {
+      // 為了不要連續call api，所以setTimeout delay
+      setTimeout(() => {
+        setIsLoading(false);
+        loadingRef.current = false;
+      }, 1000);
+    }
+  };
+
+  /** 捲動事件檢查 */
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, offsetHeight } = panelRef.current!;
+    if (scrollTop === 0) {
+      setIsBottom(true);
+    } else {
+      setIsBottom(false);
+      if (scrollTop < 0 && (Math.abs(scrollTop) + 100) >= scrollHeight - offsetHeight) {
+        if (roomInfo?.hasMore && !loadingRef.current) {
+          loadMoreMessages();
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     handleUpdateReadStatus(false);
   }, [messageList]);
 
   useEffect(() => {
-    const handleScroll = () => { // 檢查訊息顯示區塊是否滾動至最下方
-      if (panelRef.current!.scrollTop === 0) {
-        setIsBottom(true);
-      } else {
-        setIsBottom(false);
-      }
-    };
-
     const handleResize = (entries: ResizeObserverEntry[]) => { // 監聽訊息顯示區塊高度變動
       const entry = entries[0];
       const { height } = entry.contentRect;
@@ -168,6 +210,11 @@ function ChatRoom({
 
             <div ref={panelRef} className="relative h-full md:h-[calc(100%-50px)] overflow-y-auto md:mt-[50px] p-5 flex flex-col-reverse">
               <div className="flex flex-col gap-2">
+                {isLoading && (
+                  <span className="text-[var(--secondary-text-color)] text-md">
+                    <Spinner text="載入訊息中..." />
+                  </span>
+                )}
                 {messageList && (
                   messageList.map((messageData, index) => {
                     const currentDate = new Date();

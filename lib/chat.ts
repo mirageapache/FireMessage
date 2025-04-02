@@ -19,8 +19,10 @@ import {
   getDoc,
   setDoc,
   getCountFromServer,
+  startAfter,
+  limit,
 } from "firebase/firestore";
-import { chatListInfoType } from "@/types/chatType";
+import { chatRoomInfoType } from "@/types/chatType";
 import { userDataType } from "@/types/userType";
 import { getSimpleUserData } from "./user";
 
@@ -69,7 +71,7 @@ export const getChatList = async (uid: string) => {
     const chatListSnapshot = await getDocs(chatListQuery);
 
     const chatListPromise = chatListSnapshot.docs.map(async (chatDoc) => {
-      const data = chatDoc.data() as chatListInfoType;
+      const data = chatDoc.data() as chatRoomInfoType;
       const unreadCount = await calculateUnreadMessageCount(chatDoc.id, uid); // 計算未讀訊息數
       if (data.type === 0) {
         const friendUid = data.members.find((user: string) => user !== uid);
@@ -145,13 +147,30 @@ export const createMessage = async (
 };
 
 /** 取得聊天訊息 */
-export const getMessages = async (chatRoomId: string, uid: string) => {
+export const getMessages = async (
+  chatRoomId: string,
+  uid: string,
+  lastIndexTime?: string, // 用時間戳記當作索引
+  getLimit: number = 10,
+) => {
   try {
     const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
-    const messagesQuery = query(
+    let messagesQuery = query(
       messagesRef,
-      orderBy("createdAt", "asc"),
+      orderBy("createdAt", "desc"),
+      limit(getLimit),
     );
+
+    if (lastIndexTime) {
+      const lastCreatedAt = new Date(lastIndexTime); // 將 ISO 字串轉換回 Date 物件
+      messagesQuery = query(
+        messagesRef,
+        orderBy("createdAt", "desc"),
+        startAfter(lastCreatedAt),
+        limit(getLimit),
+      );
+    }
+
     const messagesSnapshot = await getDocs(messagesQuery);
     const messageDataPromise = messagesSnapshot.docs.map(async (msg) => {
       const data = msg.data();
@@ -165,8 +184,15 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
       });
     });
 
-    const messageData = await Promise.all(messageDataPromise);
-    return { code: "SUCCESS", messageData };
+    const messageData = (await Promise.all(messageDataPromise)).reverse();
+    const lastVisible = messageData[0]?.createdAt;
+
+    return {
+      code: "SUCCESS",
+      messageData,
+      lastIndexTime: lastVisible,
+      hasMore: messagesSnapshot.docs.length === getLimit,
+    };
   } catch (error) {
     return { code: "ERROR", message: "取得聊天訊息失敗", error };
   }
@@ -174,7 +200,7 @@ export const getMessages = async (chatRoomId: string, uid: string) => {
 
 /** 發送(即時)訊息 */
 export const sendMessage = async (
-  chatRoomInfo: chatListInfoType,
+  chatRoomInfo: chatRoomInfoType,
   userData: userDataType,
   message: string,
   sendingType: string = "text",

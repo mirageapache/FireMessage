@@ -32,7 +32,7 @@ import { getChatList } from "@/lib/chat";
 import { getNotification, updateNotificationIsChecked } from "@/lib/notification";
 import { notificationDataType, notificationResponseType } from "@/types/notificationType";
 import { friendResponseType } from "@/types/friendType";
-import { chatListInfoType } from "@/types/chatType";
+import { chatRoomInfoType } from "@/types/chatType";
 import Avatar from "./Avatar";
 import NotifyTip from "./NotifyTip";
 import NotificationModal from "./NotificationModal";
@@ -72,7 +72,7 @@ function Header() {
     if (!userData?.uid) return;
     const result = await getChatList(userData?.uid || "");
     if (result.code === "SUCCESS") {
-      dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
+      dispatch(setChatList(result.chatList as unknown as chatRoomInfoType[]));
 
       if (isEmpty(result.chatList)) {
         setUnReadCount(0);

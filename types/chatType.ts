@@ -2,8 +2,8 @@
 
 import { userDataType } from "./userType";
 
-/** 聊天列表資訊 */
-export type chatListInfoType = {
+/** 聊天室資訊 */
+export type chatRoomInfoType = {
   chatRoomId: string;
   type: number; // 聊天室類型 0: 好友 1: 群組
   members: string[]; // 聊天室成員
@@ -14,16 +14,8 @@ export type chatListInfoType = {
   lastMessageTime: string | any;
   createdAt: string | any;
   unreadCount: number;
-};
-
-/** 聊天室資訊 */
-export type chatRoomInfoType = {
-  chatRoomId: string;
-  type: number; // 聊天室類型 0:好友, 1:群組
-  avatarUrl: string; // 聊天室頭像
-  bgColor: string; // 聊天室顏色
-  member: string[];
-  createdAt: any;
+  lastIndexTime: string; // 動態載入最後一筆訊息時間戳記，作為下次查詢的索引
+  hasMore: boolean; // 判斷是否還有更多資料
 };
 
 /** 訊息資料  */
