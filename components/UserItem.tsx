@@ -101,6 +101,8 @@ function UserItem({
               lastMessageTime: "",
               createdAt: "",
               unreadCount: 0,
+              lastIndexTime: '',
+              hasMore: false,
             },
           }));
         }

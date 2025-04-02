@@ -74,6 +74,8 @@ function Organization() {
                   lastMessageTime: "",
                   createdAt: "",
                   unreadCount: 0,
+                  lastIndexTime: '',
+                  hasMore: false,
                 },
               }),
             );
@@ -131,6 +133,8 @@ function Organization() {
                         lastMessageTime: "",
                         createdAt: "",
                         unreadCount: 0,
+                        lastIndexTime: '',
+                        hasMore: false,
                       },
                     }),
                   );

@@ -71,6 +71,8 @@ function ChatItem({
             lastMessageTime,
             createdAt: "",
             unreadCount: 0,
+            lastIndexTime: '',
+            hasMore: false,
           },
         }));
       }}

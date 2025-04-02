@@ -137,6 +137,8 @@ function Friend() {
               lastMessageTime: "",
               createdAt: "",
               unreadCount: 0,
+              lastIndexTime: '',
+              hasMore: false,
             },
           }));
         }}
@@ -186,6 +188,8 @@ function Friend() {
                       lastMessageTime: "",
                       createdAt: "",
                       unreadCount: 0,
+                      lastIndexTime: '',
+                      hasMore: false,
                     },
                   }));
                 }}
