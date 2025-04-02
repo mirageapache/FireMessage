@@ -4,6 +4,7 @@ import {
   collection, query, where, getDocs,
   updateDoc,
 } from "firebase/firestore";
+import { Redis } from "@upstash/redis";
 import { userSettingsType } from "@/types/userType";
 import { checkFriendStatus } from "./friend";
 
@@ -103,6 +104,22 @@ export const updateUserSettings = async (uid: string, settings: userSettingsType
     // 更新使用者資料
     await updateDoc(userSettingsSnapshot.docs[0].ref, settings);
     return { code: "SUCCESS", message: "更新成功" };
+  } catch (error) {
+    return { code: "ERROR", message: error };
+  }
+};
+
+/** 測試Redis */
+export const testRedis = async (uid: string) => {
+  try {
+    const redis = new Redis({
+      url: process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_URL,
+      token: process.env.NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN,
+    });
+
+    redis.set(`test/${uid}`, "test message");
+    const res = await redis.get("test");
+    return { code: "SUCCESS", message: res };
   } catch (error) {
     return { code: "ERROR", message: error };
   }
