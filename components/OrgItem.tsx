@@ -51,6 +51,8 @@ function OrgItem({
               lastMessageTime: "",
               createdAt: "",
               unreadCount: 0,
+              lastIndexTime: '',
+              hasMore: false,
             },
           }));
         }

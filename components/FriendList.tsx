@@ -40,6 +40,8 @@ function FriendList(friendData: friendDataType[]) {
               lastMessageTime: "",
               unreadCount: 0,
               createdAt: "",
+              lastIndexTime: '',
+              hasMore: false,
             },
           }));
         }}
@@ -81,6 +83,8 @@ function FriendList(friendData: friendDataType[]) {
                     lastMessageTime: "",
                     unreadCount: 0,
                     createdAt: "",
+                    lastIndexTime: '',
+                    hasMore: false,
                   },
                 }));
               }}

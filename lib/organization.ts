@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { userDataType } from "@/types/userType";
 import { organizationDataType } from "@/types/organizationType";
-import { chatListInfoType } from "@/types/chatType";
+import { chatRoomInfoType } from "@/types/chatType";
 import { createChatRoom, sendMessage, updateReadStatus } from "./chat";
 import { getRandomColor } from "./utils";
 import { createNotification, sendImmediateNotification } from "./notification";
@@ -43,7 +43,7 @@ export const updateOrganizationData = async (
     avatarUrl: data.avatarUrl,
     bgColor: data.bgColor,
     type: 1,
-  } as chatListInfoType;
+  } as chatRoomInfoType;
 
   try {
     await updateDoc(doc(db, "organizations", orgId), variable); // 更新群組資料

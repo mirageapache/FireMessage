@@ -8,7 +8,7 @@ import ChatRoom from '@/components/ChatRoom';
 import ChatList from '@/components/ChatList';
 import { RootState } from '@/store';
 import { getChatList } from '@/lib/chat';
-import { chatListInfoType } from '@/types/chatType';
+import { chatRoomInfoType } from '@/types/chatType';
 import { useMessage } from '@/hooks/useMessage';
 import { setActiveChatRoom, setChatList } from '@/store/chatSlice';
 import { setUnReadMessageCount } from '@/store/sysSlice';
@@ -34,7 +34,7 @@ function Chat() {
     if (!uid) return;
     const result = await getChatList(uid!);
     if (result.code === "SUCCESS") {
-      dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
+      dispatch(setChatList(result.chatList as unknown as chatRoomInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
       const currentChatRoomInfo = result.chatList

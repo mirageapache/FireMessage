@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getChatList, getMessages, updateReadStatus } from "@/lib/chat";
 import { getOrganizationData } from "@/lib/organization";
-import { chatListInfoType, messageDataType } from "@/types/chatType";
+import { chatRoomInfoType, messageDataType } from "@/types/chatType";
 import { setActiveChatRoom, setChatList } from "@/store/chatSlice";
 import { setUnReadMessageCount } from "@/store/sysSlice";
 import { setOrganizationList } from "@/store/organizationSlice";
@@ -11,6 +11,7 @@ import { organizationDataType } from "@/types/organizationType";
 export const useChatRoom = (uid: string, currentRoomId: string) => {
   const dispatch = useAppDispatch();
   const chatList = useAppSelector((state) => state.chat.chatList);
+  const activeChatRoom = useAppSelector((state) => state.chat.activeChatRoom);
   const [messageList, setMessageList] = useState<messageDataType[]>([]);
 
   /** 取得聊天室訊息資料 */
@@ -18,9 +19,16 @@ export const useChatRoom = (uid: string, currentRoomId: string) => {
     if (!activeRoomId || activeRoomId !== roomId) {
       return;
     }
-    const result = await getMessages(roomId, uid!);
+    const result = await getMessages(roomId, uid!, activeChatRoom!.lastIndexTime, 20);
     if (result.code === "SUCCESS") {
-      setMessageList(result.messageData as messageDataType[]);
+      setMessageList([...messageList, ...(result.messageData as messageDataType[])]);
+      dispatch(setActiveChatRoom({
+        chatRoom: {
+          ...activeChatRoom!,
+          lastIndexTime: result.lastIndexTime,
+          hasMore: result.hasMore!,
+        },
+      }));
     }
   };
 
@@ -29,7 +37,7 @@ export const useChatRoom = (uid: string, currentRoomId: string) => {
     if (!uid) return;
     const result = await getChatList(uid!);
     if (result.code === "SUCCESS") {
-      dispatch(setChatList(result.chatList as unknown as chatListInfoType[]));
+      dispatch(setChatList(result.chatList as unknown as chatRoomInfoType[]));
       const count = result.chatList?.reduce((acc, item) => acc + item.unreadCount, 0) || 0;
       dispatch(setUnReadMessageCount(count));
       const currentChatRoomInfo = result.chatList?.find(

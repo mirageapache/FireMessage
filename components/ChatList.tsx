@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { isEmpty } from "lodash";
 import { friendDataType } from "@/types/friendType";
-import { chatListInfoType } from "@/types/chatType";
+import { chatRoomInfoType } from "@/types/chatType";
 import { useAppSelector } from "@/store/hooks";
 import { organizationDataType } from "@/types/organizationType";
 import ChatItem from "./ChatItem";
@@ -21,7 +21,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
   );
   const [activeTab, setActiveTab] = useState("chat");
   const [activeUnderLine, setActiveUnderLine] = useState(""); // 頁籤樣式控制
-  const [chatList, setChatList] = useState<chatListInfoType[]>([]);
+  const [chatList, setChatList] = useState<chatRoomInfoType[]>([]);
   const [friendList, setFriendList] = useState<friendDataType[]>([]);
   const [orgList, setOrgList] = useState<organizationDataType[]>([]);
   const [searchValue, setSearchValue] = useState("");
