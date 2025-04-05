@@ -88,6 +88,17 @@ export const getUserSettings = async (uid: string) => {
     const userSettingsRef = collection(db, "userSettings");
     const userSettingsQuery = query(userSettingsRef, where("uid", "==", uid));
     const userSettingsSnapshot = await getDocs(userSettingsQuery);
+
+    if (userSettingsSnapshot.empty) {
+      return {
+        uid,
+        darkMode: "dark",
+        toastifyPosition: "top-center",
+        template: "left",
+        language: "zh-TW",
+      };
+    }
+
     return userSettingsSnapshot.docs[0].data();
   } catch (error) {
     return { code: "ERROR", message: error };
