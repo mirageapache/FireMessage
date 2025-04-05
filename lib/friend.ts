@@ -5,6 +5,7 @@ import { db } from "@/firebase";
 import moment from "moment";
 import { userDataType } from "@/types/userType";
 import { friendDataType, friendStatusDataType } from "@/types/friendType";
+import { isEmpty } from "lodash";
 import {
   collection, query, where, getDocs,
   setDoc,
@@ -96,6 +97,7 @@ export const checkFriendStatus = async (uid: string, friendUid: string) => {
       if (item.uid === friendUid) return item.status;
       return 0;
     });
+    if (isEmpty(friendStatus)) return 0;
     return friendStatus.status;
   }
   return 0;
