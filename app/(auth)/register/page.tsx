@@ -144,7 +144,7 @@ function RegisterPage() {
             type="submit"
             className="btn my-[10px] bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            {isLoading ? <Spinner /> : "註冊"}
+            {isLoading ? <Spinner text="註冊中..." /> : "註冊"}
           </Button>
           <Button
             type="button"

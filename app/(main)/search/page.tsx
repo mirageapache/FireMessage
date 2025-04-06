@@ -149,7 +149,7 @@ function Search() {
         )}
 
         {keyword !== "" && userCount === 0 && orgCount === 0 && <h2>找不到符合的用戶</h2>}
-        {keyword !== "" && (userCount !== 0 && data) && (orgCount !== 0 && orgData) && (
+        {keyword !== "" && ((userCount !== 0 && data) || (orgCount !== 0 && orgData)) && (
           <>
             <div className="w-full flex justify-start items-center gap-1 mb-4 border-b border-[var(--divider-color)] text-xl">
               <button
@@ -161,9 +161,11 @@ function Search() {
                 onClick={() => setActiveTab("user")}
               >
                 用戶
-                <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
-                  {userCount! > 999 ? '999+' : userCount}
-                </span>
+                {userCount! > 0 && (
+                  <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
+                    {userCount! > 999 ? '999+' : userCount}
+                  </span>
+                )}
               </button>
               <button
                 type="button"
@@ -174,14 +176,16 @@ function Search() {
                 onClick={() => setActiveTab("org")}
               >
                 群組
-                <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
-                  {orgCount! > 999 ? '999+' : orgCount}
-                </span>
+                {orgCount! > 0 && (
+                  <span className="ml-2 px-[5px] text-xs bg-[var(--brand-secondary-color)] rounded-full text-white">
+                    {orgCount! > 999 ? '999+' : orgCount}
+                  </span>
+                )}
               </button>
             </div>
             {activeTab === "user" ? (
               <>
-                {data.map((item) => {
+                {data!.map((item) => {
                   if (item.uid === userData?.uid) return null;
                   return (
                     <UserItem
@@ -199,7 +203,7 @@ function Search() {
               </>
             ) : (
               <>
-                {orgData.map((item) => (
+                {orgData!.map((item) => (
                   <OrgItem
                     key={item.orgId}
                     organizationName={item.organizationName}

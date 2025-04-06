@@ -35,7 +35,7 @@ export const createChatRoom = async (
   type: number,
 ) => {
   const chatRoomRef = collection(db, "chatRooms");
-  await addDoc(chatRoomRef, {
+  const docRef = await addDoc(chatRoomRef, {
     members,
     type,
     chatRoomName,
@@ -45,7 +45,7 @@ export const createChatRoom = async (
     lastMessageTime: new Date(),
     createdAt: new Date(),
   });
-  return chatRoomRef.id;
+  return docRef.id;
 };
 
 /** 計算未讀訊息數 */
@@ -54,8 +54,11 @@ export const calculateUnreadMessageCount = async (chatRoomId: string, uid: strin
   const readStatusRef = collection(db, "readStatus", uid, "chatRooms");
   const readStatusQuery = query(readStatusRef, where("chatRoomId", "==", chatRoomId));
   const readStatusSnapshot = await getDocs(readStatusQuery);
-  const readStatusData = readStatusSnapshot.docs[0].data();
 
+  // 如果沒有讀取狀態記錄，返回0
+  if (readStatusSnapshot.empty) return 0;
+
+  const readStatusData = readStatusSnapshot.docs[0].data();
   const messagesRef = collection(db, "messages", chatRoomId, "chatMessages");
   const messagesQuery = query(messagesRef, where("createdAt", ">", readStatusData.lastReadAt));
   const messagesSnapshot = await getCountFromServer(messagesQuery);

@@ -23,14 +23,18 @@ function MobileChatRoom() { // 手機版聊天室頁面(為符合手機操作)
     handleUpdateReadStatus,
   } = useChatRoom(uid!, currentRoomId!);
 
-  if (!activeChatRoomId || activeChatRoomId === "") router.push("/chat");
+  useEffect(() => {
+    if (!activeChatRoomId || activeChatRoomId === "") {
+      router.push("/chat");
+    }
+  }, [activeChatRoomId, router]);
 
   useEffect(() => {
     const handleResize = () => window.innerWidth > 768 && router.push("/chat"); // 視窗寬度大於768px時，跳轉至聊天室頁面;
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (activeChatRoomId) {

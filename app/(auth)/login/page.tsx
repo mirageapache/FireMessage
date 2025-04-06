@@ -113,7 +113,7 @@ function LoginPage() {
             type="submit"
             className="btn bg-[var(--brand-secondary-color)] hover:bg-[var(--brand-secondary-color)] text-white"
           >
-            {isLoading ? <Spinner /> : "登入"}
+            {isLoading ? <Spinner text="登入中..." /> : "登入"}
           </Button>
           <Button
             type="button"

@@ -61,6 +61,7 @@ function Friend() {
 
   useEffect(() => {
     if (userData?.uid) {
+      handleGetFriendRequestList();
       setIsLoading(false);
     }
   }, [userData?.uid]);
@@ -210,7 +211,7 @@ function Friend() {
   return (
     <div className="relative pt-3 sm:px-5">
       {!isEmpty(RequestList) && (
-        <div className="m-2 border-b border-[var(--divider-color)]">
+        <div className="m-2">
           <h4 className="my-1 border-b border-[var(--divider-color)] pb-2">好友邀請</h4>
           {RequestList}
         </div>

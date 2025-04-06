@@ -32,7 +32,7 @@ function UserProfile({ params }: { params: { uid: string } }) {
 
   useEffect(() => {
     if (currentUid) handleGetUserData();
-  }, []);
+  }, [currentUid]);
 
   return (
     <div>
