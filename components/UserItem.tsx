@@ -53,7 +53,7 @@ function UserItem({
     return (
       <button
         type="button"
-        className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
+        className="flex justify-between items-center w-full min-h-[66px] hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
         onClick={() => {
           if (isCurrentUser) return;
           handleSelect(uid);
@@ -86,7 +86,7 @@ function UserItem({
   return (
     <Link
       href={linkUrl}
-      className="flex justify-between items-center w-full hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
+      className="flex justify-between items-center w-full min-h-[66px] hover:bg-[var(--hover-bg-color)] cursor-pointer px-3 py-2 rounded-lg"
       onClick={() => {
         if (status === 5 && chatRoomId) {
           dispatch(setActiveChatRoom({

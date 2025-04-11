@@ -202,3 +202,116 @@ export const checkNewFriend = (friendList: friendDataType[] | null) => {
     .slice(0, 3); // 只取前3筆資料
   return newFriendList;
 };
+
+/** 取得可能認識的人推薦 */
+export const getRecommendedFriends = async (uid: string) => {
+  try {
+    // 1. 獲取當前用戶的好友列表
+    const friendRef = collection(db, "friends");
+    const friendQuery = query(friendRef, where("uid", "==", uid));
+    const friendSnapshot = await getDocs(friendQuery);
+    let friendList: string[] = [];
+    if (!friendSnapshot.empty) {
+      friendList = friendSnapshot.docs[0].data().friendList
+        .filter((item: friendStatusDataType) => item.status === 5)
+        .map((item: friendStatusDataType) => item.uid);
+    }
+
+    // 2. 獲取好友的好友列表
+    const recommendedFriends: string[] = [];
+    const processedUsers = new Set([uid, ...friendList]); // 避免重複處理
+
+    // 使用 Promise.all 並行處理所有好友查詢
+    const friendFriendQueries = await Promise.all(
+      friendList.map(async (friendUid) => {
+        const friendFriendQuery = query(friendRef, where("uid", "==", friendUid));
+        return getDocs(friendFriendQuery);
+      }),
+    );
+
+    // 處理每個好友的好友列表
+    friendFriendQueries.forEach((friendFriendSnapshot) => {
+      if (!friendFriendSnapshot.empty) {
+        const friendFriendList = friendFriendSnapshot.docs[0].data().friendList
+          .filter((item: friendStatusDataType) => item.status === 5)
+          .map((item: friendStatusDataType) => item.uid);
+
+        // 將好友的好友加入推薦列表（排除已處理的用戶）
+        friendFriendList.forEach((friendFriendUid: string) => {
+          if (!processedUsers.has(friendFriendUid)) {
+            recommendedFriends.push(friendFriendUid);
+            processedUsers.add(friendFriendUid);
+          }
+        });
+      }
+    });
+
+    // 3. 獲取推薦用戶的詳細資料
+    const recommendedFriendsData = await Promise.all(
+      recommendedFriends.slice(0, 5).map(async (friendUid) => {
+        const sourceUserData = await getSimpleUserData(friendUid);
+        return {
+          uid: friendUid,
+          status: 0,
+          createdAt: new Date(),
+          sourceUserData: sourceUserData || {},
+        };
+      }),
+    );
+
+    return { code: 'SUCCESS', data: recommendedFriendsData };
+  } catch (error) {
+    return { code: 'ERROR', error };
+  }
+};
+
+/** 取得新朋友推薦 */
+export const getRecommendedNewFriend = async (uid: string) => {
+  try {
+    // 1. 獲取當前用戶的好友列表
+    const friendRef = collection(db, "friends");
+    const friendQuery = query(friendRef, where("uid", "==", uid));
+    const friendSnapshot = await getDocs(friendQuery);
+    let friendList: string[] = [];
+    if (!friendSnapshot.empty) {
+      friendList = friendSnapshot.docs[0].data().friendList
+        .filter((item: friendStatusDataType) => item.status === 5) // 只取已經是好友的
+        .map((item: friendStatusDataType) => item.uid);
+    }
+
+    // 2. 獲取所有用戶列表
+    const usersRef = collection(db, "users");
+    const usersSnapshot = await getDocs(usersRef);
+    const allUsers: string[] = [];
+
+    usersSnapshot.forEach((doc) => {
+      const userId = doc.id;
+      // 排除自己和已經是好友的用戶
+      if (userId !== uid && !friendList.includes(userId)) {
+        allUsers.push(userId);
+      }
+    });
+
+    // 3. 隨機選擇最多5個用戶作為推薦
+    const recommendedCount = Math.min(3, allUsers.length);
+    const shuffled = allUsers.sort(() => 0.5 - Math.random());
+    const selectedUsers = shuffled.slice(0, recommendedCount);
+
+    // 4. 獲取推薦用戶的詳細資料
+    const recommendedFriends = await Promise.all(
+      selectedUsers.map(async (friendUid) => {
+        const sourceUserData = await getSimpleUserData(friendUid);
+        return {
+          uid: friendUid,
+          status: 0,
+          createdAt: new Date(),
+          sourceUserData: sourceUserData || {},
+        };
+      }),
+    );
+
+    return { code: 'SUCCESS', data: recommendedFriends };
+  } catch (error) {
+    return { code: 'ERROR', error };
+  }
+};
