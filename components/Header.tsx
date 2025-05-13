@@ -130,12 +130,12 @@ function Header() {
 
   return (
     <header className={cn(
-      "fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-gray-700 shadow-sm sm:flex justify-center items-center py-2 px-5 z-50",
+      "fixed top-0 left-0 w-screen h-[50px] bg-[var(--card-bg-color)] dark:bg-gray-700 shadow-sm md:flex justify-center items-center py-2 px-5 z-50",
       currentPath === "chatRoom" ? "hidden" : "block",
     )}
     >
       <nav className="relative flex justify-between items-center md:mr-4 w-full md:max-w-[1200px]">
-        <div className="flex justify-center items-center w-full sm:w-auto">
+        <div className="flex justify-center items-center w-full md:w-auto">
           <Link className="flex justify-center items-center" href={isLogin ? "/dashboard" : "/"}>
             <Image
               src="/icons/fire_icon.png"
@@ -149,7 +149,7 @@ function Header() {
         </div>
         {isLogin && (
           <>
-            <div className="hidden sm:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-1">
               {/* 搜尋 */}
               <button
                 type="button"
