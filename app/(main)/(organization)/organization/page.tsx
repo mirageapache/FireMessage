@@ -95,7 +95,7 @@ function Organization() {
           <p>{item.organizationName}</p>
         </div>
       </Link>
-      <div className="relative flex justify-center items-center gap-2 z-20">
+      <div className={cn("relative flex justify-center items-center gap-2 z-10", openDropdownId === item.orgId && "z-30")}>
         <button
           type="button"
           className="mr-2 hover:bg-gray-500 dark:hover:bg-gray-800 rounded-lg p-1 text-[var(--secondary-text-color)] hover:text-[var(--active)]"
