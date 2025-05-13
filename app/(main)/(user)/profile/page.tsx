@@ -32,6 +32,18 @@ function Profile() {
   const [isAvatarLoading, setIsAvatarLoading] = useState(false);
   const [cover, setCover] = useState(userData?.coverUrl || "");
   const [avatar, setAvatar] = useState(userData?.avatarUrl || "");
+
+  // 安全處理日期轉換
+  let createdAt = '';
+  if (typeof userData?.createdAt === "string") {
+    createdAt = userData.createdAt;
+  } else if (userData?.createdAt) {
+    const timestampData = userData.createdAt as { toDate: () => Date }; // 使用類型斷言避免toDate()出現型別錯誤
+    if (typeof timestampData.toDate === 'function') {
+      createdAt = timestampData.toDate().toISOString();
+    }
+  }
+
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -198,7 +210,7 @@ function Profile() {
         </div>
         <div className={cn(listItemStyle)}>
           <p>註冊日期</p>
-          <p>{moment(userData?.createdAt).format("YYYY/MM/DD")}</p>
+          <p>{moment(createdAt).format("YYYY/MM/DD")}</p>
         </div>
       </section>
 

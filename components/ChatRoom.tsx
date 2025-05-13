@@ -117,7 +117,7 @@ function ChatRoom({
   /** 捲動事件檢查 */
   const handleScroll = () => {
     const { scrollTop, scrollHeight, offsetHeight } = panelRef.current!;
-    if (scrollTop === 0) {
+    if (scrollTop >= 0) {
       setIsBottom(true);
     } else {
       setIsBottom(false);
@@ -180,7 +180,7 @@ function ChatRoom({
         >
           <button
             type="button"
-            className="p-1"
+            className="p-1 z-10"
             onClick={() => {
               dispatch(clearActiveChatRoom());
               if (currentPath === "chatRoom") router.back();
