@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import moment from "moment";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -11,12 +12,13 @@ import { getOrganizationDetail } from "@/lib/organization";
 import { organizationDataType } from "@/types/organizationType";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
-import Image from "next/image";
+import { useAppSelector } from "@/store/hooks";
 import EditOrgProfileModal from "@/components/EditOrgProfileModal";
 import EditOrgMemberModal from "@/components/EditOrgMemberModal";
 
 function OrganizationProfile({ params }: { params: { id: string } }) {
   const orgId = params.id;
+  const userData = useAppSelector((state) => state.user.userData);
   const router = useRouter();
   const listItemStyle = "flex justify-between items-center";
   const [orgData, setOrgData] = useState<organizationDataType>();
@@ -94,30 +96,36 @@ function OrganizationProfile({ params }: { params: { id: string } }) {
           )}
         </div>
         <div className="flex justify-end items-center gap-1">
-          <Button
-            type="button"
-            aria-label="編輯群組"
-            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
-            onClick={() => setEditMode(true)}
-          >
-            編輯群組
-          </Button>
-          <Button
-            type="button"
-            aria-label="編輯成員"
-            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
-            onClick={() => setEditMemberMode(true)}
-          >
-            成員
-          </Button>
-          <Button
-            type="button"
-            aria-label="退出群組"
-            className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
-            onClick={() => setEditMemberMode(true)}
-          >
-            退出群組
-          </Button>
+          {orgData?.members.includes(userData!.uid) ? (
+            <>
+              <Button
+                type="button"
+                aria-label="編輯群組"
+                className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+                onClick={() => setEditMode(true)}
+              >
+                編輯群組
+              </Button>
+              <Button
+                type="button"
+                aria-label="編輯成員"
+                className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+                onClick={() => setEditMemberMode(true)}
+              >
+                成員
+              </Button>
+              <Button
+                type="button"
+                aria-label="退出群組"
+                className="w-full sm:w-auto text-white bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+                onClick={() => setEditMemberMode(true)}
+              >
+                退出群組
+              </Button>
+            </>
+          ) : (
+            <p className="text-[var(--secondary-text-color)]">尚未加入此群組</p>
+          )}
         </div>
       </section>
 

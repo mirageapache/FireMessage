@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { searchOrganization, searchUser } from '@/lib/search';
 import { userDataType } from '@/types/userType';
 import { useAppSelector } from '@/store/hooks';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import Swal from 'sweetalert2';
 import { organizationDataType } from '@/types/organizationType';
 import { cn } from '@/lib/utils';
@@ -43,6 +43,12 @@ function Search() {
       setOrgData(orgDataList);
     } else {
       setOrgCount(orgResult.count);
+    }
+
+    if (get(result, "count", 0) > 0) {
+      setActiveTab("user");
+    } else if (get(orgResult, "count", 0) > 0) {
+      setActiveTab("org");
     }
   };
 
@@ -148,7 +154,7 @@ function Search() {
           </div>
         )}
 
-        {keyword !== "" && userCount === 0 && orgCount === 0 && <h2>找不到符合的用戶</h2>}
+        {keyword !== "" && userCount === 0 && orgCount === 0 && <h2>找不到符合的用戶與群組</h2>}
         {keyword !== "" && ((userCount !== 0 && data) || (orgCount !== 0 && orgData)) && (
           <>
             <div className="w-full flex justify-start items-center gap-1 mb-4 border-b border-[var(--divider-color)] text-xl">
@@ -184,36 +190,49 @@ function Search() {
               </button>
             </div>
             {activeTab === "user" ? (
-              <>
-                {data!.map((item) => {
-                  if (item.uid === userData?.uid) return null;
-                  return (
-                    <UserItem
-                      key={item.uid}
-                      uid={item.uid}
-                      userName={item.userName}
-                      avatarUrl={item.avatarUrl}
-                      userAccount={item.userAccount}
-                      status={item.friendStatus}
-                      bgColor={item.bgColor}
-                      chatRoomId=""
-                    />
-                  );
-                })}
-              </>
+              <div className="w-full">
+                {userCount! > 0 ? (
+                  <>
+                    {data!.map((item) => {
+                      if (item.uid === userData?.uid) return null;
+                      return (
+                        <UserItem
+                          key={item.uid}
+                          uid={item.uid}
+                          userName={item.userName}
+                          avatarUrl={item.avatarUrl}
+                          userAccount={item.userAccount}
+                          status={item.friendStatus}
+                          bgColor={item.bgColor}
+                          chatRoomId=""
+                        />
+                      );
+                    })}
+                  </>
+                ) : (
+                  <h2>找不到符合的用戶</h2>
+                )}
+              </div>
             ) : (
-              <>
-                {orgData!.map((item) => (
-                  <OrgItem
-                    key={item.orgId}
-                    organizationName={item.organizationName}
-                    avatarUrl={item.avatarUrl}
-                    bgColor={item.bgColor}
-                    members={item.members}
-                    chatRoomId={item.chatRoomId}
-                  />
-                ))}
-              </>
+              <div className="w-full">
+                {orgCount! > 0 ? (
+                  <>
+                    {orgData!.map((item) => (
+                      <OrgItem
+                        key={item.orgId}
+                        orgId={item.orgId}
+                        organizationName={item.organizationName}
+                        avatarUrl={item.avatarUrl}
+                        bgColor={item.bgColor}
+                        members={item.members}
+                        chatRoomId={item.chatRoomId}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <h2>找不到符合的群組</h2>
+                )}
+              </div>
             )}
           </>
         )}

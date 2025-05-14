@@ -188,6 +188,7 @@ function ChatList({ handleGetChatList }: { handleGetChatList: () => void }) {
               orgList!.map((item) => (
                 <OrgItem
                   key={item.orgId}
+                  orgId={item.orgId}
                   chatRoomId={item.chatRoomId}
                   members={item.members}
                   organizationName={item.organizationName}

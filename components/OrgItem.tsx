@@ -1,18 +1,20 @@
 "use client";
 
 import { setActiveChatRoom } from "@/store/chatSlice";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 
 function OrgItem({
+  orgId,
   members,
   chatRoomId,
   organizationName,
   avatarUrl,
   bgColor,
 }: {
+  orgId: string;
   members: string[];
   chatRoomId: string;
   organizationName: string;
@@ -20,14 +22,15 @@ function OrgItem({
   bgColor: string;
 }) {
   const dispatch = useAppDispatch();
-  const [linkUrl, setLinkUrl] = useState("/chat");
+  const userData = useAppSelector((state) => state.user.userData);
+  const [linkUrl, setLinkUrl] = useState(`/organizationProfile/${orgId}`);
 
   useEffect(() => {
     const handleResize = () => {
       setLinkUrl(window.innerWidth < 768 ? "/chatRoom" : "/chat");
     };
 
-    handleResize();
+    if (members.includes(userData!.uid)) handleResize(); // 是群組成員且有chatRoomId才導到聊天介面
     // 監聽視窗大小變化，調整聊天室顯示路徑
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
