@@ -133,7 +133,7 @@ function UserSetting() {
           <p>
             提示訊息位置
             <br className="sm:hidden" />
-            <i className="text-xs text-[var(--secondary-text-color)]">*此效果僅呈現於「480px」以上螢幕</i>
+            <i className="text-xs text-[var(--secondary-text-color)]">*此效果僅呈現於「768px」以上螢幕</i>
           </p>
           <select
             className={selectStyle}
