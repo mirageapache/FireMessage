@@ -52,10 +52,10 @@ function RegisterPage() {
         router.push("/login");
       });
     } else {
-      const msg = authErrorHandle(result.error.code);
-      if (msg !== "") {
+      const { errorMsg } = authErrorHandle(result.error.code);
+      if (errorMsg !== "") {
         Swal.fire({
-          title: msg,
+          title: errorMsg,
           icon: "error",
           confirmButtonText: "確定",
         });

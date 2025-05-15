@@ -46,9 +46,9 @@ function LoginPage() {
       toast.success("歡迎回來！");
       router.push("/dashboard");
     } else {
-      const msg = authErrorHandle(result.error.code);
-      if (msg !== "") {
-        setErrorMsg(msg);
+      const { errorMsg } = authErrorHandle(result.error.code);
+      if (errorMsg !== "") {
+        setErrorMsg(errorMsg);
       }
     }
     setIsLoading(false);
