@@ -12,13 +12,20 @@ import {
 } from "react-resizable-panels";
 import moment from 'moment';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAngleDown,
+  faAngleLeft,
+  faPaperPlane,
+} from '@fortawesome/free-solid-svg-icons';
+import { faFileLines } from '@fortawesome/free-regular-svg-icons';
 import { cn, detectInputMethod } from '@/lib/utils';
 import { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearActiveChatRoom, setActiveChatRoom } from '@/store/chatSlice';
 import { getMessages, sendMessage } from '@/lib/chat';
+import { getOrgId } from '@/lib/organization';
 import { messageDataType } from '@/types/chatType';
 import { Textarea } from './ui/textarea';
 import MessageItem from './MessageItem';
@@ -43,6 +50,7 @@ function ChatRoom({
   const [message, setMessage] = useState("");
   const [isBottom, setIsBottom] = useState(true); // 判斷訊息區塊是否在最底部
   const [panelHeight, setPanelHeight] = useState<string>("0"); // 訊息區塊高度
+  const [upperId, setUpperId] = useState<string>(""); // [組織ID/使用者ID]
   const [isLoading, setIsLoading] = useState(false); // 判斷是否正在載入更多訊息
   const loadingRef = useRef(false); // 使用 ref 來追蹤實時狀態
   const dispatch = useAppDispatch();
@@ -129,6 +137,23 @@ function ChatRoom({
     }
   };
 
+  /** 取得上層ID */
+  const setOrgId = async () => {
+    if (roomInfo?.type === 1) {
+      const orgId = await getOrgId(roomInfo.chatRoomId);
+      setUpperId(orgId.data!);
+    }
+  };
+
+  useEffect(() => {
+    if (roomInfo?.type === 1) {
+      setOrgId();
+    } else {
+      const uid = roomInfo?.members.find((item) => item !== userData?.uid);
+      setUpperId(uid!);
+    }
+  }, [roomInfo]);
+
   useEffect(() => {
     handleUpdateReadStatus(false);
   }, [messageList]);
@@ -174,7 +199,7 @@ function ChatRoom({
       <div className="relative h-full">
         {/* 頁首區塊 header */}
         <div className={cn(
-          "md:absolute md:top-0 md:left-0 flex justify-start items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)] z-20",
+          "md:absolute md:top-0 md:left-0 flex justify-between items-center w-full h-[50px] border-b border-[var(--divider-color)] px-2 bg-[var(--card-bg-color)]",
           template === "left" ? "md:rounded-tr-lg" : "md:rounded-tl-lg",
         )}
         >
@@ -188,7 +213,16 @@ function ChatRoom({
           >
             <FontAwesomeIcon icon={faAngleLeft} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
           </button>
-          <p className="text-lg w-full text-center translate-x-[-20px] text-xl">{roomInfo.chatRoomName}</p>
+          <p className="text-lg text-center text-xl">
+            {roomInfo.chatRoomName}
+            {roomInfo.type === 1 && `(${roomInfo.members.length})`}
+          </p>
+          <Link
+            href={roomInfo.type === 1 ? `/organizationProfile/${upperId}` : `/userProfile/${upperId}`}
+            className="p-1 z-10"
+          >
+            <FontAwesomeIcon icon={faFileLines} size="lg" className="w-6 h-6 text-[var(--secondary-text-color)] hover:text-[var(--active)]" />
+          </Link>
         </div>
         <PanelGroup direction="vertical">
           <Panel defaultSize={screenWidth < 640 ? 75 : 85} minSize={60}>
