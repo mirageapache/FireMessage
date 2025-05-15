@@ -207,3 +207,15 @@ export const getOrganizationMemberData = async (orgId: string, uid: string, memb
     return { code: "ERROR", message: "取得資料失敗", error };
   }
 };
+
+/** 取得群組ID (by chatRoomId) */
+export const getOrgId = async (chatRoomId: string) => {
+  try {
+    const organizationRef = collection(db, "organizations");
+    const organizationQuery = query(organizationRef, where("chatRoomId", "==", chatRoomId));
+    const organizationSnapshot = await getDocs(organizationQuery);
+    return { code: "SUCCESS", data: organizationSnapshot.docs[0].id };
+  } catch (error) {
+    return { code: "ERROR", message: "取得群組ID失敗", error };
+  }
+};
