@@ -111,11 +111,30 @@ function UserSetting() {
             onChange={(e) => handleUpdateSetting("language", e.target.value)}
           >
             <option value="zh-TW">繁體中文</option>
-            <option value="en-US">English</option>
+            {/* <option value="en-US">English</option> */}
           </select>
         </div>
         <div className={cn(listItemStyle)}>
-          <p>提示訊息位置</p>
+          <p>
+            聊天室訊息列表位置
+            <br className="sm:hidden" />
+            <i className="text-xs text-[var(--secondary-text-color)]">*此效果僅呈現於「768px」以上螢幕</i>
+          </p>
+          <select
+            className={selectStyle}
+            value={userSetting?.template}
+            onChange={(e) => handleUpdateSetting("template", e.target.value)}
+          >
+            <option value="left">左側</option>
+            <option value="right">右側</option>
+          </select>
+        </div>
+        <div className={cn(listItemStyle)}>
+          <p>
+            提示訊息位置
+            <br className="sm:hidden" />
+            <i className="text-xs text-[var(--secondary-text-color)]">*此效果僅呈現於「480px」以上螢幕</i>
+          </p>
           <select
             className={selectStyle}
             value={userSetting?.toastifyPosition}
@@ -129,18 +148,6 @@ function UserSetting() {
             <option value="bottom-left">左下方</option>
           </select>
         </div>
-        <div className={cn(listItemStyle)}>
-          <p>聊天室訊息列表位置</p>
-          <select
-            className={selectStyle}
-            value={userSetting?.template}
-            onChange={(e) => handleUpdateSetting("template", e.target.value)}
-          >
-            <option value="left">左側</option>
-            <option value="right">右側</option>
-          </select>
-        </div>
-
         <div className="flex justify-end">
           <button
             type="button"

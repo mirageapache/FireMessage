@@ -1,6 +1,7 @@
 /** auth 錯誤處理 */
 export const authErrorHandle = (code: string) => {
   let errorMsg = "";
+  let errorType = "error";
 
   switch (code) {
     case "auth/email-already-in-use":
@@ -14,11 +15,12 @@ export const authErrorHandle = (code: string) => {
       break;
     case "auth/account-exists-with-different-credential":
       errorMsg = "此帳號已經使用其他第三方登入方式註冊過，請更換登入方式";
+      errorType = "warning";
       break;
     default:
       errorMsg = "註冊失敗";
       break;
   }
 
-  return errorMsg;
+  return { errorMsg, errorType };
 };

@@ -21,12 +21,12 @@ function OAuthSection() {
         toast.success("歡迎回來！");
       }
     } else {
-      const msg = authErrorHandle(result.error.code);
-      if (msg !== "") {
+      const { errorMsg, errorType } = authErrorHandle(result.error.code);
+      if (errorMsg !== "") {
         Swal.fire({
           title: "登入失敗",
-          text: msg,
-          icon: "error",
+          text: errorMsg,
+          icon: errorType === "warning" ? "warning" : "error",
           confirmButtonText: "確定",
         });
       }
